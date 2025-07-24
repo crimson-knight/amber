@@ -26,6 +26,7 @@ module Amber::Environment
     end
 
     setter session : Hash(String, Int32 | String)
+    setter pubsub : Hash(String, String)
     property database_url : String,
       host : String,
       name : String,
@@ -62,7 +63,10 @@ module Amber::Environment
       secret_key_base: {type: String, default: Random::Secure.urlsafe_base64(32)},
       secrets: {type: Hash(String, String), default: Hash(String, String).new},
       session: {type: Hash(String, Int32 | String), default: {
-        "key" => "amber.session", "store" => "signed_cookie", "expires" => 0,
+        "key" => "amber.session", "store" => "signed_cookie", "expires" => 0, "adapter" => "memory",
+      }},
+      pubsub: {type: Hash(String, String), default: {
+        "adapter" => "memory",
       }},
       ssl_key_file: {type: String?, default: nil},
       ssl_cert_file: {type: String?, default: nil},
@@ -89,6 +93,13 @@ module Amber::Environment
         :key     => @session["key"].to_s,
         :store   => session_store,
         :expires => @session["expires"].to_i,
+        :adapter => @session["adapter"]?.try(&.to_s) || "memory",
+      }
+    end
+
+    def pubsub
+      {
+        :adapter => @pubsub["adapter"]?.try(&.to_s) || "memory",
       }
     end
 

@@ -7,8 +7,24 @@ module Amber::Router::Session
     end
 
     def build : Session::AbstractStore
+      # Check if adapter is specified in config
+      if adapter_specified?
+        return build_adapter_session
+      end
+
+      # Fallback to legacy behavior for backwards compatibility
       return RedisStore.build(redis_store, cookies, config) if redis?
       CookieStore.build(cookie_store, config)
+    end
+
+    private def build_adapter_session : Session::AdapterSessionStore
+      adapter_name = config[:adapter]?.try(&.to_s) || "memory"
+      adapter = Amber::Adapters::AdapterFactory.create_session_adapter(adapter_name)
+      AdapterSessionStore.build(adapter, cookies, config)
+    end
+
+    private def adapter_specified? : Bool
+      config.has_key?(:adapter) && !config[:adapter]?.nil?
     end
 
     private def cookie_store
@@ -16,7 +32,11 @@ module Amber::Router::Session
     end
 
     private def redis_store
-      Redis.new(url: ENV["REDIS_URL"]? || Amber.settings.redis_url)
+      {% if @type.has_constant?("Redis") %}
+        Redis.new(url: ENV["REDIS_URL"]? || Amber.settings.redis_url)
+      {% else %}
+        raise RuntimeError.new("Redis library not available. Please add 'redis' to your shard.yml dependencies or use adapter-based sessions.")
+      {% end %}
     end
 
     private def redis?

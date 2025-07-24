@@ -22,7 +22,11 @@ module Amber
     # end
     # ```
     abstract class Channel
-      @@adapter : WebSockets::Adapters::RedisAdapter? | WebSockets::Adapters::MemoryAdapter?
+      {% if flag?(:redis) %}
+        @@adapter : WebSockets::Adapters::RedisAdapter? | WebSockets::Adapters::MemoryAdapter?
+      {% else %}
+        @@adapter : WebSockets::Adapters::MemoryAdapter?
+      {% end %}
       @topic_path : String
 
       abstract def handle_message(client_socket, msg)

@@ -1,7 +1,10 @@
-require "redis"
+{% if flag?(:redis) %}
+  require "redis"
+{% end %}
 require "uuid"
 
 module Amber::Router::Session
+  {% if flag?(:redis) %}
   class RedisStore < AbstractStore
     @id : String?
     getter store : Redis
@@ -93,4 +96,5 @@ module Amber::Router::Session
       cookies.encrypted[key]
     end
   end
+  {% end %}
 end
