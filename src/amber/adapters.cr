@@ -2,13 +2,6 @@ require "./adapters/session_adapter"
 require "./adapters/pubsub_adapter"
 require "./adapters/memory_session_adapter"
 require "./adapters/memory_pubsub_adapter"
-
-# Conditionally require Redis adapters if available
-{% if flag?(:redis) %}
-  require "./adapters/redis_session_adapter"
-  require "./adapters/redis_pubsub_adapter"
-{% end %}
-
 require "./adapters/adapter_factory"
 
 module Amber::Adapters
@@ -18,13 +11,19 @@ module Amber::Adapters
   #
   # ### SessionAdapter
   # Abstract interface for session storage backends. Implementations can use any storage
-  # system (Redis, database, in-memory, file-based, etc.) as long as they provide the
+  # system (database, Redis, in-memory, file-based, etc.) as long as they provide the
   # required session operations.
   #
   # ### PubSubAdapter  
   # Abstract interface for pub/sub messaging backends used by WebSocket channels.
   # Implementations can use any messaging system (Redis pub/sub, message queues,
   # in-memory broadcasting, etc.) as long as they provide publish/subscribe functionality.
+  #
+  # ## Built-in Adapters
+  #
+  # Amber provides in-memory implementations as the default adapters:
+  # - `MemorySessionAdapter` - Thread-safe in-memory session storage with expiration
+  # - `MemoryPubSubAdapter` - In-process pub/sub messaging for WebSocket channels
   #
   # ## Creating Custom Adapters
   #
@@ -48,9 +47,29 @@ module Amber::Adapters
   #
   # Configure adapters in your application settings:
   #
+  # ```yaml
+  # # config/environments/development.yml
+  # session:
+  #   adapter: "memory"  # Use built-in memory adapter
+  #   # OR
+  #   adapter: "custom"  # Use your registered custom adapter
+  #
+  # pubsub:
+  #   adapter: "memory"  # Use built-in memory adapter
+  #   # OR  
+  #   adapter: "custom"  # Use your registered custom adapter
   # ```
-  # # Using custom adapters
-  # settings.session_adapter = MyCustomSessionAdapter.new(my_storage)
-  # settings.websocket_adapter = MyCustomPubSubAdapter.new(my_broker)
+  #
+  # Then register your custom adapters:
+  #
+  # ```
+  # # In your application initialization
+  # Amber::Adapters::AdapterFactory.register_session_adapter("custom") do
+  #   MyCustomSessionAdapter.new(my_storage)
+  # end
+  #
+  # Amber::Adapters::AdapterFactory.register_pubsub_adapter("custom") do
+  #   MyCustomPubSubAdapter.new(my_broker)
+  # end
   # ```
 end 

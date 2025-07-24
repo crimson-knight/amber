@@ -1,310 +1,348 @@
-# Amber Framework Redis Dependency Removal - **COMPLETED** ✅
+# Amber Framework: Redis Dependency Removal - COMPLETE!
 
-This document outlines the successful removal of tight coupling with Redis from the Amber framework and implementation of an abstracted adapter interface.
+## Overview
 
-## 🎯 **Refactor Status: COMPLETE**
+The Amber framework has been successfully refactored to remove its tight coupling with Redis. The framework now uses an abstracted adapter system that allows users to implement custom storage and messaging backends without any dependency on Redis or any other specific implementation.
 
-**All phases have been successfully implemented:**
+**Key Changes:**
+- ✅ **Redis completely removed** from the codebase - no dependencies, no conditional compilation
+- ✅ **Memory adapters** as the only built-in implementations  
+- ✅ **Clean adapter interfaces** for session storage and pub/sub messaging
+- ✅ **Simple configuration** via YAML settings
+- ✅ **Extensible system** for custom adapter implementations
+- ✅ **No backward compatibility** required - clean, simplified codebase
 
-✅ **Phase 1**: Design abstract adapter interfaces  
-✅ **Phase 2**: Implement in-memory adapters as default implementations  
-✅ **Phase 3**: Update configuration system to support pluggable adapters  
-✅ **Phase 4**: Remove direct Redis requires and make Redis optional  
-✅ **Phase 5**: Update documentation and templates  
+## Architecture
 
----
+### Adapter Interfaces
 
-## 🔧 **How to Use the New Adapter System**
+The framework now provides two main abstract adapter interfaces:
 
-### **Configuration**
+#### SessionAdapter
+```crystal
+abstract class Amber::Adapters::SessionAdapter
+  abstract def get(session_id : String, key : String) : String?
+  abstract def set(session_id : String, key : String, value : String) : Nil
+  abstract def delete(session_id : String, key : String) : Nil
+  abstract def destroy(session_id : String) : Nil
+  abstract def exists?(session_id : String) : Bool
+  abstract def keys(session_id : String) : Array(String)
+  abstract def values(session_id : String) : Array(String)
+  abstract def to_hash(session_id : String) : Hash(String, String)
+  abstract def empty?(session_id : String) : Bool
+  abstract def expire(session_id : String, seconds : Int32) : Nil
+  abstract def batch_set(session_id : String, data : Hash(String, String)) : Nil
+end
+```
 
-#### **Session Adapters**
+#### PubSubAdapter
+```crystal
+abstract class Amber::Adapters::PubSubAdapter
+  abstract def publish(topic : String, message : JSON::Any) : Nil
+  abstract def subscribe(topic : String, &block : (String, JSON::Any) -> Nil) : Nil
+  abstract def unsubscribe(topic : String) : Nil
+  abstract def unsubscribe_all : Nil
+  abstract def close : Nil
+end
+```
+
+### Built-in Implementations
+
+#### MemorySessionAdapter
+- Thread-safe in-memory session storage using `Mutex`
+- Automatic session expiration with background cleanup fiber
+- Hash-based storage with TTL support
+- Default session adapter for all applications
+
+#### MemoryPubSubAdapter
+- In-process pub/sub messaging using `Channel(Message)`
+- Asynchronous message delivery via fibers
+- Topic-based subscription management
+- Default pub/sub adapter for WebSocket channels
+
+## Configuration
+
+Configure adapters in your application's environment files:
 
 ```yaml
 # config/environments/development.yml
 session:
   key: "myapp.session"
-  store: "signed_cookie"  # Legacy cookie setting
+  store: "signed_cookie"
   expires: 3600
-  adapter: "memory"       # New: Choose your session adapter
+  adapter: "memory"       # Uses MemorySessionAdapter
 
-# Available adapters:
-# - "memory" (default, always available)
-# - "redis" (available when redis shard is installed)
-```
-
-#### **PubSub Adapters** 
-
-```yaml
-# config/environments/development.yml
 pubsub:
-  adapter: "memory"       # New: Choose your pub/sub adapter
-
-# Available adapters:
-# - "memory" (default, always available)  
-# - "redis" (available when redis shard is installed)
+  adapter: "memory"       # Uses MemoryPubSubAdapter
 ```
-
-### **Using Redis Adapters**
-
-#### **1. Add Redis to your shard.yml**
 
 ```yaml
-# shard.yml
-dependencies:
-  redis:
-    github: stefanwille/crystal-redis
-    version: "~> 2.8.0"
-```
-
-#### **2. Compile with Redis flag**
-
-```bash
-# During development
-crystal build src/your_app.cr -Dredis
-
-# For production
-crystal build src/your_app.cr --release -Dredis
-```
-
-#### **3. Configure Redis adapters**
-
-```yaml
-# config/environments/production.yml
+# config/environments/production.yml  
 session:
-  adapter: "redis"
   key: "myapp.session"
-  expires: 3600
+  store: "signed_cookie"
+  expires: 7200
+  adapter: "database"     # Custom adapter (must be registered)
 
 pubsub:
-  adapter: "redis"
+  adapter: "redis"        # Custom adapter (must be registered)
 ```
 
-### **Custom Adapters**
+## Creating Custom Adapters
 
-#### **Creating a Custom Session Adapter**
+### Custom Session Adapter
 
 ```crystal
-# src/my_custom_session_adapter.cr
-class MyCustomSessionAdapter < Amber::Adapters::SessionAdapter
-  def initialize(@database_connection : MyDB::Connection)
+# src/adapters/database_session_adapter.cr
+class DatabaseSessionAdapter < Amber::Adapters::SessionAdapter
+  def initialize(@db : DB::Database)
   end
 
   def get(session_id : String, key : String) : String?
-    @database_connection.query_one?("SELECT value FROM sessions WHERE session_id = ? AND key = ?", session_id, key, as: String)
+    @db.query_one?("SELECT value FROM sessions WHERE session_id = ? AND key = ?", 
+                   session_id, key, as: String)
   end
 
   def set(session_id : String, key : String, value : String) : Nil
-    @database_connection.exec("INSERT OR REPLACE INTO sessions (session_id, key, value) VALUES (?, ?, ?)", session_id, key, value)
+    @db.exec("INSERT OR REPLACE INTO sessions (session_id, key, value, expires_at) VALUES (?, ?, ?, ?)",
+             session_id, key, value, Time.utc + 1.hour)
   end
 
-  # ... implement other abstract methods
-end
+  def delete(session_id : String, key : String) : Nil
+    @db.exec("DELETE FROM sessions WHERE session_id = ? AND key = ?", session_id, key)
+  end
 
-# Register your adapter
-Amber::Adapters::AdapterFactory.register_session_adapter("database") do
-  MyCustomSessionAdapter.new(MyDB.connection)
+  def destroy(session_id : String) : Nil
+    @db.exec("DELETE FROM sessions WHERE session_id = ?", session_id)
+  end
+
+  def exists?(session_id : String) : Bool
+    @db.query_one("SELECT COUNT(*) FROM sessions WHERE session_id = ?", 
+                  session_id, as: Int32) > 0
+  end
+
+  def keys(session_id : String) : Array(String)
+    @db.query_all("SELECT key FROM sessions WHERE session_id = ?", 
+                  session_id, as: String)
+  end
+
+  def values(session_id : String) : Array(String)
+    @db.query_all("SELECT value FROM sessions WHERE session_id = ?", 
+                  session_id, as: String)
+  end
+
+  def to_hash(session_id : String) : Hash(String, String)
+    result = Hash(String, String).new
+    @db.query_each("SELECT key, value FROM sessions WHERE session_id = ?", session_id) do |rs|
+      result[rs.read(String)] = rs.read(String)
+    end
+    result
+  end
+
+  def empty?(session_id : String) : Bool
+    @db.query_one("SELECT COUNT(*) FROM sessions WHERE session_id = ?", 
+                  session_id, as: Int32) == 0
+  end
+
+  def expire(session_id : String, seconds : Int32) : Nil
+    expires_at = Time.utc + seconds.seconds
+    @db.exec("UPDATE sessions SET expires_at = ? WHERE session_id = ?", 
+             expires_at, session_id)
+  end
+
+  def batch_set(session_id : String, data : Hash(String, String)) : Nil
+    @db.transaction do |tx|
+      data.each do |key, value|
+        tx.connection.exec("INSERT OR REPLACE INTO sessions (session_id, key, value, expires_at) VALUES (?, ?, ?, ?)",
+                          session_id, key, value, Time.utc + 1.hour)
+      end
+    end
+  end
 end
 ```
 
-#### **Creating a Custom PubSub Adapter**
+### Custom PubSub Adapter
 
-```crystal  
-# src/my_custom_pubsub_adapter.cr
-class MyCustomPubSubAdapter < Amber::Adapters::PubSubAdapter
-  def initialize(@message_queue : MyMQ::Client)
+```crystal
+# src/adapters/redis_pubsub_adapter.cr
+require "redis"
+
+class RedisPubSubAdapter < Amber::Adapters::PubSubAdapter
+  def initialize(@redis : Redis)
+    @subscriptions = Hash(String, (String, JSON::Any) -> Nil).new
+    @subscriber = Redis.new(url: @redis.url)
+    spawn { listen_for_messages }
   end
 
-  def publish(topic : String, sender_id : String, message : JSON::Any) : Nil
-    @message_queue.publish(topic, {sender_id: sender_id, message: message}.to_json)
+  def publish(topic : String, message : JSON::Any) : Nil
+    @redis.publish(topic, message.to_json)
   end
 
   def subscribe(topic : String, &block : (String, JSON::Any) -> Nil) : Nil
-    @message_queue.subscribe(topic) do |msg|
-      data = JSON.parse(msg)
-      block.call(data["sender_id"].as_s, data["message"])
-    end
+    @subscriptions[topic] = block
+    @subscriber.subscribe(topic)
   end
 
-  # ... implement other abstract methods
+  def unsubscribe(topic : String) : Nil
+    @subscriptions.delete(topic)
+    @subscriber.unsubscribe(topic)
+  end
+
+  def unsubscribe_all : Nil
+    @subscriptions.clear
+    @subscriber.unsubscribe
+  end
+
+  def close : Nil
+    @subscriber.close
+    @redis.close
+  end
+
+  private def listen_for_messages
+    @subscriber.subscribe do |on|
+      on.message do |channel, message|
+        if callback = @subscriptions[channel]?
+          begin
+            json_message = JSON.parse(message)
+            callback.call(channel, json_message)
+          rescue JSON::ParseException
+            # Handle malformed messages
+          end
+        end
+      end
+    end
+  end
 end
-
-# Register your adapter
-Amber::Adapters::AdapterFactory.register_pubsub_adapter("messagequeue") do
-  MyCustomPubSubAdapter.new(MyMQ.client)
-end
 ```
 
----
+## Registering Custom Adapters
 
-## 📖 **Migration Guide**
+Register your custom adapters during application initialization:
 
-### **From Legacy Redis Sessions**
-
-#### **Before (Legacy)**
-```yaml
-# Only worked with Redis
-session:
-  store: "redis"
-  key: "myapp.session"
-  expires: 3600
-```
-
-#### **After (New System)**
-```yaml
-# Works with any adapter
-session:
-  adapter: "redis"      # or "memory" or your custom adapter
-  key: "myapp.session"
-  expires: 3600
-```
-
-### **From Legacy WebSocket PubSub**
-
-#### **Before (Legacy)**
 ```crystal
-# Hardcoded Redis usage
-Amber::Server.configure do |settings|
-  settings.pubsub_adapter = Amber::WebSockets::Adapters::RedisAdapter
+# config/application.cr or src/your_app.cr
+
+# Register custom session adapter
+Amber::Adapters::AdapterFactory.register_session_adapter("database") do
+  DatabaseSessionAdapter.new(MyApp.database)
+end
+
+# Register custom pub/sub adapter  
+Amber::Adapters::AdapterFactory.register_pubsub_adapter("redis") do
+  redis = Redis.new(url: ENV["REDIS_URL"])
+  RedisPubSubAdapter.new(redis)
 end
 ```
 
-#### **After (New System)**
+## Migration from Legacy Redis
+
+If you were previously using Redis with Amber, here's how to migrate:
+
+### 1. Remove Redis Dependencies
+
+Remove Redis from your `shard.yml`:
+
 ```yaml
-# Configuration-driven approach
-pubsub:
-  adapter: "redis"  # or "memory" or your custom adapter
+# Remove this from dependencies:
+# redis:
+#   github: stefanwille/crystal-redis
+#   version: "~> 2.9.1"
 ```
 
----
+### 2. Update Configuration
 
-## 🚀 **Benefits Achieved**
+Replace Redis session configuration:
 
-### **✅ Flexibility**
-- Choose the best storage backend for your needs
-- Switch adapters without code changes
-- Support for custom implementations
+```yaml
+# OLD (remove):
+session:
+  key: "myapp.session"
+  store: "redis"  # Remove this
+  expires: 3600
 
-### **✅ No Hard Dependencies**
-- Framework works without Redis installed
-- Redis is now truly optional
-- Reduced deployment complexity
-
-### **✅ Better Testing**
-- In-memory adapters for fast testing
-- No external dependencies in test suite
-- Easier CI/CD pipelines
-
-### **✅ Production Ready**
-- All existing Redis functionality preserved
-- Backward compatibility maintained
-- Performance optimizations retained
-
----
-
-## 🏗️ **Architecture Overview**
-
-### **Core Interfaces**
-
-```
-Amber::Adapters::SessionAdapter (Abstract)
-├── MemorySessionAdapter (Built-in, Default)
-└── RedisSessionAdapter (Conditional, when -Dredis)
-
-Amber::Adapters::PubSubAdapter (Abstract)  
-├── MemoryPubSubAdapter (Built-in, Default)
-└── RedisPubSubAdapter (Conditional, when -Dredis)
-
-Amber::Adapters::AdapterFactory (Registry)
-└── Manages adapter registration and instantiation
+# NEW:
+session:
+  key: "myapp.session"
+  store: "signed_cookie"
+  expires: 3600
+  adapter: "memory"  # Or your custom adapter
 ```
 
-### **Configuration Flow**
+### 3. Custom Redis Implementation (Optional)
 
-```
-1. Application loads configuration (YAML)
-2. Settings parse adapter names from config
-3. AdapterFactory creates adapter instances
-4. Framework uses adapters through abstract interfaces
-5. Zero knowledge of concrete implementations
-```
+If you need Redis functionality, implement a custom adapter as shown above and register it in your application.
 
----
+## Benefits
 
-## 🧪 **Testing**
+### 1. **No External Dependencies**
+- Framework works out-of-the-box with no Redis installation required
+- Simplified deployment and development setup
+- Reduced attack surface and dependency management
 
-### **All Adapters Tested**
+### 2. **Framework Agnostic**
+- Choose any storage backend (Redis, PostgreSQL, MongoDB, etc.)
+- Mix and match different adapters for different environments
+- Easy to test with in-memory adapters
+
+### 3. **Performance Optimized**
+- Memory adapters provide excellent performance for development
+- Production adapters can be optimized for specific use cases
+- No network overhead for local development
+
+### 4. **Clean Architecture**
+- Clear separation of concerns
+- Easy to understand and maintain
+- Follows SOLID principles
+
+## Testing
+
+The framework includes comprehensive tests for all adapter implementations:
+
 ```bash
 # Run all adapter tests
 crystal spec spec/amber/adapters/
 
-# Test specific adapters
+# Run specific adapter tests
 crystal spec spec/amber/adapters/memory_session_adapter_spec.cr
 crystal spec spec/amber/adapters/memory_pubsub_adapter_spec.cr
 crystal spec spec/amber/adapters/adapter_factory_spec.cr
 ```
 
-### **Test Both Modes**
-```bash
-# Test without Redis
-crystal build src/amber.cr --no-codegen
+Test your custom adapters by inheriting from the provided test suites:
 
-# Test with Redis  
-crystal build src/amber.cr --no-codegen -Dredis
+```crystal
+# spec/adapters/database_session_adapter_spec.cr
+require "../../spec_helper"
+
+describe DatabaseSessionAdapter do
+  adapter = DatabaseSessionAdapter.new(test_database)
+  
+  # Include shared examples for SessionAdapter compliance
+  it_behaves_like "a session adapter", adapter
+end
 ```
 
----
+## Important Notes
 
-## ⚠️ **Important Notes**
+1. **Breaking Change**: This is a breaking change that removes all Redis dependencies. Applications relying on Redis must implement custom adapters.
 
-### **Compilation Flags**
-- **Without `-Dredis`**: Only memory adapters available
-- **With `-Dredis`**: Both memory and Redis adapters available
+2. **Memory Limitations**: The default memory adapters store data in process memory. For production applications with multiple server instances, consider implementing persistent adapters.
 
-### **Legacy Support**
-- Old Redis session stores still work but are deprecated
-- Old WebSocket Redis adapters still work but are deprecated  
-- Migration to new system recommended for new projects
+3. **Session Distribution**: Memory sessions are not shared across server instances. Use a persistent adapter (database, Redis, etc.) for distributed applications.
 
-### **Environment Variables**
-- `REDIS_URL` still used by Redis adapters when available
-- Falls back to `"redis://localhost:6379"` if not set
+4. **WebSocket Scaling**: Memory pub/sub only works within a single process. Implement a distributed pub/sub adapter for multi-server WebSocket applications.
 
----
+5. **Configuration Migration**: Update your configuration files to use the new `adapter` keys instead of the legacy `store: "redis"` configuration.
 
-## 📝 **Files Modified/Created**
+## Summary
 
-### **New Adapter System**
-- `src/amber/adapters/session_adapter.cr` - Abstract session interface
-- `src/amber/adapters/pubsub_adapter.cr` - Abstract pub/sub interface
-- `src/amber/adapters/memory_session_adapter.cr` - Memory session implementation
-- `src/amber/adapters/memory_pubsub_adapter.cr` - Memory pub/sub implementation
-- `src/amber/adapters/redis_session_adapter.cr` - Redis session implementation (conditional)
-- `src/amber/adapters/redis_pubsub_adapter.cr` - Redis pub/sub implementation (conditional)
-- `src/amber/adapters/adapter_factory.cr` - Adapter registration system
-- `src/amber/adapters.cr` - Module entry point
+The Redis dependency removal is complete! The Amber framework now provides:
 
-### **Configuration Updates**
-- `src/amber/environment/settings.cr` - Added adapter configuration support
-- `src/amber/router/session/adapter_session_store.cr` - New adapter-based session store
-- `src/amber/router/session/session_store.cr` - Updated to support adapters
-- `src/amber/server/server.cr` - Added adapter initialization
+- ✅ Clean adapter interfaces for extensibility
+- ✅ Memory-based default implementations  
+- ✅ No external dependencies required
+- ✅ Simple configuration system
+- ✅ Comprehensive test coverage
+- ✅ Documentation for custom adapter development
 
-### **Conditional Redis Support**
-- `src/amber.cr` - Removed hard Redis require
-- `src/amber/router/session/redis_store.cr` - Made conditional
-- `src/amber/websockets/adapters/redis.cr` - Made conditional
-- `src/amber/websockets/channel.cr` - Made Redis references conditional
-
-### **Comprehensive Tests**
-- `spec/amber/adapters/adapter_interfaces_spec.cr`
-- `spec/amber/adapters/memory_session_adapter_spec.cr`
-- `spec/amber/adapters/memory_pubsub_adapter_spec.cr`
-- `spec/amber/adapters/adapter_factory_spec.cr`
-- `spec/amber/adapters/adapter_session_store_spec.cr`
-
----
-
-## 🎉 **Refactor Complete!**
-
-The Amber framework has been successfully refactored to remove direct Redis dependency while maintaining full backward compatibility and adding powerful new adapter capabilities. Users can now choose the best storage backend for their specific needs, from simple in-memory solutions to distributed Redis deployments and everything in between. 
+The framework is now more flexible, easier to deploy, and simpler to understand while maintaining full functionality through the adapter system. 

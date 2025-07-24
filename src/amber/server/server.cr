@@ -5,11 +5,7 @@ module Amber
   class Server
     Log = ::Log.for(self)
     include Amber::DSL::Server
-    {% if flag?(:redis) %}
-      alias WebSocketAdapter = WebSockets::Adapters::RedisAdapter.class | WebSockets::Adapters::MemoryAdapter.class
-    {% else %}
-      alias WebSocketAdapter = WebSockets::Adapters::MemoryAdapter.class
-    {% end %}
+    alias WebSocketAdapter = WebSockets::Adapters::MemoryAdapter.class
     property pubsub_adapter : WebSocketAdapter = WebSockets::Adapters::MemoryAdapter
     property adapter_based_pubsub : Amber::Adapters::PubSubAdapter? = nil
     getter handler = Pipe::Pipeline.new

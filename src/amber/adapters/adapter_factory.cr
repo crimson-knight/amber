@@ -3,12 +3,6 @@ require "./pubsub_adapter"
 require "./memory_session_adapter"
 require "./memory_pubsub_adapter"
 
-# Conditionally require Redis adapters if available
-{% if flag?(:redis) %}
-  require "./redis_session_adapter"
-  require "./redis_pubsub_adapter"
-{% end %}
-
 module Amber::Adapters
   # Factory for creating adapter instances based on configuration.
   #
@@ -20,11 +14,9 @@ module Amber::Adapters
   #
   # ### Session Adapters
   # - `"memory"` - MemorySessionAdapter (default, always available)
-  # - `"redis"` - RedisSessionAdapter (available when `redis` shard is installed)
   #
   # ### PubSub Adapters  
   # - `"memory"` - MemoryPubSubAdapter (default, always available)
-  # - `"redis"` - RedisPubSubAdapter (available when `redis` shard is installed)
   #
   # ## Usage
   #
@@ -34,12 +26,12 @@ module Amber::Adapters
   # pubsub_adapter = AdapterFactory.create_pubsub_adapter("memory")
   #
   # # Registering custom adapters
-  # AdapterFactory.register_session_adapter("custom") do
-  #   CustomSessionAdapter.new
+  # AdapterFactory.register_session_adapter("database") do
+  #   DatabaseSessionAdapter.new(MyDB.connection)
   # end
   #
-  # AdapterFactory.register_pubsub_adapter("custom") do  
-  #   CustomPubSubAdapter.new
+  # AdapterFactory.register_pubsub_adapter("redis") do  
+  #   RedisPubSubAdapter.new(Redis.new)
   # end
   # ```
   class AdapterFactory
@@ -61,15 +53,6 @@ module Amber::Adapters
       
       # Register built-in pub/sub adapters
       @@pubsub_adapters["memory"] = ->{ MemoryPubSubAdapter.new.as(PubSubAdapter) }
-      
-      # Conditionally register Redis adapters if available
-      {% if @type.has_constant?("RedisSessionAdapter") %}
-        @@session_adapters["redis"] = ->{ RedisSessionAdapter.new.as(SessionAdapter) }
-      {% end %}
-      
-      {% if @type.has_constant?("RedisPubSubAdapter") %}
-        @@pubsub_adapters["redis"] = ->{ RedisPubSubAdapter.new.as(PubSubAdapter) }
-      {% end %}
       
       @@initialized = true
     end

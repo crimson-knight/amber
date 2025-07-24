@@ -22,11 +22,8 @@ module Amber
     # end
     # ```
     abstract class Channel
-      {% if flag?(:redis) %}
-        @@adapter : WebSockets::Adapters::RedisAdapter? | WebSockets::Adapters::MemoryAdapter?
-      {% else %}
-        @@adapter : WebSockets::Adapters::MemoryAdapter?
-      {% end %}
+      @@adapter : Amber::Adapters::PubSubAdapter?
+      @@legacy_adapter : WebSockets::Adapters::MemoryAdapter?
       @topic_path : String
 
       abstract def handle_message(client_socket, msg)
@@ -48,6 +45,8 @@ module Amber
       protected def adapter
         if pubsub_adapter = @@adapter
           pubsub_adapter
+        elsif legacy_adapter = @@legacy_adapter
+          legacy_adapter
         else
           setup_pubsub_adapter
         end
@@ -65,7 +64,14 @@ module Amber
 
       # Sends *message* to the pubsub service
       protected def dispatch(client_socket, message)
-        adapter.publish(@topic_path, client_socket, message)
+        if adapter = @@adapter
+          adapter.publish(@topic_path, client_socket.id, message)
+        elsif legacy_adapter = @@legacy_adapter
+          legacy_adapter.publish(@topic_path, client_socket, message)
+        else
+          setup_pubsub_adapter
+          dispatch(client_socket, message)
+        end
       end
 
       # Rebroadcast this message to all subscribers of the channel
@@ -75,16 +81,22 @@ module Amber
         subscribers.each_value(&.socket.send(message.to_json))
       end
 
-      # Ensure the pubsub adapter instance exists, and set up the on_message proc callback
+      # Ensure the pubsub adapter instance exists, and set up the message callback
       protected def setup_pubsub_adapter
-        @@adapter = Amber::Server.pubsub_adapter
-        if pubsub_adapter = @@adapter
-          pubsub_adapter.on_message(@topic_path, Proc(String, JSON::Any, Nil).new { |client_socket_id, message|
+        # Try to get the new adapter-based pub/sub first
+        if adapter_based_pubsub = Amber::Server.instance.adapter_based_pubsub
+          @@adapter = adapter_based_pubsub
+          @@adapter.not_nil!.subscribe(@topic_path) do |sender_id, message|
+            self.on_message(sender_id, message)
+          end
+          @@adapter.not_nil!
+        else
+          # Fall back to legacy adapter
+          @@legacy_adapter = Amber::Server.pubsub_adapter.as(WebSockets::Adapters::MemoryAdapter)
+          @@legacy_adapter.not_nil!.on_message(@topic_path, Proc(String, JSON::Any, Nil).new { |client_socket_id, message|
             self.on_message(client_socket_id, message)
           })
-          pubsub_adapter
-        else
-          raise "Invalid @@adapter on Amber::WebSockets::Channel"
+          @@legacy_adapter.not_nil!
         end
       end
     end
