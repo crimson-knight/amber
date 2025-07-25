@@ -38,37 +38,7 @@ Read Amber documentation on https://docs.amberframework.org/amber
 
 ## Installation & Usage
 
-#### Homebrew (macOS/Linux)
-
-```
-brew install amber
-```
-
-#### Linux
-
-Currently, the only option to install on Linux is from source. At the time of this writing, v1.4.1 is the current stable release, but you should use the most recent tag in place of that.
-
-```
-sudo apt-get install libreadline-dev libsqlite3-dev libpq-dev libmysqlclient-dev libssl-dev libyaml-dev libpcre3-dev libevent-dev
-git clone https://github.com/amberframework/amber.git
-cd amber
-git checkout v1.4.1
-shards install
-make
-sudo make install
-```
-
-If you're using ArchLinux or similar distro try:
-
-```
-yay -S amber
-```
-
-#### Common
-
-To compile a local `bin/amber` per project use `shards build amber`
-
-To use it as dependency, add this to your application's `shard.yml`:
+Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
@@ -77,10 +47,6 @@ dependencies:
 ```
 
 [Read Amber quick start guide](https://docs.amberframework.org/amber/getting-started)
-
-[Read Amber CLI commands usage](https://docs.amberframework.org/amber/cli)
-
-[Read more about Amber CLI installation guide](https://docs.amberframework.org/amber/guides/installation)
 
 ## Have an Amber-based Project?
 
@@ -96,7 +62,7 @@ Use Amber badge
 - Test and release all dependencies
 - Test everything locally
 - Run `crelease 0.36.0`
-- repoint amber to master branch in `src/amber/cli/templates/app/shard.yml.ecr` template
+- ensure all documentation is updated
 - update release notes
 - update homebrew version and sha
 - update linux repositories
