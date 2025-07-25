@@ -38,9 +38,7 @@ module Amber::Router::Session
     end
 
     def [](key : String | Symbol)
-      value = adapter.get(session_id, key.to_s)
-      return value if value
-      raise KeyError.new "Missing hash key: #{key.inspect}"
+      adapter.get(session_id, key.to_s)
     end
 
     def []?(key : String | Symbol)
@@ -88,11 +86,8 @@ module Amber::Router::Session
     def set_session
       cookies.encrypted.set(key, session_id, expires: expires_at, http_only: true)
 
-      # Use batch operations for efficiency
-      adapter.batch do |batch|
-        batch.set(key, session_id)
-        batch.expire(@expires) if @expires > 0
-      end
+      # Set expiration on the session
+      adapter.expire(session_id, @expires) if @expires > 0
     end
 
     def expires_at

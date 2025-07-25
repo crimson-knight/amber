@@ -35,10 +35,24 @@ module Amber
 
       def initialize(@topic_path); end
 
+      # Called when a socket subscribes to a channel
+      def subscribe_to_channel(client_socket, message)
+        handle_joined(client_socket, message)
+      end
+
+      # Called when a socket unsubscribes from a channel
+      def unsubscribe_from_channel(client_socket)
+        handle_leave(client_socket)
+      end
+
       # Called from proc when message is returned from the pubsub service
-      def on_message(client_socket_id, message)
-        client_socket = ClientSockets.client_sockets[client_socket_id]?
-        handle_message(client_socket, message)
+      # This is a class method that handles message dispatch to instances
+      def self.on_message(topic_path : String, client_socket_id : String, message : JSON::Any)
+        if client_socket = ClientSockets.client_sockets[client_socket_id]?
+          # Create a temporary channel instance to handle the message
+          channel = new(topic_path)
+          channel.handle_message(client_socket, message)
+        end
       end
 
       # Helper method for retrieving the adapter not nillable
@@ -52,14 +66,47 @@ module Amber
         end
       end
 
-      # Called when a socket subscribes to a channel
-      protected def subscribe_to_channel(client_socket, message)
-        handle_joined(client_socket, message)
+      # Sends *message* to all subscribing clients belonging to this channel
+      # by using the rebroadcast functionality that sends to all subscribers
+      def broadcast!(message, topic = @topic_path)
+        rebroadcast!(message)
       end
 
-      # Called when a socket unsubscribes from a channel
-      protected def unsubscribe_from_channel(client_socket)
-        handle_leave(client_socket)
+      def rebroadcast!(message, topic = @topic_path)
+        case message
+        when Hash
+          # Use the existing rebroadcast functionality for hash messages
+          internal_rebroadcast!(message)
+        else
+          # For other message types, convert to the expected format
+          formatted_message = {
+            "event" => "message",
+            "topic" => topic,
+            "payload" => message
+          }
+          internal_rebroadcast!(formatted_message)
+        end
+      end
+
+      # Ensures the pubsub adapter instance exists, and sets up the message callback
+      protected def setup_pubsub_adapter
+        # Try to get the new adapter-based pub/sub first
+        if adapter_based_pubsub = Amber::Server.instance.adapter_based_pubsub
+          @@adapter = adapter_based_pubsub
+          # Subscribe with a class-level callback
+          @@adapter.not_nil!.subscribe(@topic_path) do |sender_id, message|
+            # Call the class method to handle message dispatching
+            self.class.on_message(@topic_path, sender_id, message)
+          end
+          @@adapter.not_nil!
+        else
+          # Fall back to legacy adapter
+          @@legacy_adapter = Amber::Server.pubsub_adapter.as(WebSockets::Adapters::MemoryAdapter)
+          @@legacy_adapter.not_nil!.on_message(@topic_path, ->(client_socket_id : String, message : JSON::Any) {
+            self.class.on_message(@topic_path, client_socket_id, message)
+          })
+          @@legacy_adapter.not_nil!
+        end
       end
 
       # Sends *message* to the pubsub service
@@ -76,28 +123,9 @@ module Amber
 
       # Rebroadcast this message to all subscribers of the channel
       # example message: {"event" => "message", "topic" => "rooms:123", "subject" => "msg:new", "payload" => {"message" => "hello"}}
-      protected def rebroadcast!(message)
+      protected def internal_rebroadcast!(message)
         subscribers = ClientSockets.get_subscribers_for_topic(message["topic"])
         subscribers.each_value(&.socket.send(message.to_json))
-      end
-
-      # Ensure the pubsub adapter instance exists, and set up the message callback
-      protected def setup_pubsub_adapter
-        # Try to get the new adapter-based pub/sub first
-        if adapter_based_pubsub = Amber::Server.instance.adapter_based_pubsub
-          @@adapter = adapter_based_pubsub
-          @@adapter.not_nil!.subscribe(@topic_path) do |sender_id, message|
-            self.on_message(sender_id, message)
-          end
-          @@adapter.not_nil!
-        else
-          # Fall back to legacy adapter
-          @@legacy_adapter = Amber::Server.pubsub_adapter.as(WebSockets::Adapters::MemoryAdapter)
-          @@legacy_adapter.not_nil!.on_message(@topic_path, Proc(String, JSON::Any, Nil).new { |client_socket_id, message|
-            self.on_message(client_socket_id, message)
-          })
-          @@legacy_adapter.not_nil!
-        end
       end
     end
   end

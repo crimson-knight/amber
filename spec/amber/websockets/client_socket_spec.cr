@@ -9,7 +9,7 @@ module Amber
     describe "#channel" do
       it "should add channels" do
         UserSocket.channels[0][:path].should eq "user_room:*"
-        UserSocket.channels[0][:channel].should be_a UserChannel
+        UserSocket.channels[0][:channel_class].should eq UserChannel
       end
     end
 

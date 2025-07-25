@@ -41,6 +41,10 @@ module Amber::Adapters
     # Registry for pub/sub adapter factories  
     @@pubsub_adapters = Hash(String, Proc(PubSubAdapter)).new
 
+    # Singleton instances for memory adapters
+    @@memory_session_adapter : MemorySessionAdapter?
+    @@memory_pubsub_adapter : MemoryPubSubAdapter?
+
     # Initialize with built-in adapters
     @@initialized = false
 
@@ -48,11 +52,17 @@ module Amber::Adapters
     private def self.ensure_initialized
       return if @@initialized
       
-      # Register built-in session adapters
-      @@session_adapters["memory"] = ->{ MemorySessionAdapter.new.as(SessionAdapter) }
+      # Register built-in session adapters with singleton pattern
+      @@session_adapters["memory"] = ->{ 
+        @@memory_session_adapter ||= MemorySessionAdapter.new
+        @@memory_session_adapter.not_nil!.as(SessionAdapter)
+      }
       
-      # Register built-in pub/sub adapters
-      @@pubsub_adapters["memory"] = ->{ MemoryPubSubAdapter.new.as(PubSubAdapter) }
+      # Register built-in pub/sub adapters with singleton pattern
+      @@pubsub_adapters["memory"] = ->{ 
+        @@memory_pubsub_adapter ||= MemoryPubSubAdapter.new
+        @@memory_pubsub_adapter.not_nil!.as(PubSubAdapter)
+      }
       
       @@initialized = true
     end

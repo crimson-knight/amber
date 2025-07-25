@@ -62,14 +62,12 @@ describe Amber::Router::Session::AdapterSessionStore do
         store["key1"]?.should eq("value1")
       end
 
-      it "raises KeyError for non-existent keys with []" do
+      it "returns nil for non-existent keys with []" do
         adapter = Amber::Adapters::MemorySessionAdapter.new
         cookies = MockCookiesStore.new
         store = Amber::Router::Session::AdapterSessionStore.new(adapter, cookies, "test.session", 3600)
         
-        expect_raises(KeyError, /Missing hash key: "key1"/) do
-          store["key1"]
-        end
+        store["key1"].should be_nil
       end
 
       it "deletes keys" do

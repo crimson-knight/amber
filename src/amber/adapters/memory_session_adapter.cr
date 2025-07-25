@@ -167,7 +167,7 @@ module Amber::Adapters
     end
 
     # Performs bulk operations atomically
-    def batch(session_id : String, &block : BatchOperations ->)
+    def batch(session_id : String, &block : BatchOperations ->) : Nil
       @mutex.synchronize do
         operations = BatchOperations.new(session_id, self)
         yield operations
@@ -239,19 +239,19 @@ module Amber::Adapters
     end
 
     # Helper class for batch operations
-    class BatchOperations
+    class BatchOperations < Amber::Adapters::SessionBatchOperations
       def initialize(@session_id : String, @adapter : MemorySessionAdapter)
       end
 
-      def set(key : String, value : String)
+      def set(key : String, value : String) : Nil
         @adapter.unsafe_set(@session_id, key, value)
       end
 
-      def delete(key : String)
+      def delete(key : String) : Nil
         @adapter.unsafe_delete(@session_id, key)
       end
 
-      def expire(seconds : Int32)
+      def expire(seconds : Int32) : Nil
         @adapter.unsafe_expire(@session_id, seconds)
       end
     end

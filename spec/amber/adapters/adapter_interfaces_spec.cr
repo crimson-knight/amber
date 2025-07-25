@@ -40,6 +40,9 @@ class TestSessionAdapter < Amber::Adapters::SessionAdapter
 
   def batch_set(session_id : String, hash : Hash(String, String)) : Nil
   end
+
+  def batch(session_id : String, &block : Amber::Adapters::SessionBatchOperations ->) : Nil
+  end
 end
 
 class TestPubSubAdapter < Amber::Adapters::PubSubAdapter

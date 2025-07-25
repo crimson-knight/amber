@@ -29,6 +29,7 @@ module Amber
 
       def get_subscribers_for_topic(topic)
         @@client_sockets.select do |_, client_socket|
+          # Check if the client socket is subscribed to this specific topic
           client_socket.subscribed_to_topic?(topic.to_s)
         end
       end

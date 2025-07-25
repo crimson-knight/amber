@@ -65,6 +65,10 @@ module Amber::Adapters
     # This should be atomic where possible to maintain session consistency.
     abstract def batch_set(session_id : String, hash : Hash(String, String)) : Nil
     
+    # Provides a way to perform multiple operations in a single atomic block.
+    # This is useful for adapters that support pipelining or transactions.
+    abstract def batch(session_id : String, &block : SessionBatchOperations ->) : Nil
+    
     # Optional lifecycle methods with default implementations
     
     # Called when the adapter is being shut down.
@@ -78,5 +82,11 @@ module Amber::Adapters
     def healthy? : Bool
       true
     end
+  end
+
+  abstract class SessionBatchOperations
+    abstract def set(key : String, value : String) : Nil
+    abstract def delete(key : String) : Nil
+    abstract def expire(seconds : Int32) : Nil
   end
 end 
