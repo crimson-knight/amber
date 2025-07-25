@@ -19,7 +19,8 @@ module Amber
     abstract struct ClientSocket
       Log = ::Log.for(self)
 
-      @@channels = [] of NamedTuple(path: String, channel: Channel)
+      # Store channel classes (not instances) at class level
+      @@registered_channel_classes = Array(NamedTuple(path: String, channel_class: Channel.class)).new
 
       MAX_SOCKET_IDLE_TIME = 100.seconds
       BEAT_INTERVAL        = 30.seconds
@@ -33,19 +34,27 @@ module Amber
       protected getter cookies : Amber::Router::Cookies::Store?
       private property pongs = Array(Time).new
       private property pings = Array(Time).new
+      
+      # Each socket instance has its own channels (instances created from registered classes)
+      property channels = Hash(String, Channel).new
 
-      # Add a channel for this socket to listen, publish to
-      def self.channel(channel_path, ch)
-        @@channels.push({path: channel_path, channel: ch.new(WebSockets.topic_path(channel_path))})
+      # Add a channel class for this socket type to register
+      def self.channel(channel_path, channel_class)
+        @@registered_channel_classes.push({path: channel_path, channel_class: channel_class})
       end
 
       def self.channels
-        @@channels
+        @@registered_channel_classes
       end
 
       def self.get_topic_channel(topic_path)
-        topic_channels = @@channels.select { |ch| WebSockets.topic_path(ch[:path]) == topic_path }
-        return topic_channels[0][:channel] if !topic_channels.empty?
+        topic_channels = @@registered_channel_classes.select { |ch| WebSockets.topic_path(ch[:path]) == topic_path }
+        return topic_channels[0][:channel_class].new(topic_path) if !topic_channels.empty?
+      end
+
+      # Helper method to get a channel instance for this socket
+      def get_channel(path : String) : Channel?
+        @channels[path]?
       end
 
       # Broadcast a message to all subscribers of the topic
@@ -54,7 +63,9 @@ module Amber
       # UserSocket.broadcast("message", "chats_room:1", "msg:new", {"message" => "test"})
       # ```
       def self.broadcast(event : String, topic : String, subject : String, payload : Hash)
-        if channel = get_topic_channel(WebSockets.topic_path(topic))
+        if channel_class = get_topic_channel(WebSockets.topic_path(topic))
+          # Create a temporary instance for broadcasting
+          channel = channel_class.class.new(WebSockets.topic_path(topic))
           channel.rebroadcast!({
             "event"   => event,
             "topic"   => topic,
@@ -69,6 +80,13 @@ module Amber
         @subscription_manager = SubscriptionManager.new
         @raw_params = @context.params
         @params = Amber::Validators::Params.new(@raw_params)
+        
+        # Instantiate channels for this socket from registered channel classes
+        @@registered_channel_classes.each do |channel_info|
+          topic_path = WebSockets.topic_path(channel_info[:path])
+          @channels[topic_path] = channel_info[:channel_class].new(topic_path)
+        end
+        
         @socket.on_pong do
           @pongs.push(Time.utc)
           @pongs.delete_at(0) if @pongs.size > 3

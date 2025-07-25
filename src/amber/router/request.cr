@@ -26,7 +26,19 @@ class HTTP::Request
   end
 
   def port
-    uri.port
+    # Try to extract port from the Host header first
+    if host_with_port = headers["Host"]?
+      if match = host_with_port.match(/.*:(\d+)/)
+        return match[1].to_i
+      end
+    end
+    
+    # Fall back to URI parsing if available
+    if resource.starts_with?("http://") || resource.starts_with?("https://")
+      URI.parse(resource).port
+    else
+      nil
+    end
   end
 
   def url
