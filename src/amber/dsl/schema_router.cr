@@ -1,17 +1,12 @@
-require "./schema_router"
-
+# Extension to Router DSL to support Schema annotations
 module Amber::DSL
-  record Pipeline, pipeline : Pipe::Pipeline do
-    def plug(pipe)
-      pipeline.plug pipe
-    end
-  end
-
-  # For now, always use the regular Router to maintain compatibility
-  # SchemaRouter can be used explicitly when needed
-    record Router, router : Amber::Router::Router, valve : Symbol, scope : Amber::Router::Scope do
+  # Extended Router that processes Schema annotations
+  # This is identical to the regular Router but adds Schema annotation processing
+  record SchemaRouter, router : Amber::Router::Router, valve : Symbol, scope : Amber::Router::Scope do
     RESOURCES = [:get, :post, :put, :patch, :delete, :options, :head, :trace, :connect]
 
+    # Enhanced route macro that works exactly like the regular router
+    # Schema annotation processing happens inside the controller
     macro route(verb, resource, controller, action, constraints = {} of String => Regex)
       %handler = ->(context : HTTP::Server::Context){
         controller = {{controller.id}}.new(context)
@@ -27,6 +22,20 @@ module Amber::DSL
       )
 
       router.add(%route)
+      
+      # Store route metadata for OpenAPI generation
+      store_route_metadata({{controller.id.stringify}}, {{action.id.stringify}}, %verb, {{resource}})
+    end
+    
+    # Store route metadata for OpenAPI documentation generation
+    private def store_route_metadata(controller_name : String, action_name : String, verb : String, path : String)
+      # This will be used by OpenAPI generator
+      Amber::Schema::RouteRegistry.add_route({
+        controller: controller_name,
+        action: action_name,
+        verb: verb,
+        path: path
+      })
     end
 
     macro namespace(scoped_namespace)
@@ -84,6 +93,33 @@ module Amber::DSL
 
     def websocket(path, app_socket)
       Amber::WebSockets::Server.create_endpoint(path, app_socket)
+    end
+  end
+end
+
+# Route registry for storing metadata
+module Amber::Schema
+  class RouteRegistry
+    class_property routes = [] of NamedTuple(controller: String, action: String, verb: String, path: String)
+    
+    def self.add_route(route_info)
+      @@routes << route_info unless @@routes.includes?(route_info)
+    end
+    
+    def self.clear
+      @@routes.clear
+    end
+    
+    def self.all
+      @@routes
+    end
+    
+    def self.find_by_controller(controller_name : String)
+      @@routes.select { |r| r[:controller] == controller_name }
+    end
+    
+    def self.find_by_action(controller_name : String, action_name : String)
+      @@routes.find { |r| r[:controller] == controller_name && r[:action] == action_name }
     end
   end
 end
