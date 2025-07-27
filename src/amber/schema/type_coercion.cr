@@ -22,13 +22,14 @@ module Amber::Schema
       "%Y-%m-%d %H:%M:%S %z",            # Common format with timezone
       "%Y-%m-%d %H:%M:%S.%L",            # Common format with milliseconds
       "%Y/%m/%d %H:%M:%S",               # Alternative format
-      "%d/%m/%Y %H:%M:%S",               # European format
+      "%Y-%m-%d",                        # Date only (unambiguous)
+      "%Y/%m/%d",                        # Date only with slashes (unambiguous)
       "%m/%d/%Y %H:%M:%S",               # American format
-      "%Y-%m-%d",                        # Date only
-      "%d-%m-%Y",                        # European date
+      "%d/%m/%Y %H:%M:%S",               # European format
       "%m-%d-%Y",                        # American date
-      "%d/%m/%Y",                        # European date with slashes
+      "%d-%m-%Y",                        # European date
       "%m/%d/%Y",                        # American date with slashes
+      "%d/%m/%Y",                        # European date with slashes
     ]
 
     # Main coercion method
@@ -251,9 +252,16 @@ module Amber::Schema
         TIME_FORMATS.each do |format|
           begin
             time = Time.parse(raw, format, Time::Location::UTC)
-            # Return the ISO8601 string representation
-            return JSON::Any.new(time.to_rfc3339)
+            # Validate the parsed time makes sense (year should be reasonable)
+            # This helps avoid issues like parsing "25-12-2023" as year 0025
+            if time.year >= 1000 && time.year <= 9999
+              # Return the ISO8601 string representation
+              return JSON::Any.new(time.to_rfc3339)
+            end
           rescue Time::Format::Error
+            # Continue to next format
+          rescue ArgumentError
+            # Invalid date (e.g., month 25)
             # Continue to next format
           end
         end
@@ -315,7 +323,12 @@ module Amber::Schema
           if parsed_array = parsed.as_a?
             coerce_to_array(parsed, element_type)
           else
-            nil
+            # Parsed as JSON but not an array, wrap it
+            if coerced = coerce(parsed, element_type)
+              JSON::Any.new([coerced])
+            else
+              nil
+            end
           end
         rescue
           # Not valid JSON, try comma-separated values for simple types

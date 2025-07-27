@@ -200,7 +200,7 @@ module Amber::Schema
 
       context "Array coercion" do
         it "keeps arrays and coerces elements" do
-          value = JSON::Any.new(["1", "2", "3"])
+          value = JSON::Any.new([JSON::Any.new("1"), JSON::Any.new("2"), JSON::Any.new("3")])
           result = TypeCoercion.coerce(value, "Array(Int32)")
           result.should_not be_nil
           array = result.not_nil!.as_a
@@ -237,7 +237,7 @@ module Amber::Schema
         end
 
         it "skips elements that can't be coerced" do
-          value = JSON::Any.new(["1", "invalid", "3"])
+          value = JSON::Any.new([JSON::Any.new("1"), JSON::Any.new("invalid"), JSON::Any.new("3")])
           result = TypeCoercion.coerce(value, "Array(Int32)")
           result.should_not be_nil
           array = result.not_nil!.as_a
@@ -249,7 +249,7 @@ module Amber::Schema
 
       context "Hash coercion" do
         it "keeps hashes and coerces values" do
-          value = JSON::Any.new({"a" => "1", "b" => "2"})
+          value = JSON::Any.new({"a" => JSON::Any.new("1"), "b" => JSON::Any.new("2")})
           result = TypeCoercion.coerce(value, "Hash(String, Int32)")
           result.should_not be_nil
           hash = result.not_nil!.as_h
@@ -267,7 +267,7 @@ module Amber::Schema
         end
 
         it "skips values that can't be coerced" do
-          value = JSON::Any.new({"a" => "1", "b" => "invalid", "c" => "3"})
+          value = JSON::Any.new({"a" => JSON::Any.new("1"), "b" => JSON::Any.new("invalid"), "c" => JSON::Any.new("3")})
           result = TypeCoercion.coerce(value, "Hash(String, Int32)")
           result.should_not be_nil
           hash = result.not_nil!.as_h

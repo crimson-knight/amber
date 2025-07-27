@@ -84,6 +84,8 @@ module Amber::Schema
     # Instance variables
     getter raw_data : Hash(String, JSON::Any)
     getter errors = [] of Error
+    # Storage for validated nested schema instances
+    @nested_schemas = {} of String => Definition
 
     def initialize(@raw_data : Hash(String, JSON::Any))
     end
@@ -141,7 +143,7 @@ module Amber::Schema
         {{field_name}},
         {{type_name}},
         {{required}},
-        {% if default %}JSON::Any.new({{default}}){% else %}nil{% end %},
+        {% if options.has_key?(:default) %}JSON::Any.new({{default}}){% else %}nil{% end %},
         {{source.id}}
       )
       
@@ -238,25 +240,24 @@ module Amber::Schema
       
       # Create typed getter for nested schema
       def {{name.id}}_schema : {{schema_class}}?
-        if data = @raw_data[{{field_name.stringify}}]?
-          if hash_data = data.as_h?
-            {{schema_class}}.new(hash_data)
-          end
-        end
+        @nested_schemas[{{field_name}}]?.try(&.as({{schema_class}}))
       end
       
       # Add nested schema validation
       @@validators << ::Amber::Schema::Validator::Custom.new do |context|
-        if data = context.data[{{field_name.stringify}}]?
+        if data = context.data[{{field_name}}]?
           if hash_data = data.as_h?
             nested_schema = {{schema_class}}.new(hash_data)
             nested_result = nested_schema.validate
             
-            if nested_result.failure?
+            if nested_result.success?
+              # Store the validated nested schema for later access
+              context.schema.@nested_schemas[{{field_name}}] = nested_schema
+            else
               nested_result.errors.each do |error|
                 # Prefix field name with parent field
                 prefixed_error = ::Amber::Schema::Error.new(
-                  "#{{{field_name.stringify}}}.#{error.field}",
+                  {{field_name}} + "." + error.field,
                   error.message || "Validation failed",
                   error.code,
                   error.details
@@ -317,7 +318,7 @@ module Amber::Schema
     # Define supported content types
     macro content_type(*types)
       {% for type in types %}
-        @@content_types << {{type.stringify}}
+        @@content_types << {{type}}
       {% end %}
     end
 
@@ -493,8 +494,28 @@ module Amber::Schema
     # Add a custom validator
     macro validate(method_name = nil, &block)
       {% if method_name %}
+        # For method-based validators, create a wrapper that calls the method
+        # The method is expected to add errors to @errors directly
         @@validators << ::Amber::Schema::Validator::Custom.new do |context|
-          self.new(context.data).{{method_name.id}}
+          # The context.schema is the actual instance being validated
+          # We need to call the method on it, but since it adds to @errors
+          # and those get transferred later, it should work
+          
+          # Save the error count before calling the method
+          error_count_before = context.schema.errors.size
+          
+          # Use a case statement to handle different schema types
+          case context.schema
+          when self
+            context.schema.as(self).{{method_name.id}}
+          else
+            # This shouldn't happen but handle gracefully
+          end
+          
+          # Check if new errors were added
+          error_count_after = context.schema.errors.size
+          
+          # The errors are already in @errors, they'll be handled by run_validators
         end
       {% else %}
         @@validators << Validator::Custom.new({{block}})
@@ -521,6 +542,9 @@ module Amber::Schema
     end
 
     private def validate_field_type(field_name : String, field_def : FieldDef, value : JSON::Any)
+      # Allow nil values for optional fields
+      return if value.raw.nil? && !field_def.required
+      
       # Use type coercion system for validation
       unless ::Amber::Schema::TypeCoercion.can_coerce?(value, field_def.type)
         error_info = ::Amber::Schema::TypeCoercion.coercion_error(field_name, value, field_def.type)
@@ -529,6 +553,9 @@ module Amber::Schema
     end
 
     private def validate_field_constraints(field_name : String, field_def : FieldDef, value : JSON::Any)
+      # Skip constraint validation for nil values
+      return if value.raw.nil?
+      
       # Validate based on options like min, max, format, etc.
       options = field_def.options
 
@@ -652,7 +679,11 @@ module Amber::Schema
         end
       when "url", "uri"
         begin
-          URI.parse(string_value)
+          uri = URI.parse(string_value)
+          # A valid URL should have at least a scheme and host
+          unless uri.scheme && uri.host && !uri.host.not_nil!.empty?
+            @errors << ::Amber::Schema::InvalidFormatError.new(field_name, "URL", string_value)
+          end
         rescue
           @errors << ::Amber::Schema::InvalidFormatError.new(field_name, "URL", string_value)
         end
@@ -716,6 +747,7 @@ module Amber::Schema
         @errors << error
       end
     end
+    
 
     private def validate_conditionals
       self.class.conditional_groups.each do |group|

@@ -1,0 +1,309 @@
+# Example of using Schema validation in Amber controllers
+require "../**"
+
+# Example schema definitions
+module MyApp
+  # Schema for creating a user
+  class CreateUserSchema < Amber::Schema::RequestSchema
+    def initialize(name : String)
+      super(name)
+      
+      # Define required fields
+      field :email, String, required: true
+      field :password, String, required: true
+      field :name, String, required: true
+      field :age, Int32, required: false
+      
+      # Add validators
+      validate :email, format: "email"
+      validate :password, min_length: 8, pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/
+      validate :name, min_length: 2, max_length: 100
+      validate :age, min: 13, max: 120
+    end
+  end
+  
+  # Schema for user response
+  class UserSchema < Amber::Schema::ResponseSchema
+    def initialize(name : String)
+      super(name)
+      
+      field :id, Int32, required: true
+      field :email, String, required: true
+      field :name, String, required: true
+      field :created_at, String, required: true
+    end
+  end
+  
+  # Schema for update user
+  class UpdateUserSchema < Amber::Schema::RequestSchema
+    def initialize(name : String)
+      super(name)
+      
+      field :email, String, required: false
+      field :name, String, required: false
+      field :password, String, required: false
+      
+      validate :email, format: "email"
+      validate :password, min_length: 8
+      validate :name, min_length: 2, max_length: 100
+    end
+  end
+end
+
+# Example 1: Using programmatic schema definition
+class UsersController < Amber::Controller::Base
+  include Amber::Schema::ControllerIntegration
+  
+  # Define schemas programmatically
+  schema :create do
+    field :email, String, required: true
+    field :password, String, required: true
+    field :name, String, required: true
+    
+    validate :email, format: "email"
+    validate :password, min_length: 8
+  end
+  
+  response_schema :create do
+    field :id, Int32, required: true
+    field :email, String, required: true
+    field :name, String, required: true
+    field :created_at, String, required: true
+  end
+  
+  # Enable validation for the create action
+  validate_schema :create
+  
+  def create
+    # request_data is automatically populated with validated data
+    if data = request_data
+      # Create user with validated data
+      user = User.create!(
+        email: data["email"].as_s,
+        password: data["password"].as_s,
+        name: data["name"].as_s
+      )
+      
+      # Respond with validated response
+      respond_with({
+        "id" => user.id,
+        "email" => user.email,
+        "name" => user.name,
+        "created_at" => user.created_at.to_s
+      }, status: 201)
+    end
+  end
+  
+  def index
+    users = User.all
+    
+    # Use respond_with for automatic response validation
+    respond_with({
+      "users" => users.map { |u| 
+        {
+          "id" => u.id,
+          "email" => u.email,
+          "name" => u.name,
+          "created_at" => u.created_at.to_s
+        }
+      },
+      "count" => users.size
+    })
+  end
+end
+
+# Example 2: Using annotation-based validation
+class AnnotatedUsersController < Amber::Controller::Base
+  include Amber::Schema::ControllerIntegration
+  
+  # Enable automatic validation from annotations
+  auto_validate
+  
+  @[Request(schema: MyApp::CreateUserSchema)]
+  @[Response(status: 201, schema: MyApp::UserSchema, description: "User created successfully")]
+  @[Response(status: 422, description: "Validation failed")]
+  def create
+    # request_data is automatically populated
+    if data = request_data
+      user = User.create!(
+        email: data["email"].as_s,
+        password: data["password"].as_s,
+        name: data["name"].as_s
+      )
+      
+      respond_with({
+        "id" => user.id,
+        "email" => user.email,
+        "name" => user.name,
+        "created_at" => user.created_at.to_s
+      }, status: 201)
+    end
+  end
+  
+  @[Request(schema: MyApp::UpdateUserSchema)]
+  @[Response(status: 200, schema: MyApp::UserSchema, description: "User updated successfully")]
+  @[PathParam(name: "id", type: "Int32", description: "User ID")]
+  def update
+    user_id = params[:id].to_i
+    user = User.find!(user_id)
+    
+    if data = request_data
+      # Update only provided fields
+      user.email = data["email"].as_s if data.has_key?("email")
+      user.name = data["name"].as_s if data.has_key?("name")
+      user.password = data["password"].as_s if data.has_key?("password")
+      user.save!
+      
+      respond_with({
+        "id" => user.id,
+        "email" => user.email,
+        "name" => user.name,
+        "created_at" => user.created_at.to_s
+      })
+    end
+  end
+  
+  @[QueryParam(name: "page", type: "Int32", required: false, default: 1, description: "Page number")]
+  @[QueryParam(name: "per_page", type: "Int32", required: false, default: 20, description: "Items per page")]
+  @[QueryParam(name: "search", type: "String", required: false, description: "Search term")]
+  @[Response(status: 200, description: "List of users")]
+  def index
+    # Query parameters are automatically validated and included in request_data
+    page = request_data.try(&.["page"]?).try(&.as_i) || 1
+    per_page = request_data.try(&.["per_page"]?).try(&.as_i) || 20
+    search = request_data.try(&.["search"]?).try(&.as_s)
+    
+    query = User.all
+    query = query.where("name LIKE ? OR email LIKE ?", "%#{search}%", "%#{search}%") if search
+    
+    users = query.limit(per_page).offset((page - 1) * per_page)
+    
+    respond_with({
+      "users" => users.map { |u| 
+        {
+          "id" => u.id,
+          "email" => u.email,
+          "name" => u.name,
+          "created_at" => u.created_at.to_s
+        }
+      },
+      "pagination" => {
+        "page" => page,
+        "per_page" => per_page,
+        "total" => query.count
+      }
+    })
+  end
+  
+  @[PathParam(name: "id", type: "Int32", description: "User ID")]
+  @[Response(status: 200, schema: MyApp::UserSchema, description: "User details")]
+  @[Response(status: 404, description: "User not found")]
+  def show
+    user_id = params[:id].to_i
+    
+    if user = User.find?(user_id)
+      respond_with({
+        "id" => user.id,
+        "email" => user.email,
+        "name" => user.name,
+        "created_at" => user.created_at.to_s
+      })
+    else
+      respond_with_error("User not found", status: 404)
+    end
+  end
+end
+
+# Example 3: Manual validation with custom handling
+class AdvancedUsersController < Amber::Controller::Base
+  include Amber::Schema::ControllerIntegration
+  
+  # Don't fail on validation errors, handle them manually
+  validate_schema :create, required: false
+  
+  def create
+    if validation_failed?
+      # Custom error handling
+      errors = validation_result.not_nil!.errors
+      
+      # Check for specific errors
+      if errors.any? { |e| e.field == "email" && e.code == "duplicate" }
+        respond_with_error("Email already exists", status: 409)
+      else
+        respond_with_errors(errors)
+      end
+    else
+      # Process validated data
+      data = request_data.not_nil!
+      
+      # Additional business logic validation
+      if User.exists?(email: data["email"].as_s)
+        respond_with_error("Email already registered", status: 409)
+        return
+      end
+      
+      user = User.create!(
+        email: data["email"].as_s,
+        password: data["password"].as_s,
+        name: data["name"].as_s
+      )
+      
+      respond_with({
+        "id" => user.id,
+        "email" => user.email,
+        "name" => user.name,
+        "created_at" => user.created_at.to_s
+      }, status: 201)
+    end
+  end
+  
+  # Using respond_with with different response structures
+  def profile
+    user = current_user
+    
+    # NamedTuple syntax for cleaner code
+    respond_with({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        profile: {
+          bio: user.bio,
+          avatar_url: user.avatar_url,
+          location: user.location
+        }
+      },
+      stats: {
+        posts_count: user.posts.count,
+        followers_count: user.followers.count,
+        following_count: user.following.count
+      }
+    })
+  end
+end
+
+# Example 4: WebSocket channel with schema validation
+class UserChannel < Amber::WebSockets::Channel
+  include Amber::Schema::ControllerIntegration
+  
+  schema :join do
+    field :user_id, Int32, required: true
+    field :auth_token, String, required: true
+  end
+  
+  def handle_joined(client_socket, message)
+    # Validate message data
+    result = validate_request("join")
+    
+    if result.failure?
+      client_socket.send({
+        event: "error",
+        data: {errors: result.errors.map(&.to_h)}
+      }.to_json)
+      return
+    end
+    
+    data = result.data.not_nil!
+    # Process validated data...
+  end
+end

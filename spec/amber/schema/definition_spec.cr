@@ -707,7 +707,10 @@ module Amber::Schema
 
     describe "type coercion" do
       it "coerces string to integer" do
-        data = {"age" => JSON::Any.new("30")}
+        data = {
+          "name" => JSON::Any.new("Test"),
+          "age" => JSON::Any.new("30")
+        }
         
         schema = SimpleSchema.new(data)
         result = schema.validate

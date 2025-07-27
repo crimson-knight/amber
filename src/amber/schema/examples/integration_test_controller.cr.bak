@@ -1,0 +1,220 @@
+# Integration test controller to verify Schema API integration with Amber
+require "../../controller/base"
+require "../**"
+
+# Test schema for creating a product
+class CreateProductSchema < Amber::Schema::RequestSchema
+  def initialize(name : String)
+    super(name)
+    
+    field :name, String, required: true
+    field :price, Float64, required: true
+    field :description, String, required: false
+    field :category, String, required: true
+    
+    validate :name, min_length: 3, max_length: 100
+    validate :price, min: 0.01
+    validate :category, enum: ["electronics", "clothing", "food", "books"]
+  end
+end
+
+# Test controller using both old and new validation approaches
+class TestProductsController < Amber::Controller::Base
+  # Test 1: Using old params validation (should still work)
+  def create_old_style
+    validation = params.validation do
+      required(:name) { |v| v.size >= 3 }
+      required(:price) { |v| v.to_f > 0 }
+      required(:category)
+      optional(:description)
+    end
+    
+    unless validation.valid?
+      response.status_code = 422
+      response.content_type = "application/json"
+      response.print({errors: validation.errors.map(&.message)}.to_json)
+      return
+    end
+    
+    # Access params the old way
+    product = {
+      name: params[:name],
+      price: params[:price].to_f,
+      category: params[:category],
+      description: params[:description]?
+    }
+    
+    response.status_code = 201
+    response.content_type = "application/json"
+    response.print({product: product}.to_json)
+  end
+  
+  # Test 2: Using programmatic schema definition
+  schema :create_programmatic do
+    field :name, String, required: true
+    field :price, Float64, required: true
+    field :description, String
+    field :category, String, required: true
+    
+    validate :name, min_length: 3
+    validate :price, min: 0.01
+    validate :category, enum: ["electronics", "clothing", "food", "books"]
+  end
+  
+  validate_schema :create_programmatic
+  
+  def create_programmatic
+    # Data is automatically validated
+    data = request_data.not_nil!
+    
+    product = {
+      name: data["name"].as_s,
+      price: data["price"].as_f,
+      category: data["category"].as_s,
+      description: data["description"]?.try(&.as_s)
+    }
+    
+    respond_with({"product" => product}, status: 201)
+  end
+  
+  # Test 3: Manual validation for custom error handling
+  validate_schema :create_manual, required: false
+  
+  def create_manual
+    if validation_failed?
+      # Custom error response
+      errors = validation_result.not_nil!.errors
+      custom_errors = errors.map do |error|
+        {
+          field: error.field,
+          message: "Invalid #{error.field}: #{error.message}"
+        }
+      end
+      
+      response.status_code = 400
+      response.content_type = "application/json"
+      response.print({custom_errors: custom_errors}.to_json)
+      return
+    end
+    
+    data = request_data.not_nil!
+    respond_with({"product" => data}, status: 201)
+  end
+  
+  # Test 4: Accessing both old and new params
+  def hybrid_access
+    # Access via new Schema API if validated
+    if request_data
+      name_from_schema = request_data.not_nil!["name"]?.try(&.as_s)
+    end
+    
+    # Access via old params (always available)
+    name_from_params = params[:name]?
+    
+    # Access via legacy_params explicitly
+    name_from_legacy = legacy_params[:name]?
+    
+    # Access raw params
+    name_from_raw = raw_params[:name]?
+    
+    response.content_type = "application/json"
+    response.print({
+      name_from_schema: name_from_schema,
+      name_from_params: name_from_params,
+      name_from_legacy: name_from_legacy,
+      name_from_raw: name_from_raw
+    }.to_json)
+  end
+end
+
+# Test controller with annotations
+class AnnotatedProductsController < Amber::Controller::Base
+  auto_validate
+  
+  @[Request(schema: CreateProductSchema)]
+  @[Response(status: 201, description: "Product created successfully")]
+  @[Response(status: 422, description: "Validation failed")]
+  def create
+    data = request_data.not_nil!
+    
+    product = {
+      id: Random.rand(1000),
+      name: data["name"].as_s,
+      price: data["price"].as_f,
+      category: data["category"].as_s,
+      description: data["description"]?.try(&.as_s),
+      created_at: Time.utc.to_s
+    }
+    
+    respond_with({"product" => product}, status: 201)
+  end
+  
+  @[QueryParam(name: "page", type: "Int32", default: 1)]
+  @[QueryParam(name: "per_page", type: "Int32", default: 10)]
+  @[QueryParam(name: "category", type: "String", required: false)]
+  @[Response(status: 200, description: "List of products")]
+  def index
+    # Query params are merged into request_data
+    page = request_data.try(&.["page"]?).try(&.as_i) || 1
+    per_page = request_data.try(&.["per_page"]?).try(&.as_i) || 10
+    category = request_data.try(&.["category"]?).try(&.as_s)
+    
+    products = [
+      {id: 1, name: "Laptop", price: 999.99, category: "electronics"},
+      {id: 2, name: "T-Shirt", price: 19.99, category: "clothing"},
+      {id: 3, name: "Book", price: 14.99, category: "books"}
+    ]
+    
+    # Filter by category if provided
+    if category
+      products = products.select { |p| p[:category] == category }
+    end
+    
+    # Pagination
+    start_idx = (page - 1) * per_page
+    paginated = products[start_idx, per_page]
+    
+    respond_with({
+      "products" => paginated,
+      "pagination" => {
+        "page" => page,
+        "per_page" => per_page,
+        "total" => products.size
+      }
+    })
+  end
+  
+  @[PathParam(name: "id", type: "Int32", description: "Product ID")]
+  @[Response(status: 200, description: "Product details")]
+  @[Response(status: 404, description: "Product not found")]
+  def show
+    # Path params are also merged into request_data
+    product_id = request_data.not_nil!["id"].as_i
+    
+    # Simulate finding a product
+    if product_id == 1
+      respond_with({
+        "product" => {
+          "id" => product_id,
+          "name" => "Laptop",
+          "price" => 999.99,
+          "category" => "electronics"
+        }
+      })
+    else
+      respond_with_error("Product not found", status: 404)
+    end
+  end
+end
+
+# Example route definitions showing how they would work
+# routes :web do
+#   # Old style controller
+#   post "/products/old", TestProductsController, :create_old_style
+#   post "/products/programmatic", TestProductsController, :create_programmatic
+#   post "/products/manual", TestProductsController, :create_manual
+#   get "/products/hybrid", TestProductsController, :hybrid_access
+#   
+#   # Annotated controller
+#   resources "/api/products", AnnotatedProductsController, only: [:create, :index, :show]
+# end

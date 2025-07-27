@@ -9,7 +9,7 @@ module Amber::Schema::Validator
         context.add_error(RequiredFieldError.new(@field_name))
       else
         value = context.field_value(@field_name)
-        if value.nil? || (value.as_s? && value.as_s.empty?)
+        if value.nil? || value.raw.nil? || (value.as_s? && value.as_s.empty?)
           context.add_error(RequiredFieldError.new(@field_name))
         end
       end
