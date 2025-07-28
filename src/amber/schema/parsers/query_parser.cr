@@ -23,11 +23,11 @@ module Amber::Schema::Parser
       case params
       when HTTP::Params
         params.each do |key, value|
-          set_nested_value(result, key, value)
+          set_nested_value_internal(result, key, parse_value(value))
         end
       when Hash(String, String)
         params.each do |key, value|
-          set_nested_value(result, key, value)
+          set_nested_value_internal(result, key, parse_value(value))
         end
       end
 
@@ -35,23 +35,45 @@ module Amber::Schema::Parser
     end
 
     # Handle nested parameter keys like user[profile][name]
-    private def self.set_nested_value(hash : Hash(String, JSON::Any), key : String, value : String)
-      # Handle array notation
-      if key.ends_with?("[]")
-        base_key = key[0..-3]
+    def self.set_nested_value(hash : Hash(String, JSON::Any), key : String, value : String | JSON::Any)
+      # Convert string values to JSON::Any
+      json_value = value.is_a?(String) ? parse_value(value) : value
+      set_nested_value_internal(hash, key, json_value)
+    end
+
+    # Internal implementation for nested value setting
+    private def self.set_nested_value_internal(hash : Hash(String, JSON::Any), key : String, value : JSON::Any)
+      # Handle array notation with indices: tags[0], tags[1]
+      if match = key.match(/^(.+)\[(\d+)\]$/)
+        base_key = match[1]
+        index = match[2].to_i
         hash[base_key] ||= JSON::Any.new([] of JSON::Any)
         if array = hash[base_key].as_a?
-          array << parse_value(value)
+          # Extend array if necessary
+          while array.size <= index
+            array << JSON::Any.new(nil)
+          end
+          array[index] = value
         end
         return
       end
 
-      # Handle nested object notation
-      parts = key.split(/[\[\]]/).reject(&.empty?)
+      # Handle simple array notation: tags[]
+      if key.ends_with?("[]")
+        base_key = key[0..-3]
+        hash[base_key] ||= JSON::Any.new([] of JSON::Any)
+        if array = hash[base_key].as_a?
+          array << value
+        end
+        return
+      end
+
+      # Handle nested object notation: user[profile][name]
+      parts = parse_nested_key(key)
       
       if parts.size == 1
         # Simple key
-        hash[key] = parse_value(value)
+        hash[key] = value
       else
         # Nested key
         current = hash
@@ -64,12 +86,25 @@ module Amber::Schema::Parser
             return
           end
         end
-        current[parts.last] = parse_value(value)
+        current[parts.last] = value
       end
     end
 
+    # Parse nested keys handling both brackets and dots
+    private def self.parse_nested_key(key : String) : Array(String)
+      # Split on brackets and remove empty parts
+      parts = key.split(/[\[\]]/).reject(&.empty?)
+      
+      # If no brackets found, try splitting on dots
+      if parts.size == 1 && key.includes?('.')
+        parts = key.split('.')
+      end
+      
+      parts
+    end
+
     # Try to parse value as JSON, number, or boolean
-    private def self.parse_value(value : String) : JSON::Any
+    def self.parse_value(value : String) : JSON::Any
       # Try boolean
       return JSON::Any.new(true) if value == "true"
       return JSON::Any.new(false) if value == "false"

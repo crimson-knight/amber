@@ -417,6 +417,9 @@ module Amber::Schema
         schema = SchemaWithHashes.new(data)
         result = schema.validate
         
+        if !result.success?
+          puts "Validation errors: #{result.errors.map(&.message)}"
+        end
         result.success?.should be_true
         # Check raw data since type conversion has issues
         raw_settings = schema.raw_data["settings"].as_h

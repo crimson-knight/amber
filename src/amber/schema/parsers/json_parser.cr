@@ -130,7 +130,7 @@ module Amber::Schema::Parser
     end
 
     # Process field value according to field definition
-    private def self.process_field_value(value : JSON::Any, field_def : FieldDef) : JSON::Any
+    private def self.process_field_value(value : JSON::Any, field_def : Definition::FieldDef) : JSON::Any
       # Handle nested schemas
       if field_def.options["nested_schema"]?
         case value.raw
@@ -166,9 +166,9 @@ module Amber::Schema::Parser
       end
     end
 
-    # Parse bracket notation keys - simplified version
+    # Parse bracket notation keys with array index support
     private def self.parse_bracket_notation(hash : Hash(String, JSON::Any), key : String, value : String | Hash(String, JSON::Any))
-      # Parse keys like: user[profile][name] -> ["user", "profile", "name"]
+      # Parse keys like: user[profile][name] or items[0] or tags[1][name]
       parts = key.split(/[\[\]]/).reject(&.empty?)
       
       if parts.size == 1
@@ -177,20 +177,124 @@ module Amber::Schema::Parser
       end
 
       # Navigate/create the nested structure
-      current = hash
-      parts[0..-2].each do |part|
-        # For now, assume all intermediate parts are objects
-        # A more sophisticated parser would detect array indices
-        current[part] ||= JSON::Any.new({} of String => JSON::Any)
-        if obj = current[part].as_h?
-          current = obj
+      current_hash : Hash(String, JSON::Any)? = hash
+      current_array : Array(JSON::Any)? = nil
+      
+      parts[0..-2].each_with_index do |part, index|
+        if index == 0
+          # First part is always a key in the main hash
+          if ch = current_hash
+            if is_numeric?(parts[1]?)
+              # Next part is numeric, so this should be an array
+              ch[part] ||= JSON::Any.new([] of JSON::Any)
+              if array = ch[part].as_a?
+                current_array = array
+                current_hash = nil
+              else
+                # Type conflict - skip this parameter
+                return
+              end
+            else
+              # Next part is not numeric, so this should be an object
+              ch[part] ||= JSON::Any.new({} of String => JSON::Any)
+              if obj = ch[part].as_h?
+                current_hash = obj
+              else
+                # Type conflict - skip this parameter
+                return
+              end
+            end
+          end
         else
-          # Type conflict - skip this parameter
-          return
+          # Subsequent parts - need to handle based on current context
+          if current_array
+            # We're navigating within an array
+            if is_numeric?(part)
+              # This is an array index
+              array_index = part.to_i
+              extend_array_to_index(current_array, array_index)
+              
+              # Check if next part exists and what it is
+              if next_part = parts[index + 1]?
+                if is_numeric?(next_part)
+                  # Next is also numeric, create nested array
+                  current_array[array_index] ||= JSON::Any.new([] of JSON::Any)
+                  if nested_array = current_array[array_index].as_a?
+                    current_array = nested_array
+                  else
+                    return
+                  end
+                else
+                  # Next is object key, create nested object
+                  current_array[array_index] ||= JSON::Any.new({} of String => JSON::Any)
+                  if nested_obj = current_array[array_index].as_h?
+                    current_hash = nested_obj
+                    current_array = nil
+                  else
+                    return
+                  end
+                end
+              end
+            else
+              # Non-numeric part after array - shouldn't happen in well-formed input
+              return
+            end
+          elsif ch = current_hash
+            # We're navigating within an object
+            if is_numeric?(part)
+              # Skip - this should have been handled as an array creation
+              return
+            else
+              # Check if the NEXT part is numeric to determine if this should be an array
+              if index + 1 < parts.size && is_numeric?(parts[index + 1]?)
+                # Next part is numeric, so this should be an array
+                ch[part] ||= JSON::Any.new([] of JSON::Any)
+                if nested_array = ch[part].as_a?
+                  current_array = nested_array
+                  current_hash = nil
+                else
+                  return
+                end
+              else
+                # This creates a nested object
+                ch[part] ||= JSON::Any.new({} of String => JSON::Any)
+                if nested_obj = ch[part].as_h?
+                  current_hash = nested_obj
+                else
+                  return
+                end
+              end
+            end
+          end
         end
       end
 
-      current[parts.last] = parse_value(value)
+      # Set the final value
+      final_part = parts.last
+      if ca = current_array
+        if is_numeric?(final_part)
+          # Setting array element
+          array_index = final_part.to_i
+          extend_array_to_index(ca, array_index)
+          ca[array_index] = parse_value(value)
+        end
+      elsif ch = current_hash
+        # Setting object property
+        ch[final_part] = parse_value(value)
+      end
+    end
+
+    # Helper method to check if a string represents a number
+    private def self.is_numeric?(str : String?) : Bool
+      return false unless str
+      !!(str =~ /^\d+$/)
+    end
+
+    # Helper method to extend array to accommodate index
+    private def self.extend_array_to_index(array : Array(JSON::Any), index : Int32)
+      while array.size <= index
+        array << JSON::Any.new(nil)
+      end
     end
 
     # Parse dot notation keys

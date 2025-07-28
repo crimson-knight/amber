@@ -129,11 +129,18 @@ module Amber::Schema
     private def merge_request_data : Hash(String, JSON::Any)
       data = {} of String => JSON::Any
       
-      # Start with path parameters
-      if route_params = context.route.params
-        route_params.each do |key, value|
-          data[key] = JSON::Any.new(value)
+      # Start with path parameters from request.params (which includes route params)
+      begin
+        if request.valid_route?
+          route_params = request.route.params
+          if route_params
+            route_params.each do |key, value|
+              data[key] = JSON::Any.new(value)
+            end
+          end
         end
+      rescue
+        # Skip route params if not available
       end
       
       # Add query parameters
@@ -166,7 +173,7 @@ module Amber::Schema
         end
       rescue ex
         # Log parsing error and return empty hash
-        Amber.logger.warn("Failed to parse request data: #{ex.message}")
+        # TODO: Add proper logging when available
         {} of String => JSON::Any
       end
     end

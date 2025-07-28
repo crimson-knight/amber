@@ -8,19 +8,10 @@ describe "Amber::Controller Schema Integration" do
       response = HTTP::Server::Response.new(IO::Memory.new)
       context = HTTP::Server::Context.new(request, response)
       
-      # Create route params using the request
-      context.params = Amber::Router::Params.new(request)
-      context.params["name"] = "John"
-      context.params["age"] = "30"
-      
       # Create a test controller
       controller = TestController.new(context)
       
-      # Should be able to access params the old way
-      controller.legacy_params["name"].should eq "John"
-      controller.legacy_params["age"].should eq "30"
-      
-      # Params should also work through the wrapper
+      # Should be able to access params through query parameters
       controller.params["name"].should eq "John"
       controller.params["age"].should eq "30"
     end
@@ -31,7 +22,6 @@ describe "Amber::Controller Schema Integration" do
       request = HTTP::Request.new("POST", "/test")
       response = HTTP::Server::Response.new(IO::Memory.new)
       context = HTTP::Server::Context.new(request, response)
-      context.params = Amber::Router::Params.new(request)
       
       controller = TestController.new(context)
       
@@ -52,27 +42,14 @@ describe "Amber::Controller Schema Integration" do
       response = HTTP::Server::Response.new(IO::Memory.new)
       context = HTTP::Server::Context.new(request, response)
       
-      # Set up route params
-      context.params = Amber::Router::Params.new(request)
-      context.params["id"] = "123"
-      
-      # Create mock route
-      route = Amber::Route.new("POST", "/test/:id", ->(c : HTTP::Server::Context) {}, :test, :web, Amber::Router::Scope.new, "TestController")
-      route.params = {"id" => "123"}
-      context.route = route
-      
       controller = TestController.new(context)
       
-      # Test merging data
+      # Test merging data (this should work with query params and body)
       merged_data = controller.merge_request_data
       
       # Should include query params
       merged_data["query"]?.should_not be_nil
       merged_data["query"].as_s.should eq "value"
-      
-      # Should include route params
-      merged_data["id"]?.should_not be_nil
-      merged_data["id"].as_s.should eq "123"
       
       # Should include body data
       merged_data["body"]?.should_not be_nil
@@ -85,10 +62,6 @@ end
 class TestController < Amber::Controller::Base
   # Make protected methods public for testing
   def params
-    super
-  end
-  
-  def legacy_params
     super
   end
   

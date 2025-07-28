@@ -304,6 +304,23 @@ module Amber::Schema
       end
     end
 
+    private def self.coerce_to_file(value : JSON::Any) : JSON::Any?
+      case raw = value.raw
+      when Hash
+        # This should be a file upload hash with filename, content_type, etc
+        hash_value = raw.as(Hash(String, JSON::Any))
+        
+        # Validate that it has the expected file upload structure
+        if hash_value.has_key?("filename") && hash_value.has_key?("content")
+          value  # Return the file data as-is
+        else
+          nil
+        end
+      else
+        nil
+      end
+    end
+
     private def self.coerce_to_array(value : JSON::Any, element_type : String) : JSON::Any?
       case raw = value.raw
       when Array
@@ -364,7 +381,10 @@ module Amber::Schema
         
         raw.each do |key, val|
           key_str = key.to_s
-          if coerced = coerce(val, value_type)
+          # Special handling for JSON::Any - don't coerce, just keep as-is
+          if value_type == "JSON::Any"
+            coerced_hash[key_str] = val.is_a?(JSON::Any) ? val : JSON::Any.new(val)
+          elsif coerced = coerce(val, value_type)
             coerced_hash[key_str] = coerced
           end
         end

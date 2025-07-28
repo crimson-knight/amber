@@ -1,5 +1,7 @@
 # Base schema definition class
 # Provides the foundation for defining request/response schemas
+require "json"
+
 module Amber::Schema
   class Definition
     # Internal field definition
@@ -154,7 +156,16 @@ module Amber::Schema
       # Store options in field definition
       {% for key, value in options %}
         {% unless key == :required || key == :default || key == :source %}
-          @@fields[{{field_name}}].options[{{key.stringify}}] = JSON::Any.new({{value}})
+          {% if value.is_a?(HashLiteral) %}
+            # Convert hash literals to JSON-compatible format
+            hash_value = {} of String => JSON::Any
+            {% for k, v in value %}
+              hash_value[{{k.stringify}}] = JSON::Any.new({{v}})
+            {% end %}
+            @@fields[{{field_name}}].options[{{key.stringify}}] = JSON::Any.new(hash_value)
+          {% else %}
+            @@fields[{{field_name}}].options[{{key.stringify}}] = JSON::Any.new({{value}})
+          {% end %}
         {% end %}
       {% end %}
       
@@ -176,7 +187,31 @@ module Amber::Schema
             {% elsif type.stringify == "Bool" %}
               coerced.as_bool
             {% elsif type.stringify.starts_with?("Array(") %}
-              coerced.as_a
+              # Extract element type from Array(ElementType)
+              {% element_type = type.stringify[6..-2] %}
+              if array = coerced.as_a?
+                array.map do |item|
+                  {% if element_type == "String" %}
+                    item.as_s? || item.to_s
+                  {% elsif element_type == "Int32" %}
+                    item.as_i? || item.as_s.to_i32
+                  {% elsif element_type == "Int64" %}
+                    item.as_i64? || item.as_s.to_i64
+                  {% elsif element_type == "Float32" %}
+                    item.as_f32? || item.as_s.to_f32
+                  {% elsif element_type == "Float64" %}
+                    item.as_f? || item.as_s.to_f64
+                  {% elsif element_type == "Bool" %}
+                    item.as_bool? || (item.as_s? == "true")
+                  {% elsif element_type == "Hash(String, JSON::Any)" %}
+                    item.as_h
+                  {% else %}
+                    item.raw
+                  {% end %}
+                end
+              else
+                nil
+              end
             {% elsif type.stringify.starts_with?("Hash(") %}
               coerced.as_h
             {% elsif type.stringify == "Time" %}
@@ -189,6 +224,9 @@ module Amber::Schema
               if str = coerced.as_s?
                 ::UUID.new(str)
               end
+            {% elsif type.stringify == "Hash(String, JSON::Any)" %}
+              # Return hash data directly
+              coerced.as_h
             {% else %}
               coerced.raw.as({{type}})
             {% end %}
@@ -210,6 +248,32 @@ module Amber::Schema
               coerced.as_f
             {% elsif type.stringify == "Bool" %}
               coerced.as_bool
+            {% elsif type.stringify.starts_with?("Array(") %}
+              # Extract element type from Array(ElementType)
+              {% element_type = type.stringify[6..-2] %}
+              if array = coerced.as_a?
+                array.map do |item|
+                  {% if element_type == "String" %}
+                    item.as_s? || item.to_s
+                  {% elsif element_type == "Int32" %}
+                    item.as_i? || item.as_s.to_i32
+                  {% elsif element_type == "Int64" %}
+                    item.as_i64? || item.as_s.to_i64
+                  {% elsif element_type == "Float32" %}
+                    item.as_f32? || item.as_s.to_f32
+                  {% elsif element_type == "Float64" %}
+                    item.as_f? || item.as_s.to_f64
+                  {% elsif element_type == "Bool" %}
+                    item.as_bool? || (item.as_s? == "true")
+                  {% elsif element_type == "Hash(String, JSON::Any)" %}
+                    item.as_h
+                  {% else %}
+                    item.raw
+                  {% end %}
+                end
+              else
+                nil
+              end
             {% elsif type.stringify == "Time" %}
               if str = coerced.as_s?
                 Time.parse_iso8601(str)
@@ -218,6 +282,9 @@ module Amber::Schema
               if str = coerced.as_s?
                 ::UUID.new(str)
               end
+            {% elsif type.stringify == "Hash(String, JSON::Any)" %}
+              # Return hash data directly
+              coerced.as_h
             {% else %}
               coerced.raw.as({{type}})
             {% end %}
@@ -344,7 +411,16 @@ module Amber::Schema
         # Add options
         {% for key, value in options %}
           {% unless key == :required || key == :default || key == :source %}
-            field_def.options[\{{key.stringify}}] = JSON::Any.new(\{{value}})
+            {% if value.is_a?(HashLiteral) %}
+              # Convert hash literals to JSON-compatible format
+              hash_value = {} of String => JSON::Any
+              {% for k, v in value %}
+                hash_value[\{{k.stringify}}] = JSON::Any.new(\{{v}})
+              {% end %}
+              field_def.options[\{{key.stringify}}] = JSON::Any.new(hash_value)
+            {% else %}
+              field_def.options[\{{key.stringify}}] = JSON::Any.new(\{{value}})
+            {% end %}
           {% end %}
         {% end %}
         
@@ -384,7 +460,16 @@ module Amber::Schema
         # Add options
         {% for key, value in options %}
           {% unless key == :required || key == :default || key == :source %}
-            field_def.options[\{{key.stringify}}] = JSON::Any.new(\{{value}})
+            {% if value.is_a?(HashLiteral) %}
+              # Convert hash literals to JSON-compatible format
+              hash_value = {} of String => JSON::Any
+              {% for k, v in value %}
+                hash_value[\{{k.stringify}}] = JSON::Any.new(\{{v}})
+              {% end %}
+              field_def.options[\{{key.stringify}}] = JSON::Any.new(hash_value)
+            {% else %}
+              field_def.options[\{{key.stringify}}] = JSON::Any.new(\{{value}})
+            {% end %}
           {% end %}
         {% end %}
         
@@ -666,6 +751,14 @@ module Amber::Schema
             @errors << ::Amber::Schema::InvalidFormatError.new(field_name, "pattern #{pattern}", string_value)
           end
         end
+      end
+
+      # File validation (for File type fields)
+      if field_def.type == "Hash(String, JSON::Any)" && 
+         (options.has_key?("max_size") || options.has_key?("allowed_types") || 
+          options.has_key?("allowed_extensions") || options.has_key?("filename_pattern"))
+        file_errors = Parser::FileUploadValidator.validate_file(field_name, value, options)
+        file_errors.each { |error| @errors << error }
       end
     end
 

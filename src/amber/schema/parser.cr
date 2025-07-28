@@ -1,4 +1,5 @@
 # Base parser module for transforming and coercing data
+
 module Amber::Schema
   module Parser
     # Base class for all parsers
@@ -33,11 +34,15 @@ module Amber::Schema
           parse_json_request(request)
         when "query"
           parse_query_request(request)
+        when "xml"
+          parse_xml_request(request)
         else
           # Try to detect format from content
           body = request.body.try(&.gets_to_end) || ""
           if body.starts_with?("{") || body.starts_with?("[")
             parse_json_body(body)
+          elsif body.starts_with?("<")
+            parse_xml_body(body)
           else
             {} of String => JSON::Any
           end
@@ -59,7 +64,35 @@ module Amber::Schema
 
       # Parse query string request
       private def self.parse_query_request(request : HTTP::Request) : Hash(String, JSON::Any)
-        QueryParser.parse_params_to_nested(request.query_params)
+        content_type = request.headers["Content-Type"]?
+        
+        if content_type && content_type.starts_with?("multipart/form-data")
+          # Handle multipart form data with files
+          MultipartParser.parse_multipart_request(request)
+        elsif content_type && content_type.starts_with?("application/x-www-form-urlencoded")
+          # Handle URL-encoded form data
+          body = request.body.try(&.gets_to_end) || ""
+          if body.empty?
+            {} of String => JSON::Any
+          else
+            params = HTTP::Params.parse(body)
+            QueryParser.parse_params_to_nested(params)
+          end
+        else
+          # Default to query parameters
+          QueryParser.parse_params_to_nested(request.query_params)
+        end
+      end
+
+      # Parse XML request
+      private def self.parse_xml_request(request : HTTP::Request) : Hash(String, JSON::Any)
+        body = request.body.try(&.gets_to_end) || ""
+        parse_xml_body(body)
+      end
+
+      # Parse XML body string
+      private def self.parse_xml_body(body : String) : Hash(String, JSON::Any)
+        XMLParser.parse_string(body)
       end
 
       # Normalize content type (remove charset, etc)
@@ -75,6 +108,9 @@ module Amber::Schema
     ParserRegistry.register("text/json", "json")
     ParserRegistry.register("application/x-www-form-urlencoded", "query")
     ParserRegistry.register("multipart/form-data", "query")
+    ParserRegistry.register("application/xml", "xml")
+    ParserRegistry.register("text/xml", "xml")
+    ParserRegistry.register("application/xhtml+xml", "xml")
 
     # Parser context with access to full data and schema
     class Context
@@ -280,3 +316,6 @@ module Amber::Schema
     end
   end
 end
+
+require "./parsers/multipart_parser"
+require "./parsers/xml_parser"

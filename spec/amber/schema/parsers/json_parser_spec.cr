@@ -1,6 +1,14 @@
 require "../../../spec_helper"
 
 module Amber::Schema::Parser
+  # Test schema for field aliasing
+  class TestAliasedSchema < Amber::Schema::Definition
+    field :username, String, as: "user_name"
+    field :email_address, String, as: "email"
+    field :is_active, Bool, as: "status"
+    field :user_id, Int32, as: "id"
+  end
+
   describe JSONParser do
     describe ".parse_string" do
       it "parses empty string to empty hash" do
@@ -171,8 +179,30 @@ module Amber::Schema::Parser
     end
 
     describe "field aliasing" do
-      # Skip field aliasing test for now - requires more complex setup
-      pending "extracts fields with aliasing when schema provided"
+      it "extracts fields with aliasing when schema provided" do
+        json_string = <<-JSON
+        {
+          "user_name": "alice123",
+          "email": "alice@example.com",
+          "status": true,
+          "id": 456,
+          "extra_field": "should_be_ignored"
+        }
+        JSON
+
+        schema = TestAliasedSchema.new({} of String => JSON::Any)
+        parsed_data = JSONParser.parse_string(json_string)
+        result = JSONParser.extract_fields(JSON::Any.new(parsed_data), schema)
+
+        # Fields should be mapped from their 'as' names to schema field names
+        result["username"].as_s.should eq("alice123")
+        result["email_address"].as_s.should eq("alice@example.com") 
+        result["is_active"].as_bool.should be_true
+        result["user_id"].as_i.should eq(456)
+        
+        # Extra field should also be included for flexibility
+        result["extra_field"].as_s.should eq("should_be_ignored")
+      end
     end
 
     describe "error handling" do
@@ -188,8 +218,34 @@ module Amber::Schema::Parser
         end
       end
 
-      # Array index notation requires more complex parsing
-      pending "handles array index notation"
+      it "handles array index notation" do
+        # Test basic indexed arrays
+        params = HTTP::Params.parse("items[0]=first&items[1]=second&items[2]=third")
+        result = JSONParser.parse_params(params)
+        
+        result["items"].as_a.map(&.as_s).should eq(["first", "second", "third"])
+        
+        # Test sparse arrays with gaps
+        params_sparse = HTTP::Params.parse("values[0]=a&values[2]=c&values[5]=f")
+        result_sparse = JSONParser.parse_params(params_sparse)
+        
+        values_array = result_sparse["values"].as_a
+        values_array.size.should eq(6)
+        values_array[0].as_s.should eq("a")
+        values_array[1].as_nil.should be_nil
+        values_array[2].as_s.should eq("c")
+        values_array[3].as_nil.should be_nil
+        values_array[4].as_nil.should be_nil
+        values_array[5].as_s.should eq("f")
+        
+        # Test mixed indexed and non-indexed in nested structures
+        params_mixed = HTTP::Params.parse("user[tags][0]=admin&user[tags][1]=user&user[name]=John")
+        result_mixed = JSONParser.parse_params(params_mixed)
+        
+        user = result_mixed["user"].as_h
+        user["name"].as_s.should eq("John")
+        user["tags"].as_a.map(&.as_s).should eq(["admin", "user"])
+      end
     end
 
     describe "type coercion" do
