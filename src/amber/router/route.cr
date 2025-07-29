@@ -12,6 +12,7 @@ module Amber
                    @scope : Router::Scope = Router::Scope.new,
                    @controller : String = "",
                    @constraints : Hash = {} of String => Regex)
+      @params = {} of String => String
     end
 
     def to_json

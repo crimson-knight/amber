@@ -1,0 +1,343 @@
+# Integration with Amber controllers
+module Amber::Schema
+  # Mixin for controllers to add schema validation
+  module ControllerIntegration
+    macro included
+      # Instance property to store validated request data
+      property request_data : Hash(String, JSON::Any)? = nil
+      
+      # Class-level schema definitions
+      class_property request_schemas = {} of String => RequestSchema
+      class_property response_schemas = {} of String => ResponseSchema
+      
+      # Store annotation metadata
+      class_property request_annotations = {} of String => NamedTuple(schema: RequestSchema.class?, content_type: String?)
+      class_property response_annotations = {} of String => Array(NamedTuple(status: Int32, schema: ResponseSchema.class?, description: String?, content_type: String?))
+      class_property query_param_annotations = {} of String => Array(NamedTuple(name: String, type: String, required: Bool, description: String?, default: JSON::Any?, enum: Array(String)?))
+      class_property path_param_annotations = {} of String => Array(NamedTuple(name: String, type: String, description: String?, format: String?))
+      
+      # Validation result storage
+      property validation_result : LegacyResult? = nil
+    end
+
+    # Macro to read @[Request] annotation and set up validation
+    macro request_schema_from_annotation(action)
+      # This is called at runtime to process annotations
+      # The auto_validate macro handles the compile-time setup
+    end
+
+    # Macro to read @[Response] annotations and set up schemas
+    macro response_schemas_from_annotations(action)
+      # This is called at runtime to process annotations
+      # The auto_validate macro handles the compile-time setup
+    end
+
+    # Macro to read @[QueryParam] annotations
+    macro query_params_from_annotations(action)
+      # This is called at runtime to process annotations
+      # The auto_validate macro handles the compile-time setup
+    end
+
+    # Macro to read @[PathParam] annotations
+    macro path_params_from_annotations(action)
+      # This is called at runtime to process annotations
+      # The auto_validate macro handles the compile-time setup
+    end
+
+    # Macro to set up automatic validation from annotations
+    macro auto_validate
+      {% for method in @type.methods %}
+        {% if !method.abstract? && !method.name.starts_with?("_") %}
+          {% action_name = method.name.stringify %}
+          
+          # Process @[Request] annotation
+          {% for ann in method.annotations(Request) %}
+            # Store annotation metadata
+            self.request_annotations[{{action_name}}] = {
+              schema: {{ann[:schema]}},
+              content_type: {{ann[:content_type] || "application/json"}}
+            }
+            
+            # Create before filter for this action
+            before_action :validate_request_from_annotation, only: [{{method.name}}]
+          {% end %}
+          
+          # Process @[Response] annotations
+          {% responses = [] of NamedTuple(status: Int32, schema: TypeNode?, description: String?, content_type: String?) %}
+          {% for ann in method.annotations(Response) %}
+            {% responses << {
+              status: ann[:status],
+              schema: ann[:schema],
+              description: ann[:description],
+              content_type: ann[:content_type] || "application/json"
+            } %}
+          {% end %}
+          {% if responses.size > 0 %}
+            self.response_annotations[{{action_name}}] = {{responses}}
+          {% end %}
+          
+          # Process @[QueryParam] annotations
+          {% query_params = [] of NamedTuple(name: String, type: String, required: Bool, description: String?, default: ASTNode?, enum: Array(String)?) %}
+          {% for ann in method.annotations(QueryParam) %}
+            {% query_params << {
+              name: ann[:name],
+              type: ann[:type],
+              required: ann[:required] || false,
+              description: ann[:description],
+              default: ann[:default],
+              enum: ann[:enum]
+            } %}
+          {% end %}
+          {% if query_params.size > 0 %}
+            self.query_param_annotations[{{action_name}}] = {{query_params}}
+          {% end %}
+          
+          # Process @[PathParam] annotations
+          {% path_params = [] of NamedTuple(name: String, type: String, description: String?, format: String?) %}
+          {% for ann in method.annotations(PathParam) %}
+            {% path_params << {
+              name: ann[:name],
+              type: ann[:type],
+              description: ann[:description],
+              format: ann[:format]
+            } %}
+          {% end %}
+          {% if path_params.size > 0 %}
+            self.path_param_annotations[{{action_name}}] = {{path_params}}
+          {% end %}
+        {% end %}
+      {% end %}
+    end
+
+    # Define a request schema for an action
+    macro schema(action, &block)
+      {% action_name = action.id.stringify %}
+      
+      schema = RequestSchema.new({{action_name}})
+      {{yield}}
+      self.request_schemas[{{action_name}}] = schema
+    end
+
+    # Define a response schema for an action
+    macro response_schema(action, &block)
+      {% action_name = action.id.stringify %}
+      
+      schema = ResponseSchema.new({{action_name}})
+      {{yield}}
+      self.response_schemas[{{action_name}}] = schema
+    end
+
+    # Validate request from annotation
+    private def validate_request_from_annotation
+      action = action_name
+      annotation_data = self.class.request_annotations[action]?
+      
+      return unless annotation_data && annotation_data[:schema]
+      
+      # Create schema instance
+      schema_class = annotation_data[:schema].not_nil!
+      schema = schema_class.new(action)
+      
+      # Merge data from all sources
+      data = merge_request_data
+      
+      # Validate and parse
+      result = schema.parse(data)
+      
+      if result.failure?
+        response_formatter = ResponseFormatters::JSONResponse.new
+        response.status_code = 422
+        response.content_type = "application/json"
+        response.print response_formatter.unprocessable_entity(result.errors)
+        response.close
+      else
+        # Store validated data for use in action
+        @request_data = result.data
+        @validation_result = result
+      end
+    end
+
+    # Merge request data from all sources (body, query params, path params)
+    private def merge_request_data : Hash(String, JSON::Any)
+      data = {} of String => JSON::Any
+      
+      # Start with path parameters
+      if route_params = context.route.params
+        route_params.each do |key, value|
+          data[key] = JSON::Any.new(value)
+        end
+      end
+      
+      # Add query parameters
+      request.query_params.each do |key, value|
+        data[key] = JSON::Any.new(value)
+      end
+      
+      # Parse and merge body data
+      body_data = parse_request_body
+      data.merge!(body_data)
+      
+      data
+    end
+
+    # Parse request body based on content type
+    private def parse_request_body : Hash(String, JSON::Any)
+      content_type = request.headers["Content-Type"]?
+      
+      begin
+        # Use ParserRegistry for content-type based selection
+        Parser::ParserRegistry.parse_request(request)
+      rescue ex : SchemaDefinitionError
+        # Re-raise schema errors
+        raise ex
+      rescue ex
+        # Log parsing error and return empty hash
+        Amber.logger.warn("Failed to parse request data: #{ex.message}")
+        {} of String => JSON::Any
+      end
+    end
+
+    # Validate request against schema
+    def validate_request(schema_name : String? = nil) : LegacyResult
+      schema_name ||= action_name
+      schema = self.class.request_schemas[schema_name]?
+      
+      unless schema
+        return LegacyResult.failure(
+          [Error.new("", "No request schema defined for action '#{schema_name}'", "no_schema")]
+        )
+      end
+
+      # Merge all request data
+      data = merge_request_data
+      
+      # Validate and parse
+      schema.parse(data)
+    end
+
+    # Validate response against schema
+    def validate_response(data : Hash(String, JSON::Any), status : Int32 = 200, schema_name : String? = nil) : LegacyResult
+      schema_name ||= action_name
+      
+      # Check for annotation-based schemas first
+      if annotations = self.class.response_annotations[schema_name]?
+        # Find matching status code
+        matching_annotation = annotations.find { |ann| ann[:status] == status }
+        if matching_annotation && matching_annotation[:schema]
+          schema = matching_annotation[:schema].not_nil!.new(schema_name)
+          return schema.validate(data)
+        end
+      end
+      
+      # Fall back to programmatically defined schemas
+      schema = self.class.response_schemas[schema_name]?
+      
+      unless schema
+        return LegacyResult.success(data)  # No schema = pass through
+      end
+
+      schema.validate(data)
+    end
+
+    # Before filter to validate requests
+    macro validate_schema(action = nil, required = true)
+      before_action :validate_schema_filter, only: [{{action}}] if {{action}}
+      before_action :validate_schema_filter unless {{action}}
+
+      private def validate_schema_filter
+        result = validate_request({{action && action.stringify}})
+        
+        if result.failure?
+          if {{required}}
+            response_formatter = ResponseFormatters::JSONResponse.new
+            response.status_code = 422
+            response.content_type = "application/json"
+            response.print response_formatter.unprocessable_entity(result.errors)
+            response.close
+          else
+            # Store validation result for optional handling
+            @validation_result = result
+          end
+        else
+          # Store validated data for use in action
+          @request_data = result.data
+          @validation_result = result
+        end
+      end
+    end
+
+    # Helper to access validated data (alias for request_data)
+    def validated_params : Hash(String, JSON::Any)?
+      @request_data
+    end
+
+    # Helper to check if validation passed
+    def validation_failed? : Bool
+      @validation_result && @validation_result.failure?
+    end
+
+    # Helper method to respond with schema-validated data
+    def respond_with(data : Hash(String, JSON::Any) | NamedTuple | Nil = nil, status : Int32 = 200, schema_name : String? = nil)
+      # Convert NamedTuple to Hash if needed
+      response_data = case data
+      when NamedTuple
+        data.to_h.transform_values { |v| JSON::Any.new(v) }
+      when Hash
+        data
+      when Nil
+        {} of String => JSON::Any
+      else
+        raise "respond_with only accepts Hash(String, JSON::Any), NamedTuple, or Nil"
+      end
+      
+      # Validate response if schema exists
+      result = validate_response(response_data, status, schema_name)
+      
+      if result.failure?
+        # Log validation failure but still render
+        Amber.logger.warn "Response validation failed: #{result.error_messages.join(", ")}"
+      end
+
+      # Set response properties
+      response.status_code = status
+      response.content_type = "application/json"
+      response.print response_data.to_json
+      response.close
+    end
+
+    # Render with response validation (backward compatible)
+    def render_validated(data : Hash(String, JSON::Any), status : Int32 = 200)
+      respond_with(data, status)
+    end
+
+    # Helper to create error response
+    def respond_with_error(message : String, status : Int32 = 400, code : String? = nil)
+      response_formatter = Response::JSONResponse.new
+      response.status_code = status
+      response.content_type = "application/json"
+      response.print response_formatter.error_response(status, message, code)
+      response.close
+    end
+
+    # Helper to respond with validation errors
+    def respond_with_errors(errors : Array(Error), status : Int32 = 422)
+      response_formatter = Response::JSONResponse.new
+      response.status_code = status
+      response.content_type = "application/json"
+      response.print response_formatter.unprocessable_entity(errors)
+      response.close
+    end
+
+    # Get current action name from the context
+    private def action_name : String
+      # Extract action name from route
+      # This assumes route follows pattern "ControllerName#action"
+      if route_resource = context.route.resource
+        parts = route_resource.split("#")
+        parts.last? || "unknown"
+      else
+        "unknown"
+      end
+    end
+  end
+end
