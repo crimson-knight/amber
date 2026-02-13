@@ -10,10 +10,6 @@ crystal: ">= 1.0.0, < 2.0"
 license: MIT
 
 dependencies:
-  amber_router:
-    github: amberframework/amber-router
-    version: ~> 0.4.4
-
   compiled_license:
     github: elorest/compiled_license
     version: ~> 1.2.2

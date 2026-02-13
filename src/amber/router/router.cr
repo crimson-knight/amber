@@ -1,4 +1,4 @@
-require "amber_router"
+require "./engine"
 require "./scope"
 
 module Amber
