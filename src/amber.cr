@@ -5,7 +5,6 @@ require "colorize"
 require "random/secure"
 require "kilt"
 require "kilt/slang"
-require "compiled_license"
 
 require "./amber/version"
 require "./amber/adapters"

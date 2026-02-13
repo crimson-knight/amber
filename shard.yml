@@ -1,6 +1,6 @@
 name: amber
 
-version: 1.4.1
+version: 2.0.0-dev
 
 authors:
   - Amber Team and Contributors <amberframework.org>
@@ -10,10 +10,6 @@ crystal: ">= 1.0.0, < 2.0"
 license: MIT
 
 dependencies:
-  compiled_license:
-    github: elorest/compiled_license
-    version: ~> 1.2.2
-
   kilt:
     github: jeromegn/kilt
     version: ~> 0.6.0

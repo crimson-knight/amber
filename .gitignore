@@ -11,3 +11,6 @@ lib/
 shard.lock
 .crystal-version
 /myapp
+*.dwarf
+*.bak
+*.png
