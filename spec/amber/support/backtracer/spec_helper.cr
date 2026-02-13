@@ -1,5 +1,5 @@
 require "spec"
-require "backtracer"
+require "../../../../src/amber/support/backtracer/backtracer"
 
 def with_configuration(shared = true, &)
   yield shared ? Backtracer.configuration : Backtracer::Configuration.new
