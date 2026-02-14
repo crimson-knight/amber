@@ -11,6 +11,7 @@ module Amber::Router::Session
   # generation, cookie handling, and expiration.
   class AdapterSessionStore < AbstractStore
     @id : String?
+    @is_changed : Bool = false
     getter adapter : Amber::Adapters::SessionAdapter
     property expires : Int32
     property key : String
@@ -30,10 +31,11 @@ module Amber::Router::Session
     end
 
     def changed?
-      true
+      @is_changed
     end
 
     def destroy
+      @is_changed = true
       adapter.destroy(session_id)
     end
 
@@ -46,6 +48,7 @@ module Amber::Router::Session
     end
 
     def []=(key : String | Symbol, value)
+      @is_changed = true
       adapter.set(session_id, key.to_s, value.to_s)
     end
 
@@ -66,13 +69,17 @@ module Amber::Router::Session
     end
 
     def update(hash : Hash(String | Symbol, String))
+      @is_changed = true
       # Convert symbol keys to strings for consistency
       string_hash = hash.transform_keys(&.to_s)
       adapter.batch_set(session_id, string_hash)
     end
 
     def delete(key : String | Symbol)
-      adapter.delete(session_id, key.to_s) if has_key?(key.to_s)
+      if has_key?(key.to_s)
+        @is_changed = true
+        adapter.delete(session_id, key.to_s)
+      end
     end
 
     def fetch(key : String | Symbol, default = nil)
@@ -83,8 +90,51 @@ module Amber::Router::Session
       adapter.empty?(session_id)
     end
 
+    # Regenerates the session ID to prevent session fixation attacks.
+    # Copies all existing session data to a new session, destroys the old
+    # session, and updates the cookie with the new session ID.
+    #
+    # This should be called after successful authentication or any privilege
+    # escalation to ensure the user gets a fresh session ID.
+    #
+    # Returns the new session ID.
+    def regenerate_id : String
+      old_session_id = @session_id
+      old_data = adapter.to_hash(old_session_id)
+
+      @id = UUID.random.to_s
+      @session_id = "#{key}:#{@id}"
+
+      # Copy data to new session
+      adapter.batch_set(@session_id, old_data) unless old_data.empty?
+
+      # Set expiration on new session if applicable
+      adapter.expire(@session_id, @expires) if @expires > 0
+
+      # Destroy old session
+      adapter.destroy(old_session_id)
+
+      # Mark as changed so the new session ID cookie gets written
+      @is_changed = true
+
+      @session_id
+    end
+
+    # Resets the session TTL for sliding expiration.
+    # Called on each request to extend the session lifetime when idle_timeout is configured.
+    def touch
+      adapter.expire(session_id, @expires) if @expires > 0
+    end
+
     def set_session
-      cookies.encrypted.set(key, session_id, expires: expires_at, http_only: true)
+      secure = !Amber.env.development? && !Amber.env.test?
+      samesite = HTTP::Cookie::SameSite::Lax
+
+      cookies.encrypted.set(key, session_id,
+        expires: expires_at,
+        http_only: true,
+        secure: secure,
+        samesite: samesite)
 
       # Set expiration on the session
       adapter.expire(session_id, @expires) if @expires > 0
@@ -98,4 +148,4 @@ module Amber::Router::Session
       cookies.encrypted[key]
     end
   end
-end 
+end
