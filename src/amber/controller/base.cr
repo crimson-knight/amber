@@ -12,6 +12,12 @@ module Amber::Controller
     include Helpers::Responders
     include Helpers::Route
     include Helpers::I18n
+    include Helpers::TagHelpers
+    include Helpers::TextHelpers
+    include Helpers::NumberHelpers
+    include Helpers::FormHelpers
+    include Helpers::URLHelpers
+    include Helpers::AssetHelpers
     include Callbacks
 
     protected getter context : HTTP::Server::Context
