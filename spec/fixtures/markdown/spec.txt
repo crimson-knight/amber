@@ -8871,7 +8871,7 @@ These are not autolinks:
 ```````````````````````````````` example
 http://example.com
 .
-<p>http://example.com</p>
+<p><a href="http://example.com">http://example.com</a></p>
 ````````````````````````````````
 
 

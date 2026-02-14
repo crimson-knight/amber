@@ -100,6 +100,10 @@ module Amber::Markdown
             table_cell(node, entering)
           when Node::Type::Strikethrough
             strikethrough(node, entering)
+          when Node::Type::FootnoteReference
+            footnote_reference(node, entering)
+          when Node::Type::FootnoteDefinition
+            footnote_definition(node, entering)
           else
             text(node, entering)
           end

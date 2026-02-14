@@ -32,6 +32,9 @@ module Amber::Markdown
 
       Strikethrough
 
+      FootnoteReference
+      FootnoteDefinition
+
       def container?
         CONTAINER_TYPES.includes?(self)
       end
@@ -56,6 +59,7 @@ module Amber::Markdown
       Type::TableRow,
       Type::TableCell,
       Type::Strikethrough,
+      Type::FootnoteDefinition,
     }
 
     alias DataValue = String | Int32 | Bool

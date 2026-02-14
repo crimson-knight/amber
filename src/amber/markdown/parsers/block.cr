@@ -57,6 +57,7 @@ module Amber::Markdown::Parser
       end
 
       process_task_lists
+      process_footnote_definitions
 
       Utils.timer("inline parsing", @options.time) do
         process_inlines
@@ -229,6 +230,50 @@ module Amber::Markdown::Parser
         elsif text.starts_with?("[x] ") || text.starts_with?("[X] ")
           node.data["task"] = true
           first_child.text = text[4..]
+        end
+      end
+
+      nil
+    end
+
+    FOOTNOTE_DEF_PATTERN = /^\[\^([^\s\]]+)\]:\s+(.*)/
+
+    private def process_footnote_definitions
+      walker = @document.walker
+      while (event = walker.next)
+        node, entering = event
+        next unless entering && node.type.paragraph?
+
+        text = node.text
+        # Check each line of the paragraph for footnote definitions
+        remaining_lines = [] of String
+        footnote_found = false
+
+        text.each_line do |line|
+          if match = line.match(FOOTNOTE_DEF_PATTERN)
+            label = match[1]
+            content = match[2]
+
+            footnote_node = Node.new(Node::Type::FootnoteDefinition)
+            footnote_node.open = false
+            footnote_node.data["label"] = label
+            footnote_node.text = content
+
+            # Append footnote definition as child of the document
+            @document.append_child(footnote_node)
+            footnote_found = true
+          else
+            remaining_lines << line
+          end
+        end
+
+        if footnote_found
+          remaining_text = remaining_lines.join("\n")
+          if remaining_text.strip.empty?
+            node.unlink
+          else
+            node.text = remaining_text.ends_with?("\n") ? remaining_text : remaining_text + "\n"
+          end
         end
       end
 

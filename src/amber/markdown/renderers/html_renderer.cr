@@ -4,6 +4,11 @@ module Amber::Markdown
   class HTMLRenderer < Renderer
     @disable_tag = 0
     @last_output = "\n"
+    @footnote_references = [] of String
+    @footnote_definitions = {} of String => String
+    @toc_entries = [] of {level: Int32, text: String, anchor: String}
+    @collecting_heading_text = false
+    @heading_text_builder = String::Builder.new
 
     HEADINGS = %w(h1 h2 h3 h4 h5 h6)
 
@@ -13,7 +18,16 @@ module Amber::Markdown
         newline
         tag(tag_name, attrs(node))
         toc(node) if @options.toc
+        @collecting_heading_text = true
+        @heading_text_builder = String::Builder.new
       else
+        if @collecting_heading_text
+          @collecting_heading_text = false
+          heading_text = @heading_text_builder.to_s
+          level = node.data["level"].as(Int32)
+          anchor = heading_anchor(heading_text)
+          @toc_entries << {level: level, text: heading_text, anchor: anchor}
+        end
         tag(tag_name, end_tag: true)
         newline
       end
@@ -31,26 +45,34 @@ module Amber::Markdown
 
     def code_block(node : Node, entering : Bool)
       languages = node.fence_language ? node.fence_language.split : nil
-      code_tag_attrs = attrs(node)
-      pre_tag_attrs = if @options.prettyprint?
-                        {"class" => "prettyprint"}
-                      else
-                        nil
-                      end
-
       lang = code_block_language(languages)
-      if lang
-        code_tag_attrs ||= {} of String => String
-        code_tag_attrs["class"] = "language-#{escape(lang)}"
-      end
 
-      newline
-      tag("pre", pre_tag_attrs) do
-        tag("code", code_tag_attrs) do
-          code_block_body(node, lang)
+      if highlighter = @options.code_highlighter
+        newline
+        highlighted = highlighter.call(node.text, lang || "")
+        literal(highlighted)
+        newline
+      else
+        code_tag_attrs = attrs(node)
+        pre_tag_attrs = if @options.prettyprint?
+                          {"class" => "prettyprint"}
+                        else
+                          nil
+                        end
+
+        if lang
+          code_tag_attrs ||= {} of String => String
+          code_tag_attrs["class"] = "language-#{escape(lang)}"
         end
+
+        newline
+        tag("pre", pre_tag_attrs) do
+          tag("code", code_tag_attrs) do
+            code_block_body(node, lang)
+          end
+        end
+        newline
       end
-      newline
     end
 
     def code_block_language(languages)
@@ -212,6 +234,9 @@ module Amber::Markdown
 
     def text(node : Node, entering : Bool)
       output(node.text)
+      if @collecting_heading_text
+        @heading_text_builder << node.text
+      end
     end
 
     def table(node : Node, entering : Bool)
@@ -271,6 +296,74 @@ module Amber::Markdown
 
     def strikethrough(node : Node, entering : Bool)
       tag("del", end_tag: !entering)
+    end
+
+    def footnote_reference(node : Node, entering : Bool)
+      return unless entering
+
+      label = node.data["label"].as(String)
+      # Track the reference order for numbering
+      index = @footnote_references.index(label)
+      unless index
+        @footnote_references << label
+        index = @footnote_references.size - 1
+      end
+      number = index + 1
+
+      literal(%(<sup class="footnote-ref"><a href="#fn-#{escape(label)}" id="fnref-#{escape(label)}">#{number}</a></sup>))
+    end
+
+    def footnote_definition(node : Node, entering : Bool)
+      return unless entering
+
+      label = node.data["label"].as(String)
+      @footnote_definitions[label] = node.text
+    end
+
+    # Returns the collected TOC entries for generating a table of contents.
+    def toc_entries
+      @toc_entries
+    end
+
+    # Generates the TOC HTML string from collected heading entries.
+    def generate_toc_html : String
+      return "" if @toc_entries.empty?
+
+      io = String::Builder.new
+      io << %(<ul class="toc">\n)
+      @toc_entries.each do |entry|
+        io << %(<li class="toc-level-#{entry[:level]}"><a href="#anchor-#{entry[:anchor]}">#{escape(entry[:text])}</a></li>\n)
+      end
+      io << %(</ul>\n)
+      io.to_s
+    end
+
+    # Render the document and append footnotes section if needed.
+    def render(document : Node)
+      html = super
+
+      # Append footnotes section if any footnotes were referenced
+      unless @footnote_references.empty?
+        footnotes_io = String::Builder.new
+        footnotes_io << %(\n<section class="footnotes">\n<ol>\n)
+        @footnote_references.each_with_index do |label, index|
+          number = index + 1
+          content = @footnote_definitions[label]? || ""
+          footnotes_io << %(<li id="fn-#{escape(label)}">\n<p>#{escape(content)} <a href="#fnref-#{escape(label)}">&#8617;</a></p>\n</li>\n)
+        end
+        footnotes_io << %(</ol>\n</section>\n)
+        html += footnotes_io.to_s
+      end
+
+      html
+    end
+
+    private def heading_anchor(text : String) : String
+      {% if Crystal::VERSION < "1.2.0" %}
+        URI.encode(text)
+      {% else %}
+        URI.encode_path(text)
+      {% end %}
     end
 
     private def tag(name : String, attrs = nil, self_closing = false, end_tag = false)

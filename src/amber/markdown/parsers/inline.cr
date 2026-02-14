@@ -45,7 +45,7 @@ module Amber::Markdown::Parser
             when '\'', '"'
               @options.smart? && handle_delim(char, node)
             when '['
-              open_bracket(node)
+              footnote_reference(node) || open_bracket(node)
             when '!'
               bang(node)
             when ']'
@@ -55,7 +55,7 @@ module Amber::Markdown::Parser
             when '&'
               entity(node)
             else
-              string(node)
+              bare_url_autolink(node) || string(node)
             end
 
       unless res
@@ -457,6 +457,68 @@ module Amber::Markdown::Parser
       false
     end
 
+    BARE_URL_PATTERN   = /^(?:https?:\/\/|www\.)[^\s<>\[\]]*[^\s<>\[\].,;:!?\)'"]/
+    BARE_EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*/
+
+    private def bare_url_autolink(node : Node)
+      # Only try to match bare URLs at certain positions:
+      # - Start of string or after whitespace/punctuation
+      if @pos > 0
+        prev_char = char_at?(@pos - 1)
+        return false if prev_char && !prev_char.ascii_whitespace? && prev_char != '(' && prev_char != '"' && prev_char != '\''
+
+        # Don't match inside failed angle bracket autolinks (e.g. "< http://... >")
+        if prev_char && prev_char.ascii_whitespace?
+          # Look back for a '<' before the whitespace
+          check_pos = @pos - 1
+          while check_pos > 0
+            c = char_at?(check_pos - 1)
+            break unless c && c.ascii_whitespace?
+            check_pos -= 1
+          end
+          if check_pos > 0 && char_at?(check_pos - 1) == '<'
+            return false
+          end
+        end
+      end
+
+      text_from_pos = @text.byte_slice(@pos)
+
+      if url_match = text_from_pos.match(BARE_URL_PATTERN)
+        url = url_match[0]
+        @pos += url.bytesize
+
+        destination = url.starts_with?("www.") ? "http://#{url}" : url
+
+        link_node = Node.new(Node::Type::Link)
+        link_node.data["title"] = ""
+        link_node.data["destination"] = normalize_uri(destination)
+        link_node.append_child(text(url))
+        node.append_child(link_node)
+        return true
+      end
+
+      false
+    end
+
+    FOOTNOTE_REF_PATTERN = /^\[\^([^\s\]]+)\]/
+
+    private def footnote_reference(node : Node)
+      text_from_pos = @text.byte_slice(@pos)
+
+      if ref_match = text_from_pos.match(FOOTNOTE_REF_PATTERN)
+        label = ref_match[1]
+        @pos += ref_match[0].bytesize
+
+        ref_node = Node.new(Node::Type::FootnoteReference)
+        ref_node.data["label"] = label
+        node.append_child(ref_node)
+        return true
+      end
+
+      false
+    end
+
     private def html_tag(node : Node)
       if text = match(Rule::HTML_TAG)
         child = Node.new(Node::Type::HTMLInline)
@@ -804,6 +866,16 @@ module Amber::Markdown::Parser
       # This is the same as match(/^[^\n`\[\]\\!<&*_'"]+/m) but done manually (faster)
       start_pos = @pos
       while (char = char_at?(@pos)) && main_char?(char)
+        # Stop before potential bare URL starts (after whitespace or at start)
+        if (char == 'h' || char == 'w') && @pos > start_pos
+          prev = char_at?(@pos - 1)
+          if prev && (prev.ascii_whitespace? || prev == '(')
+            remaining = @text.byte_slice(@pos)
+            if remaining.starts_with?("http://") || remaining.starts_with?("https://") || remaining.starts_with?("www.")
+              break
+            end
+          end
+        end
         @pos += 1
       end
 

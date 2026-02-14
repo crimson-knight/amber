@@ -42,6 +42,12 @@ module Amber::Markdown
     # of a Markdown document.
     property base_url : URI?
 
+    # Optional callback for syntax highlighting of fenced code blocks.
+    # The proc receives the code content and language string, and should
+    # return highlighted HTML. When set, the renderer will use this
+    # instead of the default `<pre><code>` wrapping.
+    property code_highlighter : Proc(String, String, String)?
+
     def initialize(
       @time = false,
       @gfm = false,
@@ -51,6 +57,7 @@ module Amber::Markdown
       @safe = false,
       @prettyprint = false,
       @base_url = nil,
+      @code_highlighter = nil,
     )
     end
   end

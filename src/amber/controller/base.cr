@@ -18,6 +18,7 @@ module Amber::Controller
     include Helpers::FormHelpers
     include Helpers::URLHelpers
     include Helpers::AssetHelpers
+    include Helpers::MarkdownHelper
     include Callbacks
 
     protected getter context : HTTP::Server::Context
