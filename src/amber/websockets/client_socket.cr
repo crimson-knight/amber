@@ -7,9 +7,14 @@ module Amber
     # Example:
     #
     # ```
-    # struct UserSocket < Amber::Websockets::ClientSocket
+    # struct UserSocket < Amber::WebSockets::ClientSocket
     #   channel "user_channel:*", UserChannel
     #   channel "room_channel:*", RoomChannel
+    #
+    #   # Optional: override the default decoder
+    #   def self.decoder
+    #     Amber::WebSockets::Decoders::TextDecoder.new
+    #   end
     #
     #   def on_connect
     #     return some_auth_method!
@@ -25,6 +30,13 @@ module Amber
       MAX_SOCKET_IDLE_TIME = 100.seconds
       BEAT_INTERVAL        = 30.seconds
 
+      # Default reconnection window: how long a disconnected socket can reconnect
+      # and recover buffered messages.
+      RECONNECT_WINDOW = 60.seconds
+
+      # Default maximum number of messages to buffer during a disconnection.
+      DEFAULT_MESSAGE_BUFFER_SIZE = 100
+
       protected getter id : String
       getter socket : HTTP::WebSocket
       protected getter context : HTTP::Server::Context
@@ -34,7 +46,12 @@ module Amber
       protected getter cookies : Amber::Router::Cookies::Store?
       private property pongs = Array(Time).new
       private property pings = Array(Time).new
-      
+
+      # A stable identifier that persists across reconnections.
+      # When a client reconnects, it can present its connection_id to
+      # resume a previous session.
+      getter connection_id : String
+
       # Each socket instance has its own channels (instances created from registered classes)
       property channels = Hash(String, Channel).new
 
@@ -50,6 +67,22 @@ module Amber
       def self.get_topic_channel(topic_path)
         topic_channels = @@registered_channel_classes.select { |ch| WebSockets.topic_path(ch[:path]) == topic_path }
         return topic_channels[0][:channel_class].new(topic_path) if !topic_channels.empty?
+      end
+
+      # Returns the decoder instance for this socket type.
+      # Override in subclasses to use a different decoder.
+      #
+      # Example:
+      #
+      # ```
+      # struct BinarySocket < Amber::WebSockets::ClientSocket
+      #   def self.decoder
+      #     Amber::WebSockets::Decoders::BinaryDecoder.new
+      #   end
+      # end
+      # ```
+      def self.decoder : Decoders::Decoder
+        Decoders::JsonDecoder.new
       end
 
       # Helper method to get a channel instance for this socket
@@ -77,16 +110,36 @@ module Amber
 
       def initialize(@socket, @context)
         @id = UUID.random.to_s
+        @connection_id = UUID.random.to_s
         @subscription_manager = SubscriptionManager.new
         @raw_params = @context.params
         @params = Amber::Validators::Params.new(@raw_params)
-        
+
         # Instantiate channels for this socket from registered channel classes
         @@registered_channel_classes.each do |channel_info|
           topic_path = WebSockets.topic_path(channel_info[:path])
           @channels[topic_path] = channel_info[:channel_class].new(topic_path)
         end
-        
+
+        @socket.on_pong do
+          @pongs.push(Time.utc)
+          @pongs.delete_at(0) if @pongs.size > 3
+        end
+      end
+
+      # Initialize with an existing connection_id for reconnection.
+      def initialize(@socket, @context, @connection_id)
+        @id = UUID.random.to_s
+        @subscription_manager = SubscriptionManager.new
+        @raw_params = @context.params
+        @params = Amber::Validators::Params.new(@raw_params)
+
+        # Instantiate channels for this socket from registered channel classes
+        @@registered_channel_classes.each do |channel_info|
+          topic_path = WebSockets.topic_path(channel_info[:path])
+          @channels[topic_path] = channel_info[:channel_class].new(topic_path)
+        end
+
         @socket.on_pong do
           @pongs.push(Time.utc)
           @pongs.delete_at(0) if @pongs.size > 3
@@ -100,6 +153,25 @@ module Amber
 
       # On socket disconnect functionality
       def on_disconnect; end
+
+      # Called when a previously disconnected socket reconnects within the
+      # reconnection window. Override to restore channel state, send missed
+      # data, or notify other users.
+      def on_reconnect; end
+
+      # Called when an error occurs at the socket level (outside of a channel).
+      # Override to implement custom error reporting.
+      #
+      # The default implementation logs the error.
+      def on_error(ex : Exception)
+        Log.error(exception: ex) { "Socket error for #{@id}: #{ex.message}" }
+      end
+
+      # Override to implement custom error handling logic. This is a hook
+      # that allows subclasses to report errors to external services.
+      def handle_error(ex : Exception, context : String = "unknown")
+        Log.error(exception: ex) { "Socket #{@id} error in #{context}: #{ex.message}" }
+      end
 
       protected def session
         @session ||= @context.session
@@ -137,13 +209,19 @@ module Amber
         if @socket.closed?
           Log.error { "Ignoring message sent to closed socket" }
         else
-          @subscription_manager.dispatch self, decode_message(message)
+          decoded = decode_message(message)
+          @subscription_manager.dispatch self, decoded
         end
+      rescue ex : Decoders::DecoderError
+        on_error(ex)
+        handle_error(ex, "message_decoding")
+      rescue ex : Exception
+        on_error(ex)
+        handle_error(ex, "message_handling")
       end
 
       protected def decode_message(message)
-        # TODO: implement different decoders
-        JSON.parse(message)
+        self.class.decoder.decode(message)
       end
 
       private def check_alive!
