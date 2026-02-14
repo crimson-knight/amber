@@ -104,5 +104,13 @@ module Amber::Environment
     def logging
       @_logging ||= Logging.new(@logging_config)
     end
+
+    # Returns the jobs configuration.
+    # This delegates to the Amber::Jobs module configuration.
+    @[YAML::Field(ignore: true)]
+    @_jobs : Amber::Jobs::Configuration?
+    def jobs : Amber::Jobs::Configuration
+      @_jobs ||= Amber::Jobs.configuration
+    end
   end
 end
