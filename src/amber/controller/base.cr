@@ -52,5 +52,15 @@ module Amber::Controller
       # The SchemaIntegration module handles params through its override
       @original_params = Amber::Validators::Params.new(context.params)
     end
+
+    # Named route path helper - generates a path string for the given named route.
+    def route_path(name : Symbol, **params) : String
+      Amber::Router::NamedRoutes.path(name, **params)
+    end
+
+    # Named route URL helper - generates a full URL for the given named route.
+    def route_url(name : Symbol, **params) : String
+      Amber::Router::NamedRoutes.url(name, **params)
+    end
   end
 end

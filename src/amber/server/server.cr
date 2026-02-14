@@ -38,7 +38,7 @@ module Amber
       # Initialize pub/sub adapter based on configuration
       pubsub_config = settings.pubsub
       adapter_name = pubsub_config[:adapter]
-      
+
       if adapter_name && adapter_name != "legacy"
         @adapter_based_pubsub = Amber::Adapters::AdapterFactory.create_pubsub_adapter(adapter_name)
       end
@@ -50,6 +50,11 @@ module Amber
 
     def self.handler
       instance.handler
+    end
+
+    # Returns all registered routes as structured data for introspection.
+    def self.all_routes : Array(Router::RouteInfo)
+      instance.router.all_routes
     end
 
     def initialize
