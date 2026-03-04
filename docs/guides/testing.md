@@ -338,3 +338,149 @@ end
 - `src/amber/testing/test_response.cr` -- TestResponse wrapper class
 - `src/amber/testing/websocket_helpers.cr` -- WebSocket testing helpers
 - `src/amber/testing/context_builder.cr` -- Fluent context builder
+
+## Process Manager Testing
+
+Process managers are not controllers. They do not handle HTTP requests, they do not participate in the Amber routing pipeline, and they do not need `RequestHelpers` or a running server. A process manager is a plain Crystal class that receives its dependencies through `initialize`, does its work in `perform`, and exposes results as public properties.
+
+### Testing Pattern
+
+1. Construct the process manager with all dependencies passed as data (arrays, hashes, structs, or model instances).
+2. Call `perform`.
+3. Assert on the public properties that hold results.
+
+```crystal
+require "spec"
+require "../src/my_app"
+
+describe Billing::ProcessCustomersWithExpiredPaymentMethods do
+  it "retries payment for customers with expired cards" do
+    customers = [build_customer(expired: true), build_customer(expired: false)]
+    pm = Billing::ProcessCustomersWithExpiredPaymentMethods.new(customers)
+    pm.perform
+    pm.collection_of_customers_that_were_successfully_retried.size.should be > 0
+  end
+
+  it "skips customers with valid payment methods" do
+    customers = [build_customer(expired: false)]
+    pm = Billing::ProcessCustomersWithExpiredPaymentMethods.new(customers)
+    pm.perform
+    pm.collection_of_customers_that_were_successfully_retried.size.should eq(0)
+  end
+
+  it "records failures for customers that could not be retried" do
+    customers = [build_customer(expired: true, will_fail: true)]
+    pm = Billing::ProcessCustomersWithExpiredPaymentMethods.new(customers)
+    pm.perform
+    pm.collection_of_customers_that_failed_retry.size.should eq(1)
+  end
+end
+```
+
+### Why No Server Is Needed
+
+In FSDD, all business logic lives in process managers. Controllers only validate input and delegate to a process manager. This means you can test 100% of your business logic by constructing process managers directly, with no HTTP layer involved.
+
+```crystal
+# Controller (thin -- delegates immediately)
+class BillingController < Amber::Controller::Base
+  def retry_expired
+    pm = Billing::ProcessCustomersWithExpiredPaymentMethods.new(Customer.expired)
+    pm.perform
+    respond_with { json pm.summary.to_json }
+  end
+end
+
+# The spec tests the PM, not the controller
+describe Billing::ProcessCustomersWithExpiredPaymentMethods do
+  it "processes the batch" do
+    pm = Billing::ProcessCustomersWithExpiredPaymentMethods.new(test_data)
+    pm.perform
+    pm.summary[:processed].should be > 0
+  end
+end
+```
+
+## Feature Story Test Mapping
+
+FSDD ties every spec file and describe block back to a feature story. This makes it straightforward to verify coverage and trace failures to requirements.
+
+### Spec File Naming
+
+Organize spec files by feature area, with one file per story or per closely related group of stories:
+
+```
+spec/
+  billing/
+    retry_expired_payments_spec.cr      # Story: retry expired payments
+    generate_monthly_invoices_spec.cr   # Story: generate monthly invoices
+  onboarding/
+    create_account_spec.cr              # Story: create account
+    verify_email_spec.cr                # Story: verify email
+  spec_helper.cr
+```
+
+### Describe Blocks Reference Story IDs
+
+Include the story identifier in your top-level describe block so that test output maps directly to the feature story document:
+
+```crystal
+describe "Story 3.2 -- Retry expired payment methods" do
+  it "retries each expired customer" do
+    # ...
+  end
+
+  it "skips already-retried customers" do
+    # ...
+  end
+end
+```
+
+### Coverage Tables in Feature Story Docs
+
+Each feature story document includes a test mapping table that lists every acceptance criterion and the spec that covers it:
+
+| Acceptance Criterion | Spec File | Describe / It Block |
+|---------------------|-----------|-------------------|
+| Expired cards are retried | `spec/billing/retry_expired_payments_spec.cr` | "retries each expired customer" |
+| Valid cards are skipped | `spec/billing/retry_expired_payments_spec.cr` | "skips customers with valid payment methods" |
+| Failures are recorded | `spec/billing/retry_expired_payments_spec.cr` | "records failures for customers that could not be retried" |
+
+## Native App Testing
+
+Amber patterns work outside of the HTTP server. Projects like Scribe use Amber's controllers, models, process managers, and configuration system for a native macOS menu bar app without ever starting `Amber::Server`.
+
+### Process Managers Are Framework-Agnostic
+
+Because process managers receive all dependencies through `initialize` and expose results as properties, the exact same test patterns work whether the app is a web server, a native desktop app, or a mobile companion app:
+
+```crystal
+# This spec is identical whether the host is a web app or a native app
+describe Transcription::ProcessAudioFile do
+  it "produces a transcript from a WAV file" do
+    pm = Transcription::ProcessAudioFile.new(audio_path: "/tmp/test.wav")
+    pm.perform
+    pm.transcript.should_not be_empty
+  end
+end
+```
+
+### Asset Pipeline test_id Integration
+
+When building cross-platform UI with the AssetPipeline, set `test_id` on views in Crystal. The test_id maps to the native test attribute on each platform (see the AssetPipeline Testing Guide for the full mapping table). This lets you write platform UI tests (XCUITest, Compose) that query elements by the same identifier you defined in Crystal.
+
+```crystal
+button = UI::Button.new
+button.title = "Record"
+button.test_id = "7.1-record-button"
+```
+
+The XCUITest, Compose UI test, or browser test then queries this identifier using the platform-native method, without needing to know how the Crystal layout code is structured.
+
+### Test Layers for Native Apps
+
+Native apps follow the same three-layer test strategy as web apps:
+
+- **Layer 1 -- Crystal specs:** Test process managers, models, and view properties directly. No hardware, no UI framework.
+- **Layer 2 -- Platform UI tests:** XCUITest (Apple) or Compose instrumented tests (Android) that interact with the running app and query elements by test_id.
+- **Layer 3 -- End-to-end scripts:** Shell scripts that build, deploy, and run Layer 2 tests on simulators or devices.
