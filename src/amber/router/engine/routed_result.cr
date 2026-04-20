@@ -2,12 +2,26 @@ module Amber::Router
   class RoutedResult(T)
     include Comparable(RoutedResult)
 
-    getter params = {} of String => String
+    @params : Hash(String, String)?
 
     def initialize(@terminal_segment : TerminalSegment(T)?)
     end
 
-    delegate :[]?, :[], :[]=, to: @params
+    def params : Hash(String, String)
+      @params ||= {} of String => String
+    end
+
+    def []?(key : String) : String?
+      @params.try &.[key]?
+    end
+
+    def [](key : String) : String
+      params[key]
+    end
+
+    def []=(key : String, value : String) : String
+      params[key] = value
+    end
 
     def terminal_segment
       @terminal_segment.not_nil!

@@ -71,12 +71,13 @@ python3 - "$compiler_path" "$repo_root" <<'PY'
 import os
 import pathlib
 import subprocess
+import time
 import sys
 import tempfile
 
 compiler = sys.argv[1]
 repo_root = sys.argv[2]
-workdir = pathlib.Path(tempfile.mkdtemp(prefix="amber-router-doctor-"))
+workdir = pathlib.Path(tempfile.mkdtemp(prefix="amber-router-doctor-", dir="/tmp"))
 binary = workdir / "smoke"
 
 env = os.environ.copy()
@@ -105,23 +106,33 @@ if build.returncode != 0:
 
 print(f"Build succeeded: {binary}")
 
-try:
-    run = subprocess.run(
-        [str(binary)],
-        cwd=repo_root,
-        env=env,
-        capture_output=True,
-        text=True,
-        timeout=5,
-    )
-except subprocess.TimeoutExpired:
-    print(
-        "\nRuntime smoke test timed out after launch.\n"
-        "The compiler produced a runnable binary, but this machine is stalling "
-        "or blocking newly built executables. Fix the local execution policy "
-        "before trusting benchmark runs."
-    )
-    sys.exit(2)
+attempts = [(5, 0), (10, 2), (10, 2)]
+run = None
+for index, (timeout, delay) in enumerate(attempts, start=1):
+    if delay:
+        time.sleep(delay)
+
+    try:
+        run = subprocess.run(
+            [str(binary)],
+            cwd=repo_root,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        if index > 1:
+            print(f"\nRuntime smoke test passed on retry {index}.")
+        break
+    except subprocess.TimeoutExpired:
+        if index == len(attempts):
+            print(
+                "\nRuntime smoke test timed out after repeated launch attempts.\n"
+                "The compiler produced a runnable binary, but this machine is "
+                "stalling or blocking newly built executables. Fix the local "
+                "execution policy before trusting benchmark runs."
+            )
+            sys.exit(2)
 
 if run.returncode != 0:
     print("\nRuntime smoke test failed.\n")

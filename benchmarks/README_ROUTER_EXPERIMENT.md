@@ -30,6 +30,13 @@ Longer comparison:
 bash benchmarks/bin/router_strategy_compare.sh --compiler acrystal --tiers=100,1000,5000,10000 --warmup=2 --calc=5
 ```
 
+Build once, run manually:
+
+```bash
+bash benchmarks/bin/router_strategy_build.sh --compiler crystal --output /tmp/router_strategy_compare.crystal
+AMBER_BENCH_COMPILER=/opt/homebrew/bin/crystal /tmp/router_strategy_compare.crystal --tiers=100,1000,5000,10000 --warmup=2 --calc=5
+```
+
 Targeted parity spec:
 
 ```bash
@@ -48,6 +55,9 @@ bash benchmarks/bin/crystal_runtime_doctor.sh --compiler acrystal
 - The benchmark wrapper normalizes the macOS toolchain so both Homebrew
   `crystal` and `acrystal` use the same Xcode SDK and `pkg-config` path without
   accidentally picking up a mismatched Homebrew `lld`.
+- The dedicated build script is useful when the local environment can build a
+  benchmark binary reliably but has trouble with `crystal run` launching it in
+  the same process. Build first, then execute the produced binary separately.
 - The doctor script builds and runs a tiny Crystal program before the real
   benchmark. If that smoke test times out, the problem is the local machine's
   executable launch policy rather than the Amber benchmark harness.

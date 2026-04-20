@@ -239,7 +239,7 @@ module Amber::Router
 
     protected def select_best_route(path : Array(String), path_offset = 0) : RoutedResult(T)?
       accepting_terminal_segments = path_offset == path.size
-      can_recurse = path_offset <= path.size - 1
+      can_recurse = path_offset < path.size
 
       best : RoutedResult(T)? = nil
 
@@ -263,7 +263,7 @@ module Amber::Router
           next unless segment.match?(current_segment)
 
           if candidate = segment.route_set.select_best_route(path, path_offset + 1)
-            candidate[segment.parameter] = URI.decode(current_segment)
+            candidate[segment.parameter] = decode_if_escaped(current_segment)
             best = pick_better_route(best, candidate)
           end
         end
@@ -271,7 +271,7 @@ module Amber::Router
         if glob = @glob_segment
           if glob_match = glob.route_set.reverse_select_best_route(path)
             if glob.parametric?
-              glob_match.routed_result[glob.parameter] = URI.decode(path[path_offset..glob_match.match_position].join('/'))
+              glob_match.routed_result[glob.parameter] = decode_joined_path(path, path_offset, glob_match.match_position)
             end
 
             best = pick_better_route(best, glob_match.routed_result)
@@ -353,6 +353,15 @@ module Amber::Router
     # ditto
     def add(path, payload : T, constraints : Hash(Symbol, Regex) | NamedTuple) : Nil
       add_route path, payload, constraints.to_h.transform_keys(&.to_s)
+    end
+
+    private def decode_if_escaped(value : String) : String
+      value.includes?('%') ? URI.decode(value) : value
+    end
+
+    private def decode_joined_path(path : Array(String), start_index : Int32, end_index : Int32) : String
+      value = path[start_index..end_index].join('/')
+      decode_if_escaped(value)
     end
 
     # Recursively find or create subtrees matching a given path, and store the
