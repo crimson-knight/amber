@@ -1,0 +1,319 @@
+{
+  "metadata": {
+    "compiler": "/opt/homebrew/bin/acrystal",
+    "crystal_version": "1.20.0-dev",
+    "generated_at_utc": "2026-04-20T18:44:36Z",
+    "tiers": [
+      100,
+      1000,
+      5000,
+      10000
+    ],
+    "warmup_seconds": 1.0,
+    "calculation_seconds": 1.0,
+    "strategies": [
+      "current_find",
+      "experimental_best"
+    ]
+  },
+  "summary": {
+    "ips": {
+      "mean_ratio": 1.3556463168211932,
+      "geometric_ratio": 1.3335728466683245
+    },
+    "memory": {
+      "mean_ratio": 0.0,
+      "geometric_ratio": 0.0
+    }
+  },
+  "results": [
+    {
+      "tier": 100,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "fixed",
+      "registration_ms": 0.078042,
+      "ips": 3397463.9173200745,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 100,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "variable",
+      "registration_ms": 0.078042,
+      "ips": 4795319.827930138,
+      "memory_bytes": 16.0
+    },
+    {
+      "tier": 100,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "glob",
+      "registration_ms": 0.078042,
+      "ips": 2306361.0000770623,
+      "memory_bytes": 96.0
+    },
+    {
+      "tier": 100,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "notfound",
+      "registration_ms": 0.078042,
+      "ips": 5661797.732386885,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 100,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "fixed",
+      "registration_ms": 0.078042,
+      "ips": 5861416.744304322,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 100,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "variable",
+      "registration_ms": 0.078042,
+      "ips": 6685099.8190381685,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 100,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "glob",
+      "registration_ms": 0.078042,
+      "ips": 2803332.867449079,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 100,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "notfound",
+      "registration_ms": 0.078042,
+      "ips": 5981251.006592787,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "fixed",
+      "registration_ms": 0.438541,
+      "ips": 2849394.607483374,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "variable",
+      "registration_ms": 0.438541,
+      "ips": 4014231.615894498,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "glob",
+      "registration_ms": 0.438541,
+      "ips": 2000054.6974193717,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "notfound",
+      "registration_ms": 0.438541,
+      "ips": 4935659.982747131,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "fixed",
+      "registration_ms": 0.438541,
+      "ips": 4855963.364351669,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "variable",
+      "registration_ms": 0.438541,
+      "ips": 5528446.196162296,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "glob",
+      "registration_ms": 0.438541,
+      "ips": 2494508.742527164,
+      "memory_bytes": 4096.0
+    },
+    {
+      "tier": 1000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "notfound",
+      "registration_ms": 0.438541,
+      "ips": 4926195.851082887,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "fixed",
+      "registration_ms": 2.632625,
+      "ips": 2480031.6398734944,
+      "memory_bytes": 4096.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "variable",
+      "registration_ms": 2.632625,
+      "ips": 3459023.516099226,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "glob",
+      "registration_ms": 2.632625,
+      "ips": 1734547.9477569067,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "notfound",
+      "registration_ms": 2.632625,
+      "ips": 4419657.98806264,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "fixed",
+      "registration_ms": 2.632625,
+      "ips": 4243101.113828946,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "variable",
+      "registration_ms": 2.632625,
+      "ips": 4970324.711900323,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "glob",
+      "registration_ms": 2.632625,
+      "ips": 2205890.491668513,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 5000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "notfound",
+      "registration_ms": 2.632625,
+      "ips": 4643807.868172297,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "fixed",
+      "registration_ms": 6.741917,
+      "ips": 2155358.842837121,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "variable",
+      "registration_ms": 6.741917,
+      "ips": 2968936.9716640287,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "glob",
+      "registration_ms": 6.741917,
+      "ips": 1539946.3067434316,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "current_find",
+      "strategy_label": "Current find",
+      "lookup_type": "notfound",
+      "registration_ms": 6.741917,
+      "ips": 3805362.2068134467,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "fixed",
+      "registration_ms": 6.741917,
+      "ips": 3667133.630516279,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "variable",
+      "registration_ms": 6.741917,
+      "ips": 4389472.601909879,
+      "memory_bytes": 4032.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "glob",
+      "registration_ms": 6.741917,
+      "ips": 1909435.7570651523,
+      "memory_bytes": 0.0
+    },
+    {
+      "tier": 10000,
+      "strategy": "experimental_best",
+      "strategy_label": "Experimental best",
+      "lookup_type": "notfound",
+      "registration_ms": 6.741917,
+      "ips": 4118595.144521164,
+      "memory_bytes": 0.0
+    }
+  ]
+}
