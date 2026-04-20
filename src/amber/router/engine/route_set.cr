@@ -199,6 +199,16 @@ module Amber::Router
       end
     end
 
+    # Experimental matcher that keeps only the current winning route instead of
+    # collecting every possible match and sorting afterward.
+    #
+    # This gives us a stable side-by-side strategy to benchmark while keeping
+    # the production matcher unchanged for comparison.
+    def find_experimental_best(path : String) : RoutedResult(T)
+      segments = split_path path
+      select_best_route(segments) || RoutedResult(T).new(nil)
+    end
+
     # Returns the routes which are compatible with the provided *path*.
     def find_routes(path : String) : Array(RoutedResult(T))
       select_routes split_path path
@@ -227,8 +237,98 @@ module Amber::Router
       result
     end
 
+    protected def select_best_route(path : Array(String), path_offset = 0) : RoutedResult(T)?
+      accepting_terminal_segments = path_offset == path.size
+      can_recurse = path_offset <= path.size - 1
+
+      best : RoutedResult(T)? = nil
+
+      if accepting_terminal_segments
+        @terminal_segments.each do |terminal|
+          candidate = RoutedResult(T).new(terminal)
+          best = pick_better_route(best, candidate)
+        end
+      end
+
+      if can_recurse
+        current_segment = path[path_offset]
+
+        if fixed = @fixed_segments[current_segment]?
+          if candidate = fixed.route_set.select_best_route(path, path_offset + 1)
+            best = pick_better_route(best, candidate)
+          end
+        end
+
+        @variable_segments.each do |segment|
+          next unless segment.match?(current_segment)
+
+          if candidate = segment.route_set.select_best_route(path, path_offset + 1)
+            candidate[segment.parameter] = URI.decode(current_segment)
+            best = pick_better_route(best, candidate)
+          end
+        end
+
+        if glob = @glob_segment
+          if glob_match = glob.route_set.reverse_select_best_route(path)
+            if glob.parametric?
+              glob_match.routed_result[glob.parameter] = URI.decode(path[path_offset..glob_match.match_position].join('/'))
+            end
+
+            best = pick_better_route(best, glob_match.routed_result)
+          end
+        end
+      end
+
+      best
+    end
+
+    protected def reverse_select_best_route(path : Array(String)) : GlobMatch(T)?
+      best : GlobMatch(T)? = nil
+
+      @terminal_segments.each do |terminal|
+        candidate = GlobMatch(T).new(terminal, path)
+        best = pick_better_glob_match(best, candidate)
+      end
+
+      @fixed_segments.each_value do |segment|
+        if glob_match = segment.route_set.reverse_select_best_route(path)
+          if segment.match?(glob_match.current_segment)
+            glob_match.match_position -= 1
+            best = pick_better_glob_match(best, glob_match)
+          end
+        end
+      end
+
+      @variable_segments.each do |segment|
+        if glob_match = segment.route_set.reverse_select_best_route(path)
+          if segment.match?(glob_match.current_segment)
+            if segment.parametric?
+              # Keep behavior aligned with the existing implementation: defer
+              # decoding until the forward glob route is finalized.
+              glob_match.routed_result[segment.parameter] = glob_match.current_segment
+            end
+
+            glob_match.match_position -= 1
+            best = pick_better_glob_match(best, glob_match)
+          end
+        end
+      end
+
+      best
+    end
+
     private def parse_subpaths(path : String) : Array(String)
       Parsers::OptionalSegmentResolver.resolve path
+    end
+
+    private def pick_better_route(current : RoutedResult(T)?, candidate : RoutedResult(T)) : RoutedResult(T)
+      return candidate if current.nil?
+      candidate.priority < current.priority ? candidate : current
+    end
+
+    private def pick_better_glob_match(current : GlobMatch(T)?, candidate : GlobMatch(T)) : GlobMatch(T)
+      return candidate if current.nil?
+      candidate.routed_result.priority < current.routed_result.priority ? candidate : current
     end
 
     private def add_route(path, payload : T, constraints : Hash(String, Regex)) : Nil
