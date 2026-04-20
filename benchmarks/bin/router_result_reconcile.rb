@@ -8,11 +8,18 @@ RESULTS_DIR = File.join(ROOT, "results")
 
 BASELINE_PATH = File.join(RESULTS_DIR, "baseline_expanded.json")
 FINAL_PATH = File.join(RESULTS_DIR, "final_expanded.json")
-CRYSTAL_V3_PATH = File.join(RESULTS_DIR, "strategy_compare_crystal_full_v3.json")
-ACRYSTAL_V3_PATH = File.join(RESULTS_DIR, "strategy_compare_acrystal_full_v3.json")
 
 LOOKUP_TYPES = %i[fixed variable glob notfound].freeze
 HISTORICAL_TIERS = [100, 5000, 10_000].freeze
+
+def latest_strategy_path(name)
+  candidates = [
+    File.join(RESULTS_DIR, "strategy_compare_#{name}_full_v4.json"),
+    File.join(RESULTS_DIR, "strategy_compare_#{name}_full_v3.json"),
+  ]
+
+  candidates.find { |path| File.exist?(path) } || candidates.first
+end
 
 def format_ratio(ratio)
   format("%.2fx", ratio)
@@ -63,15 +70,17 @@ end
 
 baseline = load_historical(BASELINE_PATH)
 internalized = load_historical(FINAL_PATH)
-crystal_current = load_strategy(CRYSTAL_V3_PATH, "current_find")
-crystal_experimental = load_strategy(CRYSTAL_V3_PATH, "experimental_best")
-acrystal_current = load_strategy(ACRYSTAL_V3_PATH, "current_find")
-acrystal_experimental = load_strategy(ACRYSTAL_V3_PATH, "experimental_best")
+crystal_path = latest_strategy_path("crystal")
+acrystal_path = latest_strategy_path("acrystal")
+crystal_current = load_strategy(crystal_path, "current_find")
+crystal_experimental = load_strategy(crystal_path, "experimental_best")
+acrystal_current = load_strategy(acrystal_path, "current_find")
+acrystal_experimental = load_strategy(acrystal_path, "experimental_best")
 
 puts "Amber router benchmark reconciliation"
 puts "Historical baseline: #{BASELINE_PATH}"
 puts "Internalized engine: #{FINAL_PATH}"
-puts "Current experiment: #{CRYSTAL_V3_PATH} and #{ACRYSTAL_V3_PATH}"
+puts "Current experiment: #{crystal_path} and #{acrystal_path}"
 puts
 puts "Note: historical and current experiment files were not recorded in the same"
 puts "session, so cumulative comparisons are derived rather than single-run measured."

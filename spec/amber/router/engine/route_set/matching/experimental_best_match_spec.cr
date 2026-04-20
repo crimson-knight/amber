@@ -53,4 +53,16 @@ describe "experimental best-match routing" do
     expect_same_match(router, "/get/posts/7")
     expect_same_match(router, "/get/posts/7/edit")
   end
+
+  it "matches overlapping constrained variable routes the same way" do
+    router = build do
+      add "/get/posts/:id", :generic_post
+      add "/get/posts/:page", :numeric_post, {page: /\d+/}
+      add "/get/posts/:slug", :slug_post, {slug: /\w+\-\w+/}
+    end
+
+    expect_same_match(router, "/get/posts/123")
+    expect_same_match(router, "/get/posts/hello-world")
+    expect_same_match(router, "/get/posts/plain")
+  end
 end

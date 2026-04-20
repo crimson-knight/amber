@@ -28,6 +28,7 @@ module Amber::Router
   class RouteSet(T)
     @trunk : RouteSet(T)?
     @route : T?
+    @min_priority : Int32
 
     # Split segment storage by type for faster lookups.
     # Fixed segments use a Hash for O(1) lookup (the common case).
@@ -41,6 +42,11 @@ module Amber::Router
 
     def initialize(@root = true)
       @insert_count = 0
+      @min_priority = Int32::MAX
+    end
+
+    def min_priority : Int32
+      @min_priority
     end
 
     # Look for or create a subtree matching a given segment.
@@ -254,13 +260,14 @@ module Amber::Router
         current_segment = path[path_offset]
 
         if fixed = @fixed_segments[current_segment]?
-          if candidate = fixed.route_set.select_best_route(path, path_offset + 1)
+          if branch_can_beat_route?(best, fixed.route_set.min_priority) && (candidate = fixed.route_set.select_best_route(path, path_offset + 1))
             best = pick_better_route(best, candidate)
           end
         end
 
         @variable_segments.each do |segment|
           next unless segment.match?(current_segment)
+          next unless branch_can_beat_route?(best, segment.route_set.min_priority)
 
           if candidate = segment.route_set.select_best_route(path, path_offset + 1)
             candidate[segment.parameter] = decode_if_escaped(current_segment)
@@ -269,7 +276,7 @@ module Amber::Router
         end
 
         if glob = @glob_segment
-          if glob_match = glob.route_set.reverse_select_best_route(path)
+          if branch_can_beat_route?(best, glob.route_set.min_priority) && (glob_match = glob.route_set.reverse_select_best_route(path))
             if glob.parametric?
               glob_match.routed_result[glob.parameter] = decode_joined_path(path, path_offset, glob_match.match_position)
             end
@@ -291,6 +298,8 @@ module Amber::Router
       end
 
       @fixed_segments.each_value do |segment|
+        next unless branch_can_beat_glob_match?(best, segment.route_set.min_priority)
+
         if glob_match = segment.route_set.reverse_select_best_route(path)
           if segment.match?(glob_match.current_segment)
             glob_match.match_position -= 1
@@ -300,6 +309,8 @@ module Amber::Router
       end
 
       @variable_segments.each do |segment|
+        next unless branch_can_beat_glob_match?(best, segment.route_set.min_priority)
+
         if glob_match = segment.route_set.reverse_select_best_route(path)
           if segment.match?(glob_match.current_segment)
             if segment.parametric?
@@ -329,6 +340,14 @@ module Amber::Router
     private def pick_better_glob_match(current : GlobMatch(T)?, candidate : GlobMatch(T)) : GlobMatch(T)
       return candidate if current.nil?
       candidate.routed_result.priority < current.routed_result.priority ? candidate : current
+    end
+
+    private def branch_can_beat_route?(current : RoutedResult(T)?, branch_min_priority : Int32) : Bool
+      current.nil? || branch_min_priority < current.priority
+    end
+
+    private def branch_can_beat_glob_match?(current : GlobMatch(T)?, branch_min_priority : Int32) : Bool
+      current.nil? || branch_min_priority < current.routed_result.priority
     end
 
     private def add_route(path, payload : T, constraints : Hash(String, Regex)) : Nil
@@ -367,6 +386,8 @@ module Amber::Router
     # Recursively find or create subtrees matching a given path, and store the
     # application route at the leaf. Uses an index to avoid O(n) Array#shift.
     protected def add(url_segments : Array(String), route : T, full_path : String, constraints : Hash(String, Regex), priority : Int32 = 0, index : Int32 = 0) : Nil
+      @min_priority = priority if priority < @min_priority
+
       if index >= url_segments.size
         segment = TerminalSegment(T).new(route, full_path, priority)
         @terminal_segments.push segment
