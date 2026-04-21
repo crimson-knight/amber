@@ -81,11 +81,48 @@ module Amber::Validators
 
   class Params
     getter raw_params : Amber::Router::Params
-    getter rules = [] of BaseRule
-    getter params = {} of String => String?
-    getter errors = [] of Error
+    @rules : Array(BaseRule)?
+    @params : Hash(String, String?)?
+    @errors : Array(Error)?
 
     def initialize(@raw_params); end
+
+    def rules
+      @rules ||= [] of BaseRule
+    end
+
+    def params
+      @params ||= {} of String => String?
+    end
+
+    def errors
+      @errors ||= [] of Error
+    end
+
+    @[AlwaysInline]
+    def [](key : String | Symbol)
+      @raw_params[key]
+    end
+
+    @[AlwaysInline]
+    def []?(key : String | Symbol)
+      @raw_params[key]?
+    end
+
+    @[AlwaysInline]
+    def has_key?(key : String | Symbol) : Bool
+      @raw_params.has_key?(key)
+    end
+
+    @[AlwaysInline]
+    def fetch_all(key : String | Symbol)
+      @raw_params.fetch_all(key)
+    end
+
+    @[AlwaysInline]
+    def json(key : String | Symbol)
+      @raw_params.json(key)
+    end
 
     # This will allow params to respond to HTTP::Params methods.
     # For example: [], []?, add, delete, each, fetch, etc.
@@ -125,18 +162,23 @@ module Amber::Validators
     # end
     # ```
     def valid?
-      @errors.clear
-      @params.clear
+      current_errors = errors
+      current_params = params
+      current_errors.clear
+      current_params.clear
 
-      @rules.each do |rule|
+      current_rules = @rules
+      return true unless current_rules && !current_rules.empty?
+
+      current_rules.each do |rule|
         unless rule.apply(raw_params)
-          @errors << rule.error
+          current_errors << rule.error
         end
 
-        @params[rule.field] = rule.value if rule.present
+        current_params[rule.field] = rule.value if rule.present
       end
 
-      errors.empty?
+      current_errors.empty?
     end
 
     # Validates each field with a given set of predicates returns true if the
@@ -146,11 +188,11 @@ module Amber::Validators
     # required(:email) { |p| p.email? & p.size.between? 1..10 }
     # ```
     def add_rule(rule : BaseRule)
-      @rules << rule
+      rules << rule
     end
 
     def to_h
-      @params
+      @params || ({} of String => String?)
     end
 
     def to_unsafe_h
