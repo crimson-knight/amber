@@ -4,20 +4,23 @@ module Amber::Router::Parsers
       json_params = Types::Params.new
 
       return json_params unless request_body = request.body
-      return json_params unless body = request_body.gets_to_end
+      body = request_body.gets_to_end
       return json_params unless body.size > 2
-      return json_params unless parsed = ::JSON.parse body
 
       json_params["_json"] = body
 
-      if parsed.as_h?
-        parsed.as_h.each do |key, value|
-          if value.as_s?
-            json_params[key.to_s] = value.as_s
-          else
-            json_params[key.to_s] = value.to_json
-          end
+      parser = ::JSON::PullParser.new(body)
+
+      if parser.kind.begin_object?
+        parser.read_object do |key, _|
+          json_params[key] = if parser.kind.string?
+                               parser.read_string
+                             else
+                               parser.read_raw
+                             end
         end
+      else
+        parser.skip
       end
 
       json_params

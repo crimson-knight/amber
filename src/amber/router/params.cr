@@ -2,6 +2,12 @@ require "http"
 require "./parsers/*"
 require "./file"
 
+class HTTP::Request
+  def matched_route_resolved? : Bool
+    !@matched_route.nil?
+  end
+end
+
 module Amber::Router
   module Types
     alias Key = String | Symbol
@@ -15,10 +21,21 @@ module Amber::Router
     MULTIPART_FORM   = "multipart/form-data"
     APPLICATION_JSON = "application/json"
 
+    private enum BodySource
+      None
+      Form
+      Multipart
+      Json
+    end
+
     @files = Types::Files.new
     @multipart : Types::Params?
     @json : Types::Params?
     @form : HTTP::Params?
+    @query : HTTP::Params?
+    @route : Types::Params?
+    @route_loaded = false
+    @body_source : BodySource?
 
     def initialize(@request : HTTP::Request)
     end
@@ -29,7 +46,23 @@ module Amber::Router
 
     def []?(key : Types::Key)
       _key = key.to_s
-      route[_key]? || override_method?(_key) || json[_key]?
+
+      if resolved_route = route_if_resolved
+        if value = resolved_route[_key]?
+          return value
+        end
+      end
+
+      case body_source
+      when .form?
+        query[_key]? || form[_key]? || route_lookup(_key)
+      when .multipart?
+        query[_key]? || multipart[_key]? || route_lookup(_key)
+      when .json?
+        query[_key]? || json[_key]? || route_lookup(_key)
+      else
+        query[_key]? || route_lookup(_key)
+      end
     end
 
     def files
@@ -61,13 +94,25 @@ module Amber::Router
     end
 
     def override_method?(key : Types::Key)
-      query[key]? || form[key]? || multipart[key]?
+      _key = key.to_s
+
+      if value = query[_key]?
+        return value
+      end
+
+      case body_source
+      when .form?
+        form[_key]?
+      when .multipart?
+        multipart[_key]?
+      else
+        nil
+      end
     end
 
     def to_h : Types::Params
       params_hash = Types::Params.new
       query.each { |key, _| params_hash[key] = query[key] }
-      form.each { |key, _| params_hash[key] = form[key] }
 
       route.each_key do |key|
         if value = route[key]
@@ -75,13 +120,24 @@ module Amber::Router
         end
       end
 
-      json.each_key { |key| params_hash[key] = json[key].to_s }
-      multipart.each_key { |key| params_hash[key] = multipart[key].to_s }
+      case body_source
+      when .form?
+        form.each { |key, _| params_hash[key] = form[key] }
+        route.each_key do |key|
+          if value = route[key]
+            params_hash[key] = value
+          end
+        end
+      when .json?
+        json.each_key { |key| params_hash[key] = json[key].to_s }
+      when .multipart?
+        multipart.each_key { |key| params_hash[key] = multipart[key].to_s }
+      end
       params_hash
     end
 
     private def query
-      @request.query_params
+      @query ||= @request.query_params
     end
 
     private def form
@@ -102,11 +158,56 @@ module Amber::Router
     end
 
     private def route
-      @request.matched_route.params
+      return @route.not_nil! if @route_loaded
+
+      @route = @request.matched_route.params
+      @route_loaded = true
+      @route.not_nil!
     end
 
     private def content_type?(header_type)
-      @request.headers["Content-Type"]?.try &.starts_with?(header_type)
+      case body_source
+      when .form?
+        header_type == URL_ENCODED_FORM
+      when .multipart?
+        header_type == MULTIPART_FORM
+      when .json?
+        header_type == APPLICATION_JSON
+      else
+        false
+      end
+    end
+
+    private def route_if_resolved
+      return @route if @route_loaded
+      return unless @request.matched_route_resolved?
+
+      @route = @request.matched_route.params
+      @route_loaded = true
+      @route
+    end
+
+    private def route_lookup(key : String)
+      if resolved_route = route_if_resolved
+        resolved_route[key]?
+      else
+        route[key]?
+      end
+    end
+
+    private def body_source
+      @body_source ||= begin
+        case content_type = @request.headers["Content-Type"]?
+        when .try &.starts_with?(URL_ENCODED_FORM)
+          BodySource::Form
+        when .try &.starts_with?(MULTIPART_FORM)
+          BodySource::Multipart
+        when .try &.starts_with?(APPLICATION_JSON)
+          BodySource::Json
+        else
+          BodySource::None
+        end
+      end
     end
   end
 end

@@ -7,34 +7,45 @@ module Amber::Controller
     macro included
       # Include the Schema::ControllerIntegration module
       include Amber::Schema::ControllerIntegration
+
+      @original_params : Amber::Validators::Params?
+      @raw_params : Amber::Router::Params?
+      @schema_params_wrapper : SchemaParamsWrapper?
       
       # Override the params getter to maintain backward compatibility
       # The original params returns Amber::Validators::Params
       # We'll keep it but also provide access to validated schema data
-      protected getter original_params : Amber::Validators::Params
+      protected def original_params : Amber::Validators::Params
+        @original_params ||= Amber::Validators::Params.new(raw_params)
+      end
       
       # Create an alias for the original params
       {% unless @type.has_method?(:legacy_params) %}
         protected def legacy_params
-          @original_params ||= Amber::Validators::Params.new(context.params)
+          original_params
         end
       {% end %}
+
+      def request_data=(value : Hash(String, JSON::Any)?)
+        @request_data = value
+        @schema_params_wrapper = nil
+      end
       
       # Override params to provide a migration path
       protected def params
         # If we have validated schema data, create a wrapper that provides
         # backward compatibility with the old params interface
-        if @request_data
-          SchemaParamsWrapper.new(@request_data.not_nil!, context.params)
+        if request_data = @request_data
+          @schema_params_wrapper ||= SchemaParamsWrapper.new(request_data, raw_params)
         else
           # Fall back to original params behavior
-          @original_params ||= Amber::Validators::Params.new(context.params)
+          original_params
         end
       end
       
       # Helper method to access raw params when needed
-      protected def raw_params
-        context.params
+      protected def raw_params : Amber::Router::Params
+        @raw_params ||= context.params
       end
     end
   end
