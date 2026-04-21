@@ -314,6 +314,7 @@ comparisons = AmberFrameworkPerfLab::COMPARISONS.map do |comparison|
   candidate_ips = candidate["ips"].as(Float64)
   base_memory = base["memory_bytes"].as(Float64)
   candidate_memory = candidate["memory_bytes"].as(Float64)
+  memory_comparable = base_memory > 0.0
 
   {
     "key"              => comparison.key,
@@ -323,8 +324,9 @@ comparisons = AmberFrameworkPerfLab::COMPARISONS.map do |comparison|
     "ips_ratio"        => candidate_ips / base_ips,
     "ips_delta_pct"    => ((candidate_ips / base_ips) - 1.0) * 100.0,
     "slower_factor"    => base_ips / candidate_ips,
-    "memory_ratio"     => candidate_memory / base_memory,
-    "memory_delta_pct" => ((candidate_memory / base_memory) - 1.0) * 100.0,
+    "memory_comparable" => memory_comparable ? "yes" : "no",
+    "memory_ratio"      => memory_comparable ? candidate_memory / base_memory : 0.0,
+    "memory_delta_pct"  => memory_comparable ? ((candidate_memory / base_memory) - 1.0) * 100.0 : 0.0,
   }
 end.sort_by { |row| row["ips_ratio"].as(Float64) }
 

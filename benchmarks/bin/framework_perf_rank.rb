@@ -19,9 +19,14 @@ comparisons.sort_by { |row| row.fetch("ips_ratio") }.each do |row|
   ratio = row.fetch("ips_ratio")
   slower_factor = row.fetch("slower_factor")
   memory_ratio = row.fetch("memory_ratio")
+  memory_comparable = row.fetch("memory_comparable", "yes")
 
   puts "#{row.fetch("label")}"
   puts "  throughput ratio: #{format("%.3fx", ratio)}"
   puts "  slower factor:    #{format("%.3fx", slower_factor)}"
-  puts "  memory ratio:     #{format("%.3fx", memory_ratio)}"
+  if memory_comparable == "yes"
+    puts "  memory ratio:     #{format("%.3fx", memory_ratio)}"
+  else
+    puts "  memory ratio:     n/a (zero-byte baseline)"
+  end
 end
