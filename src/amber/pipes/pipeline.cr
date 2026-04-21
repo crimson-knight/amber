@@ -13,22 +13,25 @@ module Amber
       end
 
       def call(context : HTTP::Server::Context)
-        raise Amber::Exceptions::RouteNotFound.new(context.request) unless context.valid_route?
-
-        # Check request-level constraint if the matched route has one
-        if context.request.valid_route?
-          if constraint = context.request.route.request_constraint
-            unless constraint.matches?(context.request)
-              raise Amber::Exceptions::RouteNotFound.new(context.request)
-            end
-          end
-        end
+        request = context.request
+        raise Amber::Exceptions::RouteNotFound.new(request) unless request.valid_route?
 
         if context.websocket?
           context.process_websocket_request
-        elsif @drain[context.valve]
-          @drain[context.valve].call(context)
-          context.finalize_response!
+        else
+          route = request.route
+
+          # Check request-level constraint if the matched route has one
+          if constraint = route.request_constraint
+            unless constraint.matches?(request)
+              raise Amber::Exceptions::RouteNotFound.new(request)
+            end
+          end
+
+          if drain = @drain[route.valve]
+            drain.call(context)
+            context.finalize_response!
+          end
         end
       rescue e : Amber::Exceptions::Base
         Amber::Pipe::Error.new.call(context)

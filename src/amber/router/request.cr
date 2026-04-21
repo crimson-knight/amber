@@ -8,13 +8,13 @@ class HTTP::Request
 
   @matched_route : Amber::Router::RoutedResult(Amber::Route)?
   @requested_method : String?
+  @resolved_method : String?
   @params : Amber::Router::Params?
 
   def method
-    case @method
-    when "POST" then requested_method.to_s.upcase
-    else             @method
-    end
+    return @method unless @method == "POST"
+
+    @resolved_method ||= requested_method.to_s.upcase
   end
 
   def requested_method

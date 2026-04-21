@@ -3,8 +3,8 @@
 
 require "json"
 
-if ARGV.size != 7
-  warn "Usage: framework_perf_progress_svg.rb base_crystal winner_crystal round2_crystal base_acrystal winner_acrystal round2_acrystal output.svg"
+if ARGV.size != 9
+  warn "Usage: framework_perf_progress_svg.rb base_crystal winner_crystal round2_crystal round3_crystal base_acrystal winner_acrystal round2_acrystal round3_acrystal output.svg"
   exit 1
 end
 
@@ -21,6 +21,7 @@ STAGES = [
   ["Baseline", "#B0B7C3"],
   ["Winner Set", "#D39B2A"],
   ["Round 2", "#2E9D65"],
+  ["Round 3", "#1F6FEB"],
 ].freeze
 
 def load_results(path)
@@ -30,18 +31,20 @@ def load_results(path)
   end
 end
 
-base_crystal, winner_crystal, round2_crystal, base_acrystal, winner_acrystal, round2_acrystal, output_path = ARGV
+base_crystal, winner_crystal, round2_crystal, round3_crystal, base_acrystal, winner_acrystal, round2_acrystal, round3_acrystal, output_path = ARGV
 
 datasets = {
   "Crystal" => [
     load_results(base_crystal),
     load_results(winner_crystal),
     load_results(round2_crystal),
+    load_results(round3_crystal),
   ],
   "ACrystal" => [
     load_results(base_acrystal),
     load_results(winner_acrystal),
     load_results(round2_acrystal),
+    load_results(round3_acrystal),
   ],
 }
 
@@ -55,7 +58,7 @@ end.max
 max_ratio = [max_ratio, 1.1].max
 
 panel_width = 640
-panel_height = 470
+panel_height = 500
 margin = 40
 label_x = 20
 bar_x = 250
