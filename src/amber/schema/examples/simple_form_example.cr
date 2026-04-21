@@ -119,5 +119,7 @@ module SimpleFormExample
   end
 end
 
-# Run the examples
-SimpleFormExample.run
+# Run examples if this file is executed directly
+if PROGRAM_NAME == __FILE__
+  SimpleFormExample.run
+end
