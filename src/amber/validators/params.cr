@@ -100,27 +100,52 @@ module Amber::Validators
     end
 
     @[AlwaysInline]
-    def [](key : String | Symbol)
+    def [](key : String)
       @raw_params[key]
     end
 
     @[AlwaysInline]
-    def []?(key : String | Symbol)
+    def [](key : Symbol)
+      @raw_params[key]
+    end
+
+    @[AlwaysInline]
+    def []?(key : String)
       @raw_params[key]?
     end
 
     @[AlwaysInline]
-    def has_key?(key : String | Symbol) : Bool
+    def []?(key : Symbol)
+      @raw_params[key]?
+    end
+
+    @[AlwaysInline]
+    def has_key?(key : String) : Bool
       @raw_params.has_key?(key)
     end
 
     @[AlwaysInline]
-    def fetch_all(key : String | Symbol)
+    def has_key?(key : Symbol) : Bool
+      @raw_params.has_key?(key)
+    end
+
+    @[AlwaysInline]
+    def fetch_all(key : String)
       @raw_params.fetch_all(key)
     end
 
     @[AlwaysInline]
-    def json(key : String | Symbol)
+    def fetch_all(key : Symbol)
+      @raw_params.fetch_all(key)
+    end
+
+    @[AlwaysInline]
+    def json(key : String)
+      @raw_params.json(key)
+    end
+
+    @[AlwaysInline]
+    def json(key : Symbol)
       @raw_params.json(key)
     end
 

@@ -40,12 +40,20 @@ module Amber::Router
     def initialize(@request : HTTP::Request)
     end
 
-    def [](key : Types::Key) : String
+    @[AlwaysInline]
+    def [](key : String) : String
       self.[key]? || raise Amber::Exceptions::Validator::InvalidParam.new(key)
     end
 
-    def []?(key : Types::Key)
+    @[AlwaysInline]
+    def [](key : Symbol) : String
       _key = key.to_s
+      self.[_key]? || raise Amber::Exceptions::Validator::InvalidParam.new(key)
+    end
+
+    @[AlwaysInline]
+    def []?(key : String)
+      _key = key
 
       if resolved_route = route_if_resolved
         if value = resolved_route[_key]?
@@ -65,21 +73,39 @@ module Amber::Router
       end
     end
 
+    @[AlwaysInline]
+    def []?(key : Symbol)
+      self.[key.to_s]?
+    end
+
     def files
       multipart unless @multipart
       @files
     end
 
-    def []=(key : Types::Key, value)
+    @[AlwaysInline]
+    def []=(key : String, value)
+      query[key] = value
+    end
+
+    @[AlwaysInline]
+    def []=(key : Symbol, value)
       query[key.to_s] = value
     end
 
-    def has_key?(key : Types::Key) : Bool
+    @[AlwaysInline]
+    def has_key?(key : String) : Bool
+      !!self.[key]?
+    end
+
+    @[AlwaysInline]
+    def has_key?(key : Symbol) : Bool
       !!self.[key.to_s]?
     end
 
-    def fetch_all(key : Types::Key) : Array
-      _key = key.to_s
+    @[AlwaysInline]
+    def fetch_all(key : String) : Array
+      _key = key
       if query.has_key?(_key)
         query.fetch_all(_key)
       else
@@ -87,14 +113,26 @@ module Amber::Router
       end
     end
 
-    def json(key : Types::Key)
+    @[AlwaysInline]
+    def fetch_all(key : Symbol) : Array
+      fetch_all(key.to_s)
+    end
+
+    @[AlwaysInline]
+    def json(key : String)
       JSON.parse(self[key]?.to_s)
     rescue JSON::ParseException
       raise "Value of params.json(#{key.inspect}) is not JSON!"
     end
 
-    def override_method?(key : Types::Key)
-      _key = key.to_s
+    @[AlwaysInline]
+    def json(key : Symbol)
+      json(key.to_s)
+    end
+
+    @[AlwaysInline]
+    def override_method?(key : String)
+      _key = key
 
       if value = query[_key]?
         return value
@@ -108,6 +146,11 @@ module Amber::Router
       else
         nil
       end
+    end
+
+    @[AlwaysInline]
+    def override_method?(key : Symbol)
+      override_method?(key.to_s)
     end
 
     def to_h : Types::Params

@@ -18,7 +18,9 @@ module Amber::Controller::Helpers
       ACCEPT_SEPARATOR_REGEX = /,|,\s/
 
       @requested_responses : Array(String)
-      @available_responses = Hash(String, String | ProcType).new
+      @available_responses : Hash(String, String | ProcType)?
+      @first_response_type : String?
+      @first_response_value : String | ProcType | Nil = nil
       @type : String? = nil
       @body : String | Int32 | Nil = nil
 
@@ -27,7 +29,7 @@ module Amber::Controller::Helpers
 
       {% for type in %w(html xml js json text) %}
         def {{type.id}}(value : String | ProcType)
-          @available_responses[TYPE[:{{type.id}}]] = value
+          store_response(TYPE[:{{type.id}}], value)
           self
         end
 
@@ -50,7 +52,7 @@ module Amber::Controller::Helpers
 
       def body
         @body ||= begin
-          case _body = @available_responses[type]?
+          case _body = response_value(type)
           when Proc
             _body.call
           else
@@ -60,14 +62,23 @@ module Amber::Controller::Helpers
       end
 
       private def select_type
-        raise "You must define at least one response_type." if @available_responses.empty?
+        if first_type = @first_response_type
+          if single_response?
+            return first_type if @requested_responses.empty? || @requested_responses.includes?("*/*")
+            return first_type if @requested_responses.any? { |resp| first_type.includes?(resp) }
+            return
+          end
+        end
+
+        available_responses = @available_responses
+        raise "You must define at least one response_type." unless available_responses || @first_response_type
         # NOTE: If only one response is requested or */* is present don't return anything else.
         if @requested_responses.size != 1 || @requested_responses.includes?("*/*")
-          @requested_responses << @available_responses.keys.first
+          @requested_responses << available_response_keys.first
         end
         
         result = @requested_responses.find do |resp|
-          @available_responses.keys.find { |r| r.includes?(resp) }
+          available_response_keys.find { |r| r.includes?(resp) }
         end
 
         if result == "application/json"
@@ -75,6 +86,49 @@ module Amber::Controller::Helpers
         end
 
         result
+      end
+
+      private def single_response?
+        !@first_response_type.nil? && @available_responses.nil?
+      end
+
+      private def store_response(type : String, value : String | ProcType)
+        if responses = @available_responses
+          responses[type] = value
+          return
+        end
+
+        if first_type = @first_response_type
+          if first_type == type
+            @first_response_value = value
+            return
+          end
+
+          @available_responses = {
+            first_type => @first_response_value.as(String | ProcType),
+            type       => value,
+          }
+          return
+        end
+
+        @first_response_type = type
+        @first_response_value = value
+      end
+
+      private def available_response_keys
+        if responses = @available_responses
+          responses.keys
+        else
+          [@first_response_type.not_nil!]
+        end
+      end
+
+      private def response_value(type : String)
+        if responses = @available_responses
+          responses[type]?
+        elsif @first_response_type == type
+          @first_response_value
+        end
       end
     end
 
@@ -96,6 +150,7 @@ module Amber::Controller::Helpers
     private def accepts_request_type
       accept = context.request.headers["Accept"]?
       if accept && !accept.empty?
+        return [accept] unless accept.includes?(',') || accept.includes?(';')
         accepts = accept.split(";").first?.try(&.split(Content::ACCEPT_SEPARATOR_REGEX))
         return accepts if !accepts.nil? && !accepts.empty?
       end

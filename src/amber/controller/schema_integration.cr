@@ -15,6 +15,7 @@ module Amber::Controller
       # Override the params getter to maintain backward compatibility
       # The original params returns Amber::Validators::Params
       # We'll keep it but also provide access to validated schema data
+      @[AlwaysInline]
       protected def original_params : Amber::Validators::Params
         @original_params ||= Amber::Validators::Params.new(raw_params)
       end
@@ -32,6 +33,7 @@ module Amber::Controller
       end
       
       # Override params to provide a migration path
+      @[AlwaysInline]
       protected def params
         # If we have validated schema data, create a wrapper that provides
         # backward compatibility with the old params interface
@@ -44,6 +46,7 @@ module Amber::Controller
       end
       
       # Helper method to access raw params when needed
+      @[AlwaysInline]
       protected def raw_params : Amber::Router::Params
         @raw_params ||= context.params
       end
@@ -60,41 +63,42 @@ module Amber::Controller
     end
     
     # Delegate array-like access to validated data first, then raw params
-    def [](key : String | Symbol)
-      key_str = key.to_s
-      if validated_data.has_key?(key_str)
-        # Convert JSON::Any to string for backward compatibility
-        json_value = validated_data[key_str]
-        case json_value.raw
-        when String
-          json_value.as_s
-        when Int64
-          json_value.as_i.to_s
-        when Float64
-          json_value.as_f.to_s
-        when Bool
-          json_value.as_bool.to_s
-        when Nil
-          ""
-        else
-          json_value.to_s
-        end
+    @[AlwaysInline]
+    def [](key : String)
+      if json_value = validated_data[key]?
+        json_value_to_param_string(json_value)
       else
-        raw_params[key_str]
+        raw_params[key]
       end
     end
-    
-    def []?(key : String | Symbol)
-      key_str = key.to_s
-      if validated_data.has_key?(key_str)
-        self[key_str]
+
+    @[AlwaysInline]
+    def [](key : Symbol)
+      self[key.to_s]
+    end
+
+    @[AlwaysInline]
+    def []?(key : String)
+      if json_value = validated_data[key]?
+        json_value_to_param_string(json_value)
       else
-        raw_params[key_str]?
+        raw_params[key]?
       end
     end
-    
+
+    @[AlwaysInline]
+    def []?(key : Symbol)
+      self[key.to_s]?
+    end
+
     # Check if key exists in either validated data or raw params
-    def has_key?(key : String | Symbol) : Bool
+    @[AlwaysInline]
+    def has_key?(key : String) : Bool
+      validated_data.has_key?(key) || raw_params.has_key?(key)
+    end
+
+    @[AlwaysInline]
+    def has_key?(key : Symbol) : Bool
       key_str = key.to_s
       validated_data.has_key?(key_str) || raw_params.has_key?(key_str)
     end
@@ -118,20 +122,7 @@ module Amber::Controller
       
       # Override with validated data
       validated_data.each do |k, v|
-        result[k] = case v.raw
-        when String
-          v.as_s
-        when Int64
-          v.as_i.to_s
-        when Float64
-          v.as_f.to_s
-        when Bool
-          v.as_bool.to_s
-        when Nil
-          nil
-        else
-          v.to_s
-        end
+        result[k] = json_value_to_h_string(v)
       end
       
       result
@@ -140,6 +131,40 @@ module Amber::Controller
     # Access to raw unvalidated params
     def to_unsafe_h
       raw_params.to_h
+    end
+
+    private def json_value_to_param_string(json_value : JSON::Any) : String
+      case json_value.raw
+      when String
+        json_value.as_s
+      when Int64
+        json_value.as_i.to_s
+      when Float64
+        json_value.as_f.to_s
+      when Bool
+        json_value.as_bool.to_s
+      when Nil
+        ""
+      else
+        json_value.to_s
+      end
+    end
+
+    private def json_value_to_h_string(json_value : JSON::Any) : String?
+      case json_value.raw
+      when String
+        json_value.as_s
+      when Int64
+        json_value.as_i.to_s
+      when Float64
+        json_value.as_f.to_s
+      when Bool
+        json_value.as_bool.to_s
+      when Nil
+        nil
+      else
+        json_value.to_s
+      end
     end
     
     # Forward missing methods to raw params for full compatibility
