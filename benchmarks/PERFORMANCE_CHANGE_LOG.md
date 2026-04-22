@@ -171,6 +171,28 @@ Key measured read:
 That means the current wrapper itself is not the main problem anymore; the
 heavier cost is the validation step.
 
+### Round 6
+
+- branch base: `experiment/framework-performance-validation-round6`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND6.md`
+
+Rejected:
+
+- validation-rule micro-optimization that removed duplicate lookups and the
+  default no-op predicate call
+
+Why it did not advance:
+
+- same-harness lab results were mixed
+- targeted profile runs flipped direction depending on run order
+- the measured signal was not stable enough to justify promotion
+
+Useful takeaway:
+
+- validation is still a real target
+- the next worthwhile version is likely a larger structural change such as
+  compiled or cached validation definitions, not a tiny rule-evaluation tweak
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:
