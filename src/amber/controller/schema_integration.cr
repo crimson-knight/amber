@@ -110,6 +110,10 @@ module Amber::Controller
       with Amber::Validators::ValidationBuilder.new(validator) yield
       validator
     end
+
+    def validation(definition : Amber::Validators::Definition)
+      Amber::Validators::Params.new(raw_params).validation(definition)
+    end
     
     # Convert to hash combining validated and raw data
     def to_h

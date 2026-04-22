@@ -1,4 +1,23 @@
 module Amber::Validators
+  enum RuleKind
+    Required
+    Optional
+  end
+
+  record CompiledRule,
+    kind : RuleKind,
+    field : String,
+    msg : String?,
+    allow_blank : Bool,
+    predicate : (String -> Bool)?
+
+  class Definition
+    getter rules : Array(CompiledRule)
+
+    def initialize(@rules : Array(CompiledRule))
+    end
+  end
+
   # Holds a validation error message
   record Error, param : String, value : String?, message : String
 
@@ -79,13 +98,38 @@ module Amber::Validators
     end
   end
 
+  record DefinitionBuilder, _rules : Array(CompiledRule) do
+    def required(param : String | Symbol, msg : String? = nil, allow_blank = false)
+      _rules << CompiledRule.new(RuleKind::Required, param.to_s, msg, allow_blank, nil)
+    end
+
+    def required(param : String | Symbol, msg : String? = nil, allow_blank = false, &b : String -> Bool)
+      _rules << CompiledRule.new(RuleKind::Required, param.to_s, msg, allow_blank, b)
+    end
+
+    def optional(param : String | Symbol, msg : String? = nil, allow_blank = true)
+      _rules << CompiledRule.new(RuleKind::Optional, param.to_s, msg, allow_blank, nil)
+    end
+
+    def optional(param : String | Symbol, msg : String? = nil, allow_blank = true, &b : String -> Bool)
+      _rules << CompiledRule.new(RuleKind::Optional, param.to_s, msg, allow_blank, b)
+    end
+  end
+
   class Params
     getter raw_params : Amber::Router::Params
     @rules : Array(BaseRule)?
     @params : Hash(String, String?)?
     @errors : Array(Error)?
+    @definition : Definition?
 
     def initialize(@raw_params); end
+
+    def self.define(&)
+      builder = DefinitionBuilder.new([] of CompiledRule)
+      with builder yield
+      Definition.new(builder._rules)
+    end
 
     def rules
       @rules ||= [] of BaseRule
@@ -166,6 +210,11 @@ module Amber::Validators
       self
     end
 
+    def validation(definition : Definition)
+      @definition = definition
+      self
+    end
+
     # Input must be valid otherwise raises error, if valid returns a hash
     # of validated params Otherwise raises a Validator::ValidationFailed error
     # messages contain errors.
@@ -192,15 +241,26 @@ module Amber::Validators
       current_errors.clear
       current_params.clear
 
+      current_definition = @definition
       current_rules = @rules
-      return true unless current_rules && !current_rules.empty?
+      has_definition = !current_definition.nil? && !current_definition.rules.empty?
+      has_dynamic_rules = !current_rules.nil? && !current_rules.empty?
+      return true unless has_definition || has_dynamic_rules
 
-      current_rules.each do |rule|
-        unless rule.apply(raw_params)
-          current_errors << rule.error
+      if current_definition
+        current_definition.rules.each do |rule|
+          apply_compiled_rule(rule, current_params, current_errors)
         end
+      end
 
-        current_params[rule.field] = rule.value if rule.present
+      if current_rules
+        current_rules.each do |rule|
+          unless rule.apply(raw_params)
+            current_errors << rule.error
+          end
+
+          current_params[rule.field] = rule.value if rule.present
+        end
       end
 
       current_errors.empty?
@@ -222,6 +282,44 @@ module Amber::Validators
 
     def to_unsafe_h
       @raw_params.to_h
+    end
+
+    private def apply_compiled_rule(rule : CompiledRule, current_params : Hash(String, String?), current_errors : Array(Error))
+      value = raw_params[rule.field]?
+
+      case rule.kind
+      when .required?
+        return append_missing_error(rule, current_errors) unless value
+        return append_blank_error(rule, value, current_errors) if value.blank? && !rule.allow_blank
+        current_params[rule.field] = value
+        return append_predicate_error(rule, value, current_errors) unless compiled_rule_valid?(rule, value)
+      when .optional?
+        return unless value
+        current_params[rule.field] = value
+        return if value.blank? && rule.allow_blank
+        return append_predicate_error(rule, value, current_errors) unless compiled_rule_valid?(rule, value)
+      end
+    end
+
+    private def compiled_rule_valid?(rule : CompiledRule, value : String) : Bool
+      return true unless predicate = rule.predicate
+      predicate.call(value)
+    end
+
+    private def append_missing_error(rule : CompiledRule, current_errors : Array(Error))
+      current_errors << Error.new(rule.field, nil, compiled_rule_error_message(rule))
+    end
+
+    private def append_blank_error(rule : CompiledRule, value : String, current_errors : Array(Error))
+      current_errors << Error.new(rule.field, value, compiled_rule_error_message(rule))
+    end
+
+    private def append_predicate_error(rule : CompiledRule, value : String, current_errors : Array(Error))
+      current_errors << Error.new(rule.field, value, compiled_rule_error_message(rule))
+    end
+
+    private def compiled_rule_error_message(rule : CompiledRule) : String
+      rule.msg || "Field #{rule.field} is required"
     end
   end
 end

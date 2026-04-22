@@ -2,6 +2,47 @@ require "../../spec_helper"
 
 module Amber::Validators
   describe Params do
+    describe ".define" do
+      it "reuses compiled rules across validator instances" do
+        definition = Validators::Params.define do
+          required(:name)
+          optional(:last_name)
+        end
+
+        first = Validators::Params.new(params_builder("name=elias"))
+        second = Validators::Params.new(params_builder("name=elias&last_name=perez"))
+
+        first.validation(definition).validate!.should eq({"name" => "elias"})
+        second.validation(definition).validate!.should eq({"name" => "elias", "last_name" => "perez"})
+      end
+
+      it "matches required blank-field behavior without a custom predicate" do
+        definition = Validators::Params.define do
+          required(:name)
+          required(:last_name)
+        end
+
+        validator = Validators::Params.new(params_builder("name= &last_name=&middle=j"))
+        validator.validation(definition)
+
+        validator.valid?.should be_false
+        validator.errors.map(&.param).should eq(["name", "last_name"])
+      end
+
+      it "preserves custom predicate failures and messages" do
+        definition = Validators::Params.define do
+          required(:age, "Age must be 18+") { |value| value.to_i >= 18 }
+          optional(:role, "Role must be admin", allow_blank: false) { |value| value == "admin" }
+        end
+
+        validator = Validators::Params.new(params_builder("age=12&role=user"))
+        validator.validation(definition)
+
+        validator.valid?.should be_false
+        validator.errors.map(&.message).should eq(["Age must be 18+", "Role must be admin"])
+      end
+    end
+
     describe "#validation" do
       context "required params" do
         context "when missing" do

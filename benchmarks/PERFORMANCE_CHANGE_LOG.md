@@ -193,6 +193,37 @@ Useful takeaway:
 - the next worthwhile version is likely a larger structural change such as
   compiled or cached validation definitions, not a tiny rule-evaluation tweak
 
+### Round 7
+
+- branch base: `experiment/framework-performance-validation-cache-round7`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND7.md`
+
+Rejected for default promotion:
+
+- compiled validation definitions via `Params.define`
+- per-request reuse through `validation(definition)`
+
+Why it did not advance:
+
+- it helped validated JSON-body paths
+- it hurt validated query-param paths
+- the split showed up under both `crystal` and `acrystal`, so this looks like a
+  real tradeoff instead of a clean across-the-board win
+
+Key measured read from the focused profile harness:
+
+- `crystal` query compiled vs validated: `0.8215x`
+- `crystal` JSON-body compiled vs validated: `1.2527x`
+- `acrystal` query compiled vs validated: `0.9429x`
+- `acrystal` JSON-body compiled vs validated: `1.1302x`
+
+Useful takeaway:
+
+- caching validation definitions can help heavier validated request bodies
+- a generic compiled-rule interpreter is not the right default answer
+- the better next version is probably a more specialized or macro-generated
+  validator path
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:
