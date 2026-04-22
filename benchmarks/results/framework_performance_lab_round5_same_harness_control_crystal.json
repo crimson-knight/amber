@@ -1,0 +1,297 @@
+{
+  "metadata": {
+    "compiler": "/opt/homebrew/bin/crystal",
+    "crystal_version": "1.20.0",
+    "generated_at_utc": "2026-04-22T12:37:39Z",
+    "warmup_seconds": 1.0,
+    "calculation_seconds": 1.0
+  },
+  "results": [
+    {
+      "key": "raw_plaintext",
+      "label": "Raw Crystal plaintext",
+      "ips": 303668.1159531045,
+      "memory_bytes": 33808.0
+    },
+    {
+      "key": "amber_action_plaintext",
+      "label": "Amber controller plaintext",
+      "ips": 297553.857555067,
+      "memory_bytes": 32864.0
+    },
+    {
+      "key": "amber_dispatch_plaintext",
+      "label": "Amber dispatch plaintext",
+      "ips": 273698.09959234763,
+      "memory_bytes": 32880.0
+    },
+    {
+      "key": "amber_dispatch_plaintext_3pipes",
+      "label": "Amber dispatch plaintext with 3 no-op pipes",
+      "ips": 238055.34875222607,
+      "memory_bytes": 40128.0
+    },
+    {
+      "key": "raw_json",
+      "label": "Raw Crystal JSON",
+      "ips": 270239.0738406211,
+      "memory_bytes": 32784.0
+    },
+    {
+      "key": "amber_action_json_direct",
+      "label": "Amber controller JSON direct",
+      "ips": 251584.0912606641,
+      "memory_bytes": 32784.0
+    },
+    {
+      "key": "amber_action_json_respond_with",
+      "label": "Amber controller JSON respond_with",
+      "ips": 214396.87604027716,
+      "memory_bytes": 32800.0
+    },
+    {
+      "key": "amber_dispatch_json",
+      "label": "Amber dispatch JSON",
+      "ips": 182021.28782677156,
+      "memory_bytes": 32784.0
+    },
+    {
+      "key": "raw_query_lookup",
+      "label": "Raw query lookup",
+      "ips": 1533233.2078902235,
+      "memory_bytes": 16.0
+    },
+    {
+      "key": "amber_params_lookup_query",
+      "label": "Amber params query lookup",
+      "ips": 1147985.01157946,
+      "memory_bytes": 4032.0
+    },
+    {
+      "key": "amber_action_query_raw_params",
+      "label": "Amber controller raw query params",
+      "ips": 209582.9764950969,
+      "memory_bytes": 32784.0
+    },
+    {
+      "key": "amber_action_query_params",
+      "label": "Amber controller query params",
+      "ips": 206303.5403359685,
+      "memory_bytes": 36784.0
+    },
+    {
+      "key": "amber_action_query_validated_params",
+      "label": "Amber controller validated query params",
+      "ips": 182693.0539682348,
+      "memory_bytes": 35504.0
+    },
+    {
+      "key": "amber_dispatch_route_query_params",
+      "label": "Amber dispatch route+query params",
+      "ips": 186292.90955225547,
+      "memory_bytes": 40192.0
+    },
+    {
+      "key": "raw_json_body_parse",
+      "label": "Raw JSON body parse",
+      "ips": 1582962.3676074357,
+      "memory_bytes": 128.0
+    },
+    {
+      "key": "amber_params_lookup_json",
+      "label": "Amber params JSON body lookup",
+      "ips": 901639.4278008698,
+      "memory_bytes": 8240.0
+    },
+    {
+      "key": "amber_action_json_body_raw_params",
+      "label": "Amber controller raw JSON body params",
+      "ips": 275403.5688005326,
+      "memory_bytes": 36880.0
+    },
+    {
+      "key": "amber_action_json_body_validated_params",
+      "label": "Amber controller validated JSON body params",
+      "ips": 259272.24877743475,
+      "memory_bytes": 32784.0
+    },
+    {
+      "key": "amber_dispatch_json_body",
+      "label": "Amber dispatch JSON body",
+      "ips": 264241.7174968972,
+      "memory_bytes": 36816.0
+    }
+  ],
+  "summary": {
+    "comparisons": [
+      {
+        "key": "query_action_vs_params",
+        "label": "Controller query params vs params lookup",
+        "base_key": "amber_params_lookup_query",
+        "candidate_key": "amber_action_query_params",
+        "ips_ratio": 0.17970926297384746,
+        "ips_delta_pct": -82.02907370261525,
+        "slower_factor": 5.564543437838966,
+        "memory_comparable": "yes",
+        "memory_ratio": 9.123015873015873,
+        "memory_delta_pct": 812.3015873015873
+      },
+      {
+        "key": "json_dispatch_vs_params",
+        "label": "Dispatch JSON body vs params lookup",
+        "base_key": "amber_params_lookup_json",
+        "candidate_key": "amber_dispatch_json_body",
+        "ips_ratio": 0.29306805952507203,
+        "ips_delta_pct": -70.6931940474928,
+        "slower_factor": 3.4121766855812883,
+        "memory_comparable": "yes",
+        "memory_ratio": 4.467961165048544,
+        "memory_delta_pct": 346.79611650485435
+      },
+      {
+        "key": "json_params_vs_raw_parse",
+        "label": "Amber JSON body params vs raw JSON parse",
+        "base_key": "raw_json_body_parse",
+        "candidate_key": "amber_params_lookup_json",
+        "ips_ratio": 0.569589932301202,
+        "ips_delta_pct": -43.0410067698798,
+        "slower_factor": 1.7556490086822583,
+        "memory_comparable": "yes",
+        "memory_ratio": 64.375,
+        "memory_delta_pct": 6337.5
+      },
+      {
+        "key": "json_dispatch_vs_raw",
+        "label": "Dispatch JSON vs raw",
+        "base_key": "raw_json",
+        "candidate_key": "amber_dispatch_json",
+        "ips_ratio": 0.6735565114248514,
+        "ips_delta_pct": -32.644348857514856,
+        "slower_factor": 1.4846564216038611,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.0,
+        "memory_delta_pct": 0.0
+      },
+      {
+        "key": "query_params_vs_raw",
+        "label": "Amber query lookup vs raw",
+        "base_key": "raw_query_lookup",
+        "candidate_key": "amber_params_lookup_query",
+        "ips_ratio": 0.748734768899979,
+        "ips_delta_pct": -25.126523110002097,
+        "slower_factor": 1.3355864339907348,
+        "memory_comparable": "yes",
+        "memory_ratio": 252.0,
+        "memory_delta_pct": 25100.0
+      },
+      {
+        "key": "json_respond_with_vs_direct",
+        "label": "respond_with JSON vs direct JSON",
+        "base_key": "amber_action_json_direct",
+        "candidate_key": "amber_action_json_respond_with",
+        "ips_ratio": 0.8521877316087622,
+        "ips_delta_pct": -14.781226839123784,
+        "slower_factor": 1.1734503594791226,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.0004880429477794,
+        "memory_delta_pct": 0.048804294777937685
+      },
+      {
+        "key": "plaintext_3pipes_vs_dispatch",
+        "label": "3 no-op pipes vs plain dispatch",
+        "base_key": "amber_dispatch_plaintext",
+        "candidate_key": "amber_dispatch_plaintext_3pipes",
+        "ips_ratio": 0.8697734807322056,
+        "ips_delta_pct": -13.022651926779439,
+        "slower_factor": 1.1497246376817158,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.2204379562043797,
+        "memory_delta_pct": 22.04379562043797
+      },
+      {
+        "key": "query_action_validated_vs_raw_action",
+        "label": "Controller validated query params vs raw params",
+        "base_key": "amber_action_query_raw_params",
+        "candidate_key": "amber_action_query_validated_params",
+        "ips_ratio": 0.8716979643263575,
+        "ips_delta_pct": -12.83020356736425,
+        "slower_factor": 1.1471863431191944,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.0829673011224987,
+        "memory_delta_pct": 8.296730112249872
+      },
+      {
+        "key": "plaintext_dispatch_vs_raw",
+        "label": "Dispatch plaintext vs raw",
+        "base_key": "raw_plaintext",
+        "candidate_key": "amber_dispatch_plaintext",
+        "ips_ratio": 0.9013066740092491,
+        "ips_delta_pct": -9.869332599075086,
+        "slower_factor": 1.1095002720347527,
+        "memory_comparable": "yes",
+        "memory_ratio": 0.9725508755324184,
+        "memory_delta_pct": -2.744912446758163
+      },
+      {
+        "key": "route_query_dispatch_vs_action",
+        "label": "Dispatch route+query params vs controller query params",
+        "base_key": "amber_action_query_params",
+        "candidate_key": "amber_dispatch_route_query_params",
+        "ips_ratio": 0.9030039389962703,
+        "ips_delta_pct": -9.699606100372971,
+        "slower_factor": 1.1074148813919298,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.0926489778164419,
+        "memory_delta_pct": 9.264897781644187
+      },
+      {
+        "key": "json_direct_vs_raw",
+        "label": "Controller direct JSON vs raw",
+        "base_key": "raw_json",
+        "candidate_key": "amber_action_json_direct",
+        "ips_ratio": 0.9309685963808507,
+        "ips_delta_pct": -6.903140361914928,
+        "slower_factor": 1.0741500882924617,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.0,
+        "memory_delta_pct": 0.0
+      },
+      {
+        "key": "json_body_action_validated_vs_raw_action",
+        "label": "Controller validated JSON body params vs raw params",
+        "base_key": "amber_action_json_body_raw_params",
+        "candidate_key": "amber_action_json_body_validated_params",
+        "ips_ratio": 0.941426612249962,
+        "ips_delta_pct": -5.857338775003795,
+        "slower_factor": 1.0622176885461634,
+        "memory_comparable": "yes",
+        "memory_ratio": 0.8889370932754881,
+        "memory_delta_pct": -11.106290672451191
+      },
+      {
+        "key": "plaintext_controller_vs_raw",
+        "label": "Controller plaintext vs raw",
+        "base_key": "raw_plaintext",
+        "candidate_key": "amber_action_plaintext",
+        "ips_ratio": 0.9798653263980412,
+        "ips_delta_pct": -2.0134673601958752,
+        "slower_factor": 1.020548409112478,
+        "memory_comparable": "yes",
+        "memory_ratio": 0.972077614765736,
+        "memory_delta_pct": -2.7922385234264047
+      },
+      {
+        "key": "query_action_wrapper_vs_raw_action",
+        "label": "Controller wrapped query params vs raw params",
+        "base_key": "amber_action_query_raw_params",
+        "candidate_key": "amber_action_query_params",
+        "ips_ratio": 0.9843525642493911,
+        "ips_delta_pct": -1.5647435750608896,
+        "slower_factor": 1.0158961700501494,
+        "memory_comparable": "yes",
+        "memory_ratio": 1.122010736944851,
+        "memory_delta_pct": 12.20107369448511
+      }
+    ]
+  }
+}
