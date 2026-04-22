@@ -24,14 +24,22 @@ components that show up in `plaintext` and `json` style workloads:
 - Amber full dispatch JSON response
 - raw query parsing
 - Amber params lookup for query strings
+- controller raw query params
 - controller-level param access
+- controller validated query params
 - full dispatch with route + query params
 - raw JSON body parsing
 - Amber params lookup for JSON bodies
+- controller raw JSON body params
+- controller validated JSON body params
 - Amber full dispatch for JSON-body requests
 
 The suite writes JSON to `benchmarks/results/` and includes explicit comparison
 pairs so we can rank the biggest framework gaps first.
+
+The running narrative for each promoted change now lives in:
+
+- `benchmarks/PERFORMANCE_CHANGE_LOG.md`
 
 ## Running It
 
@@ -82,6 +90,9 @@ Use this loop for framework-wide performance work:
   and responder allocation behavior.
 - If `Amber params query lookup vs raw` or `Amber params JSON body lookup vs raw`
   is poor, focus on request parsing and parameter wrapper overhead.
+- If `Controller validated ... vs raw params` is poor, validation flexibility is
+  still expensive enough that opt-in raw paths may be worthwhile for the
+  hottest endpoints.
 - If `3 no-op pipes vs plain dispatch` is poor, middleware chaining is still too
   expensive.
 

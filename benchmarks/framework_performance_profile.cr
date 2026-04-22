@@ -31,15 +31,61 @@ module AmberFrameworkPerfProfile
   end
 
   class QueryParamsController < Amber::Controller::Base
+    def raw_index
+      AmberFrameworkPerfProfile.consume(raw_params["page"].bytesize + raw_params["sort"].bytesize + raw_params["filter"].bytesize)
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+
     def index
       AmberFrameworkPerfProfile.consume(params["page"].bytesize + params["sort"].bytesize + params["filter"].bytesize)
       set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
     end
+
+    def validated_index
+      validated_params = params.validation do
+        required(:page)
+        required(:sort)
+        required(:filter)
+      end.validate!
+      AmberFrameworkPerfProfile.consume(
+        validated_params["page"].not_nil!.bytesize +
+        validated_params["sort"].not_nil!.bytesize +
+        validated_params["filter"].not_nil!.bytesize
+      )
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+  end
+
+  class JsonController < Amber::Controller::Base
+    def negotiated
+      respond_with do
+        json(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY)
+      end
+    end
   end
 
   class JsonBodyController < Amber::Controller::Base
+    def raw_create
+      AmberFrameworkPerfProfile.consume(raw_params["id"].bytesize + raw_params["name"].bytesize + raw_params["active"].bytesize)
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
     def create
       AmberFrameworkPerfProfile.consume(params["id"].bytesize + params["name"].bytesize + params["active"].bytesize)
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
+    def validated_create
+      validated_params = params.validation do
+        required(:id)
+        required(:name)
+        required(:active)
+      end.validate!
+      AmberFrameworkPerfProfile.consume(
+        validated_params["id"].not_nil!.bytesize +
+        validated_params["name"].not_nil!.bytesize +
+        validated_params["active"].not_nil!.bytesize
+      )
       set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
     end
   end
@@ -51,6 +97,7 @@ module AmberFrameworkPerfProfile
   def install_routes
     router = Amber::Server.router
     routes = [
+      Amber::Route.new("GET", "/bench/json", ->(context : HTTP::Server::Context) { JsonController.new(context).negotiated }, :negotiated, :web, controller: "AmberFrameworkPerfProfile::JsonController"),
       Amber::Route.new("GET", "/bench/query", ->(context : HTTP::Server::Context) { QueryParamsController.new(context).index }, :index, :web, controller: "AmberFrameworkPerfProfile::QueryParamsController"),
       Amber::Route.new("POST", "/bench/json-body", ->(context : HTTP::Server::Context) { JsonBodyController.new(context).create }, :create, :web, controller: "AmberFrameworkPerfProfile::JsonBodyController"),
     ]
@@ -76,6 +123,29 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_query_raw_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).raw_index
+    context.bench_finalize_response!
+  end
+
+  def action_query_validated_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).validated_index
+    context.bench_finalize_response!
+  end
+
+  def action_json_respond_with
+    context = build_context("GET", "/bench/json", JSON_ACCEPT)
+    JsonController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def dispatch_json(pipeline : Amber::Pipe::Pipeline)
+    context = build_context("GET", "/bench/json", JSON_ACCEPT)
+    pipeline.call(context)
+  end
+
   def params_lookup_query
     context = build_context("GET", QUERY_RESOURCE)
     params = context.params
@@ -85,6 +155,18 @@ module AmberFrameworkPerfProfile
   def dispatch_json_body(pipeline : Amber::Pipe::Pipeline)
     context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
     pipeline.call(context)
+  end
+
+  def action_json_body_raw_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).raw_create
+    context.bench_finalize_response!
+  end
+
+  def action_json_body_validated_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).validated_create
+    context.bench_finalize_response!
   end
 
   def params_lookup_json
@@ -100,7 +182,7 @@ duration_seconds = 20.0
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_profile.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: action_query_params, params_lookup_query, dispatch_json_body, params_lookup_json") do |value|
+  parser.on("--scenario=NAME", "Scenario: action_query_params, action_query_raw_params, action_query_validated_params, action_json_respond_with, dispatch_json, params_lookup_query, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, params_lookup_json") do |value|
     scenario = value
   end
 
@@ -115,10 +197,22 @@ pipeline = AmberFrameworkPerfProfile.build_pipeline
 scenario_proc = case scenario
                 when "action_query_params"
                   -> { AmberFrameworkPerfProfile.action_query_params }
+                when "action_query_raw_params"
+                  -> { AmberFrameworkPerfProfile.action_query_raw_params }
+                when "action_query_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_query_validated_params }
+                when "action_json_respond_with"
+                  -> { AmberFrameworkPerfProfile.action_json_respond_with }
+                when "dispatch_json"
+                  -> { AmberFrameworkPerfProfile.dispatch_json(pipeline) }
                 when "params_lookup_query"
                   -> { AmberFrameworkPerfProfile.params_lookup_query }
                 when "dispatch_json_body"
                   -> { AmberFrameworkPerfProfile.dispatch_json_body(pipeline) }
+                when "action_json_body_raw_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_raw_params }
+                when "action_json_body_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_validated_params }
                 when "params_lookup_json"
                   -> { AmberFrameworkPerfProfile.params_lookup_json }
                 else

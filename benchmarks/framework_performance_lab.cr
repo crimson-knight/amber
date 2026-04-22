@@ -23,11 +23,11 @@ module AmberFrameworkPerfLab
     "framework" => "amber",
     "version"   => "2",
   }
-  JSON_RESPONSE_BODY  = JSON_RESPONSE_HASH.to_json
-  QUERY_RESOURCE      = "/bench/query?page=10&sort=asc&filter=active"
-  ROUTE_QUERY_PATH    = "/bench/users/42?page=10&sort=asc&filter=active"
-  JSON_BODY_RESOURCE  = "/bench/json-body"
-  JSON_BODY_PAYLOAD   = %({"id":42,"name":"amber","active":true})
+  JSON_RESPONSE_BODY = JSON_RESPONSE_HASH.to_json
+  QUERY_RESOURCE     = "/bench/query?page=10&sort=asc&filter=active"
+  ROUTE_QUERY_PATH   = "/bench/users/42?page=10&sort=asc&filter=active"
+  JSON_BODY_RESOURCE = "/bench/json-body"
+  JSON_BODY_PAYLOAD  = %({"id":42,"name":"amber","active":true})
 
   SCENARIOS = [
     ScenarioConfig.new("raw_plaintext", "Raw Crystal plaintext"),
@@ -40,10 +40,14 @@ module AmberFrameworkPerfLab
     ScenarioConfig.new("amber_dispatch_json", "Amber dispatch JSON"),
     ScenarioConfig.new("raw_query_lookup", "Raw query lookup"),
     ScenarioConfig.new("amber_params_lookup_query", "Amber params query lookup"),
+    ScenarioConfig.new("amber_action_query_raw_params", "Amber controller raw query params"),
     ScenarioConfig.new("amber_action_query_params", "Amber controller query params"),
+    ScenarioConfig.new("amber_action_query_validated_params", "Amber controller validated query params"),
     ScenarioConfig.new("amber_dispatch_route_query_params", "Amber dispatch route+query params"),
     ScenarioConfig.new("raw_json_body_parse", "Raw JSON body parse"),
     ScenarioConfig.new("amber_params_lookup_json", "Amber params JSON body lookup"),
+    ScenarioConfig.new("amber_action_json_body_raw_params", "Amber controller raw JSON body params"),
+    ScenarioConfig.new("amber_action_json_body_validated_params", "Amber controller validated JSON body params"),
     ScenarioConfig.new("amber_dispatch_json_body", "Amber dispatch JSON body"),
   ]
 
@@ -55,9 +59,12 @@ module AmberFrameworkPerfLab
     ComparisonConfig.new("json_respond_with_vs_direct", "respond_with JSON vs direct JSON", "amber_action_json_direct", "amber_action_json_respond_with"),
     ComparisonConfig.new("json_dispatch_vs_raw", "Dispatch JSON vs raw", "raw_json", "amber_dispatch_json"),
     ComparisonConfig.new("query_params_vs_raw", "Amber query lookup vs raw", "raw_query_lookup", "amber_params_lookup_query"),
+    ComparisonConfig.new("query_action_wrapper_vs_raw_action", "Controller wrapped query params vs raw params", "amber_action_query_raw_params", "amber_action_query_params"),
+    ComparisonConfig.new("query_action_validated_vs_raw_action", "Controller validated query params vs raw params", "amber_action_query_raw_params", "amber_action_query_validated_params"),
     ComparisonConfig.new("query_action_vs_params", "Controller query params vs params lookup", "amber_params_lookup_query", "amber_action_query_params"),
     ComparisonConfig.new("route_query_dispatch_vs_action", "Dispatch route+query params vs controller query params", "amber_action_query_params", "amber_dispatch_route_query_params"),
     ComparisonConfig.new("json_params_vs_raw_parse", "Amber JSON body params vs raw JSON parse", "raw_json_body_parse", "amber_params_lookup_json"),
+    ComparisonConfig.new("json_body_action_validated_vs_raw_action", "Controller validated JSON body params vs raw params", "amber_action_json_body_raw_params", "amber_action_json_body_validated_params"),
     ComparisonConfig.new("json_dispatch_vs_params", "Dispatch JSON body vs params lookup", "amber_params_lookup_json", "amber_dispatch_json_body"),
   ]
 
@@ -88,8 +95,28 @@ module AmberFrameworkPerfLab
   end
 
   class QueryParamsController < Amber::Controller::Base
+    def raw_index
+      current_params = raw_params
+      AmberFrameworkPerfLab.consume(current_params["page"].bytesize + current_params["sort"].bytesize + current_params["filter"].bytesize)
+      set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
+    end
+
     def index
       AmberFrameworkPerfLab.consume(params["page"].bytesize + params["sort"].bytesize + params["filter"].bytesize)
+      set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
+    end
+
+    def validated_index
+      validated_params = params.validation do
+        required(:page)
+        required(:sort)
+        required(:filter)
+      end.validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["page"].not_nil!.bytesize +
+        validated_params["sort"].not_nil!.bytesize +
+        validated_params["filter"].not_nil!.bytesize
+      )
       set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
     end
   end
@@ -102,8 +129,28 @@ module AmberFrameworkPerfLab
   end
 
   class JsonBodyController < Amber::Controller::Base
+    def raw_create
+      current_params = raw_params
+      AmberFrameworkPerfLab.consume(current_params["id"].bytesize + current_params["name"].bytesize + current_params["active"].bytesize)
+      set_response(AmberFrameworkPerfLab::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfLab::CONTENT_JSON)
+    end
+
     def create
       AmberFrameworkPerfLab.consume(params["id"].bytesize + params["name"].bytesize + params["active"].bytesize)
+      set_response(AmberFrameworkPerfLab::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfLab::CONTENT_JSON)
+    end
+
+    def validated_create
+      validated_params = params.validation do
+        required(:id)
+        required(:name)
+        required(:active)
+      end.validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["id"].not_nil!.bytesize +
+        validated_params["name"].not_nil!.bytesize +
+        validated_params["active"].not_nil!.bytesize
+      )
       set_response(AmberFrameworkPerfLab::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfLab::CONTENT_JSON)
     end
   end
@@ -210,6 +257,20 @@ module AmberFrameworkPerfLab
     context.bench_finalize_response!
   end
 
+  def amber_action_query_raw_params
+    tuple = build_context("GET", QUERY_RESOURCE)
+    context = tuple[0]
+    QueryParamsController.new(context).raw_index
+    context.bench_finalize_response!
+  end
+
+  def amber_action_query_validated_params
+    tuple = build_context("GET", QUERY_RESOURCE)
+    context = tuple[0]
+    QueryParamsController.new(context).validated_index
+    context.bench_finalize_response!
+  end
+
   def amber_dispatch_route_query_params(pipeline : Amber::Pipe::Pipeline)
     tuple = build_context("GET", ROUTE_QUERY_PATH)
     context = tuple[0]
@@ -226,6 +287,20 @@ module AmberFrameworkPerfLab
     context = tuple[0]
     params = context.params
     consume(params["id"].bytesize + params["name"].bytesize + params["active"].bytesize)
+  end
+
+  def amber_action_json_body_raw_params
+    tuple = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    context = tuple[0]
+    JsonBodyController.new(context).raw_create
+    context.bench_finalize_response!
+  end
+
+  def amber_action_json_body_validated_params
+    tuple = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    context = tuple[0]
+    JsonBodyController.new(context).validated_create
+    context.bench_finalize_response!
   end
 
   def amber_dispatch_json_body(pipeline : Amber::Pipe::Pipeline)
@@ -262,21 +337,25 @@ dispatch_pipeline = AmberFrameworkPerfLab.build_pipeline
 dispatch_pipeline_with_pipes = AmberFrameworkPerfLab.build_pipeline(3)
 
 scenario_actions = {
-  "raw_plaintext"                   => -> { AmberFrameworkPerfLab.raw_plaintext },
-  "amber_action_plaintext"          => -> { AmberFrameworkPerfLab.amber_action_plaintext },
-  "amber_dispatch_plaintext"        => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline) },
-  "amber_dispatch_plaintext_3pipes" => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline_with_pipes) },
-  "raw_json"                        => -> { AmberFrameworkPerfLab.raw_json },
-  "amber_action_json_direct"        => -> { AmberFrameworkPerfLab.amber_action_json_direct },
-  "amber_action_json_respond_with"  => -> { AmberFrameworkPerfLab.amber_action_json_respond_with },
-  "amber_dispatch_json"             => -> { AmberFrameworkPerfLab.amber_dispatch_json(dispatch_pipeline) },
-  "raw_query_lookup"                => -> { AmberFrameworkPerfLab.raw_query_lookup },
-  "amber_params_lookup_query"       => -> { AmberFrameworkPerfLab.amber_params_lookup_query },
-  "amber_action_query_params"       => -> { AmberFrameworkPerfLab.amber_action_query_params },
-  "amber_dispatch_route_query_params" => -> { AmberFrameworkPerfLab.amber_dispatch_route_query_params(dispatch_pipeline) },
-  "raw_json_body_parse"             => -> { AmberFrameworkPerfLab.raw_json_body_parse },
-  "amber_params_lookup_json"        => -> { AmberFrameworkPerfLab.amber_params_lookup_json },
-  "amber_dispatch_json_body"        => -> { AmberFrameworkPerfLab.amber_dispatch_json_body(dispatch_pipeline) },
+  "raw_plaintext"                           => -> { AmberFrameworkPerfLab.raw_plaintext },
+  "amber_action_plaintext"                  => -> { AmberFrameworkPerfLab.amber_action_plaintext },
+  "amber_dispatch_plaintext"                => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline) },
+  "amber_dispatch_plaintext_3pipes"         => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline_with_pipes) },
+  "raw_json"                                => -> { AmberFrameworkPerfLab.raw_json },
+  "amber_action_json_direct"                => -> { AmberFrameworkPerfLab.amber_action_json_direct },
+  "amber_action_json_respond_with"          => -> { AmberFrameworkPerfLab.amber_action_json_respond_with },
+  "amber_dispatch_json"                     => -> { AmberFrameworkPerfLab.amber_dispatch_json(dispatch_pipeline) },
+  "raw_query_lookup"                        => -> { AmberFrameworkPerfLab.raw_query_lookup },
+  "amber_params_lookup_query"               => -> { AmberFrameworkPerfLab.amber_params_lookup_query },
+  "amber_action_query_raw_params"           => -> { AmberFrameworkPerfLab.amber_action_query_raw_params },
+  "amber_action_query_params"               => -> { AmberFrameworkPerfLab.amber_action_query_params },
+  "amber_action_query_validated_params"     => -> { AmberFrameworkPerfLab.amber_action_query_validated_params },
+  "amber_dispatch_route_query_params"       => -> { AmberFrameworkPerfLab.amber_dispatch_route_query_params(dispatch_pipeline) },
+  "raw_json_body_parse"                     => -> { AmberFrameworkPerfLab.raw_json_body_parse },
+  "amber_params_lookup_json"                => -> { AmberFrameworkPerfLab.amber_params_lookup_json },
+  "amber_action_json_body_raw_params"       => -> { AmberFrameworkPerfLab.amber_action_json_body_raw_params },
+  "amber_action_json_body_validated_params" => -> { AmberFrameworkPerfLab.amber_action_json_body_validated_params },
+  "amber_dispatch_json_body"                => -> { AmberFrameworkPerfLab.amber_dispatch_json_body(dispatch_pipeline) },
 } of String => Proc(Nil)
 
 results = [] of Hash(String, Float64 | String)
@@ -317,13 +396,13 @@ comparisons = AmberFrameworkPerfLab::COMPARISONS.map do |comparison|
   memory_comparable = base_memory > 0.0
 
   {
-    "key"              => comparison.key,
-    "label"            => comparison.label,
-    "base_key"         => comparison.base_key,
-    "candidate_key"    => comparison.candidate_key,
-    "ips_ratio"        => candidate_ips / base_ips,
-    "ips_delta_pct"    => ((candidate_ips / base_ips) - 1.0) * 100.0,
-    "slower_factor"    => base_ips / candidate_ips,
+    "key"               => comparison.key,
+    "label"             => comparison.label,
+    "base_key"          => comparison.base_key,
+    "candidate_key"     => comparison.candidate_key,
+    "ips_ratio"         => candidate_ips / base_ips,
+    "ips_delta_pct"     => ((candidate_ips / base_ips) - 1.0) * 100.0,
+    "slower_factor"     => base_ips / candidate_ips,
     "memory_comparable" => memory_comparable ? "yes" : "no",
     "memory_ratio"      => memory_comparable ? candidate_memory / base_memory : 0.0,
     "memory_delta_pct"  => memory_comparable ? ((candidate_memory / base_memory) - 1.0) * 100.0 : 0.0,
