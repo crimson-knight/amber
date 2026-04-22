@@ -52,16 +52,16 @@ module Amber::Controller
       end
     end
   end
-  
+
   # Wrapper class that provides backward compatibility between Schema API
   # and the existing Amber::Validators::Params interface
   class SchemaParamsWrapper
     getter validated_data : Hash(String, JSON::Any)
     getter raw_params : Amber::Router::Params
-    
+
     def initialize(@validated_data : Hash(String, JSON::Any), @raw_params : Amber::Router::Params)
     end
-    
+
     # Delegate array-like access to validated data first, then raw params
     @[AlwaysInline]
     def [](key : String)
@@ -102,7 +102,7 @@ module Amber::Controller
       key_str = key.to_s
       validated_data.has_key?(key_str) || raw_params.has_key?(key_str)
     end
-    
+
     # Provide access to validation methods for migration
     def validation(&)
       # Create a temporary Amber::Validators::Params for validation
@@ -111,31 +111,27 @@ module Amber::Controller
       validator
     end
 
-    def validation(definition : Amber::Validators::Definition)
+    def validation(definition : Amber::Validators::ReusableDefinition)
       Amber::Validators::Params.new(raw_params).validation(definition)
     end
 
-    def validation(definition : Amber::Validators::CompiledDefinition)
-      Amber::Validators::Params.new(raw_params).validation(definition)
-    end
-    
     # Convert to hash combining validated and raw data
     def to_h
       result = {} of String => String?
-      
+
       # Start with raw params
       raw_params.to_h.each do |k, v|
         result[k] = v
       end
-      
+
       # Override with validated data
       validated_data.each do |k, v|
         result[k] = json_value_to_h_string(v)
       end
-      
+
       result
     end
-    
+
     # Access to raw unvalidated params
     def to_unsafe_h
       raw_params.to_h
@@ -174,7 +170,7 @@ module Amber::Controller
         json_value.to_s
       end
     end
-    
+
     # Forward missing methods to raw params for full compatibility
     forward_missing_to @raw_params
   end

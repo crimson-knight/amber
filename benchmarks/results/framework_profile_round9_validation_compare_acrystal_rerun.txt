@@ -1,0 +1,112 @@
+=== action_query_validated_params ===
+Amber framework profile harness
+PID: 28934
+Scenario: action_query_validated_params
+Duration: 4.0s
+Iterations: 805552
+
+=== action_query_compiled_validated_params ===
+Amber framework profile harness
+PID: 29049
+Scenario: action_query_compiled_validated_params
+Duration: 4.0s
+Iterations: 1221808
+
+=== action_query_compiled_validated_params ===
+Amber framework profile harness
+PID: 29054
+Scenario: action_query_compiled_validated_params
+Duration: 4.0s
+Iterations: 1188467
+
+=== action_query_validated_params ===
+Amber framework profile harness
+PID: 29166
+Scenario: action_query_validated_params
+Duration: 4.0s
+Iterations: 1030526
+
+=== action_query_mixed_validated_params ===
+Amber framework profile harness
+PID: 29180
+Scenario: action_query_mixed_validated_params
+Duration: 4.0s
+Iterations: 844653
+
+=== action_query_hybrid_validated_params ===
+Amber framework profile harness
+PID: 29185
+Scenario: action_query_hybrid_validated_params
+Duration: 4.0s
+Iterations: 775768
+
+=== action_query_hybrid_validated_params ===
+Amber framework profile harness
+PID: 29292
+Scenario: action_query_hybrid_validated_params
+Duration: 4.0s
+Iterations: 804515
+
+=== action_query_mixed_validated_params ===
+Amber framework profile harness
+PID: 29302
+Scenario: action_query_mixed_validated_params
+Duration: 4.0s
+Iterations: 812641
+
+=== action_json_body_validated_params ===
+Amber framework profile harness
+PID: 29311
+Scenario: action_json_body_validated_params
+Duration: 4.0s
+Iterations: 986460
+
+=== action_json_body_compiled_validated_params ===
+Amber framework profile harness
+PID: 29414
+Scenario: action_json_body_compiled_validated_params
+Duration: 4.0s
+Iterations: 1080316
+
+=== action_json_body_compiled_validated_params ===
+Amber framework profile harness
+PID: 29431
+Scenario: action_json_body_compiled_validated_params
+Duration: 4.0s
+Iterations: 1057535
+
+=== action_json_body_validated_params ===
+Amber framework profile harness
+PID: 29585
+Scenario: action_json_body_validated_params
+Duration: 4.0s
+Iterations: 1025568
+
+=== action_json_body_mixed_validated_params ===
+Amber framework profile harness
+PID: 29612
+Scenario: action_json_body_mixed_validated_params
+Duration: 4.0s
+Iterations: 856342
+
+=== action_json_body_hybrid_validated_params ===
+Amber framework profile harness
+PID: 29621
+Scenario: action_json_body_hybrid_validated_params
+Duration: 4.0s
+Iterations: 1067810
+
+=== action_json_body_hybrid_validated_params ===
+Amber framework profile harness
+PID: 29721
+Scenario: action_json_body_hybrid_validated_params
+Duration: 4.0s
+Iterations: 1042510
+
+=== action_json_body_mixed_validated_params ===
+Amber framework profile harness
+PID: 29728
+Scenario: action_json_body_mixed_validated_params
+Duration: 4.0s
+Iterations: 902603
+

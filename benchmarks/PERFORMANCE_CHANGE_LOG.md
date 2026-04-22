@@ -268,6 +268,95 @@ Useful takeaway:
 - the next step is to expand this direct generated path carefully without
   falling back to a generic interpreter
 
+### Round 9
+
+- branch base: `experiment/framework-performance-validation-hybrid-round9`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND9.md`
+
+Kept direction:
+
+- shared reusable validator contract for reusable definitions
+- hybrid per-rule lowering inside `Params.compile`
+- reusable fallback support for predicate blocks and other unsupported rules
+
+What this round proved:
+
+- the compiled validator API no longer has to reject mixed-rule validators just
+  because one rule needs fallback behavior
+- the simple direct compiled path still wins cleanly
+- mixed-rule hybrid validators are promising, but not yet uniformly faster on
+  every compiler/workload pair
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+- `src/amber/controller/schema_integration.cr`
+- `spec/amber/validations/params_spec.cr`
+- `spec/amber/controller/schema_integration_spec.cr`
+- `benchmarks/framework_performance_lab.cr`
+- `benchmarks/framework_performance_profile.cr`
+
+Key measured read from the focused profile harness rerun:
+
+- `crystal` simple query compiled vs validated: `1.1684x`
+- `crystal` mixed query hybrid vs validated: `1.1608x`
+- `crystal` simple JSON-body compiled vs validated: `1.2503x`
+- `crystal` mixed JSON-body hybrid vs validated: `1.0483x`
+- `acrystal` simple query compiled vs validated: `1.3127x`
+- `acrystal` mixed query hybrid vs validated: `0.9535x`
+- `acrystal` simple JSON-body compiled vs validated: `1.0625x`
+- `acrystal` mixed JSON-body hybrid vs validated: `1.1998x`
+
+Useful takeaway:
+
+- preserving full framework capability inside the compiled validator API is
+  feasible
+- the right next move is to tighten the mixed fallback path and add compile
+  diagnostics before calling this a fully promoted default fast path
+
+### Round 9
+
+- branch base: `experiment/framework-performance-validation-hybrid-round9`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND9.md`
+
+Kept implementation slice:
+
+- shared reusable validator contract for reusable validation definitions
+- hybrid per-rule lowering in `Params.compile`
+- schema-wrapper parity through the shared reusable interface
+
+Do not treat as a clean mixed-case perf promotion yet:
+
+- the direct/simple path still looks worth keeping
+- mixed JSON-body validators still benefit
+- mixed query validators were flat to worse in the focused profile runs
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+- `src/amber/controller/schema_integration.cr`
+- `spec/amber/validations/params_spec.cr`
+- `spec/amber/controller/schema_integration_spec.cr`
+- `benchmarks/framework_performance_profile.cr`
+- `benchmarks/framework_performance_lab.cr`
+
+Key measured read from the focused profile harness:
+
+- `crystal` simple query compiled vs validated confirm: `1.0473x`
+- `crystal` hybrid query vs mixed validated confirm: `0.9793x`
+- `crystal` hybrid JSON-body vs mixed validated: `1.1731x`
+- `acrystal` simple query compiled vs validated: `1.2190x`
+- `acrystal` hybrid query vs mixed validated: `0.8500x`
+- `acrystal` hybrid JSON-body vs mixed validated: `1.0322x`
+
+Useful takeaway:
+
+- hybrid lowering restores compatibility without forcing a whole compiled
+  validator back onto the generic interpreter
+- the direct/simple path remains the real performance win
+- mixed query fallback still needs more specialization before calling it a kept
+  request-path optimization
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

@@ -16,6 +16,23 @@ module Amber::Validators
     required(:nickname, allow_blank: true)
   end
 
+  HYBRID_FIELD_NAME  = "nickname"
+  HYBRID_AGE_MESSAGE = "Age must be 18+"
+
+  Validators::Params.compile COMPILED_HYBRID_DEFINITION do
+    required(:name)
+    optional(HYBRID_FIELD_NAME, "Nickname must be amber", allow_blank: false) { |value| value == "amber" }
+    required(:age, HYBRID_AGE_MESSAGE) { |value| value.to_i >= 18 }
+    required(:email)
+  end
+
+  HYBRID_REUSABLE_DEFINITION = Validators::Params.define do
+    required(:name)
+    optional(HYBRID_FIELD_NAME, "Nickname must be amber", allow_blank: false) { |value| value == "amber" }
+    required(:age, HYBRID_AGE_MESSAGE) { |value| value.to_i >= 18 }
+    required(:email)
+  end
+
   describe Params do
     describe ".compile" do
       it "reuses compile-time validators across validator instances" do
@@ -40,6 +57,26 @@ module Amber::Validators
 
         validator.valid?.should be_false
         validator.errors.map(&.message).should eq(["Name is required"])
+      end
+
+      it "preserves rule and error ordering for mixed direct and fallback rules" do
+        validator = Validators::Params.new(params_builder("name=amber&nickname=user&age=17"))
+        validator.validation(COMPILED_HYBRID_DEFINITION)
+
+        validator.valid?.should be_false
+        validator.errors.map(&.param).should eq(["nickname", "age", "email"])
+        validator.errors.map(&.message).should eq(["Nickname must be amber", HYBRID_AGE_MESSAGE, "Field email is required"])
+      end
+
+      it "matches reusable definition parity for mixed direct and fallback rules" do
+        compiled_validator = Validators::Params.new(params_builder("name=amber&nickname=amber&age=21&email=amber@example.com"))
+        reusable_validator = Validators::Params.new(params_builder("name=amber&nickname=amber&age=21&email=amber@example.com"))
+
+        compiled_result = compiled_validator.validation(COMPILED_HYBRID_DEFINITION).validate!
+        reusable_result = reusable_validator.validation(HYBRID_REUSABLE_DEFINITION).validate!
+
+        compiled_result.should eq(reusable_result)
+        compiled_result.keys.should eq(["name", HYBRID_FIELD_NAME, "age", "email"])
       end
     end
 

@@ -23,11 +23,15 @@ module AmberFrameworkPerfLab
     "framework" => "amber",
     "version"   => "2",
   }
-  JSON_RESPONSE_BODY = JSON_RESPONSE_HASH.to_json
-  QUERY_RESOURCE     = "/bench/query?page=10&sort=asc&filter=active"
-  ROUTE_QUERY_PATH   = "/bench/users/42?page=10&sort=asc&filter=active"
-  JSON_BODY_RESOURCE = "/bench/json-body"
-  JSON_BODY_PAYLOAD  = %({"id":42,"name":"amber","active":true})
+  JSON_RESPONSE_BODY        = JSON_RESPONSE_HASH.to_json
+  QUERY_RESOURCE            = "/bench/query?page=10&sort=asc&filter=active"
+  ROUTE_QUERY_PATH          = "/bench/users/42?page=10&sort=asc&filter=active"
+  JSON_BODY_RESOURCE        = "/bench/json-body"
+  JSON_BODY_PAYLOAD         = %({"id":42,"name":"amber","active":true})
+  QUERY_HYBRID_FILTER_FIELD = "filter"
+  QUERY_HYBRID_FILTER_MSG   = "Filter must be active"
+  JSON_HYBRID_NAME_FIELD    = "name"
+  JSON_HYBRID_NAME_MSG      = "Name must be amber"
 
   SCENARIOS = [
     ScenarioConfig.new("raw_plaintext", "Raw Crystal plaintext"),
@@ -44,12 +48,16 @@ module AmberFrameworkPerfLab
     ScenarioConfig.new("amber_action_query_params", "Amber controller query params"),
     ScenarioConfig.new("amber_action_query_validated_params", "Amber controller validated query params"),
     ScenarioConfig.new("amber_action_query_compiled_validated_params", "Amber controller compiled validated query params"),
+    ScenarioConfig.new("amber_action_query_mixed_validated_params", "Amber controller mixed validated query params"),
+    ScenarioConfig.new("amber_action_query_hybrid_validated_params", "Amber controller hybrid compiled query params"),
     ScenarioConfig.new("amber_dispatch_route_query_params", "Amber dispatch route+query params"),
     ScenarioConfig.new("raw_json_body_parse", "Raw JSON body parse"),
     ScenarioConfig.new("amber_params_lookup_json", "Amber params JSON body lookup"),
     ScenarioConfig.new("amber_action_json_body_raw_params", "Amber controller raw JSON body params"),
     ScenarioConfig.new("amber_action_json_body_validated_params", "Amber controller validated JSON body params"),
     ScenarioConfig.new("amber_action_json_body_compiled_validated_params", "Amber controller compiled validated JSON body params"),
+    ScenarioConfig.new("amber_action_json_body_mixed_validated_params", "Amber controller mixed validated JSON body params"),
+    ScenarioConfig.new("amber_action_json_body_hybrid_validated_params", "Amber controller hybrid compiled JSON body params"),
     ScenarioConfig.new("amber_dispatch_json_body", "Amber dispatch JSON body"),
   ]
 
@@ -64,11 +72,13 @@ module AmberFrameworkPerfLab
     ComparisonConfig.new("query_action_wrapper_vs_raw_action", "Controller wrapped query params vs raw params", "amber_action_query_raw_params", "amber_action_query_params"),
     ComparisonConfig.new("query_action_validated_vs_raw_action", "Controller validated query params vs raw params", "amber_action_query_raw_params", "amber_action_query_validated_params"),
     ComparisonConfig.new("query_action_compiled_vs_validated", "Controller compiled validated query params vs validated params", "amber_action_query_validated_params", "amber_action_query_compiled_validated_params"),
+    ComparisonConfig.new("query_action_hybrid_vs_mixed", "Controller hybrid compiled query params vs mixed validated params", "amber_action_query_mixed_validated_params", "amber_action_query_hybrid_validated_params"),
     ComparisonConfig.new("query_action_vs_params", "Controller query params vs params lookup", "amber_params_lookup_query", "amber_action_query_params"),
     ComparisonConfig.new("route_query_dispatch_vs_action", "Dispatch route+query params vs controller query params", "amber_action_query_params", "amber_dispatch_route_query_params"),
     ComparisonConfig.new("json_params_vs_raw_parse", "Amber JSON body params vs raw JSON parse", "raw_json_body_parse", "amber_params_lookup_json"),
     ComparisonConfig.new("json_body_action_validated_vs_raw_action", "Controller validated JSON body params vs raw params", "amber_action_json_body_raw_params", "amber_action_json_body_validated_params"),
     ComparisonConfig.new("json_body_action_compiled_vs_validated", "Controller compiled validated JSON body params vs validated params", "amber_action_json_body_validated_params", "amber_action_json_body_compiled_validated_params"),
+    ComparisonConfig.new("json_body_action_hybrid_vs_mixed", "Controller hybrid compiled JSON body params vs mixed validated params", "amber_action_json_body_mixed_validated_params", "amber_action_json_body_hybrid_validated_params"),
     ComparisonConfig.new("json_dispatch_vs_params", "Dispatch JSON body vs params lookup", "amber_params_lookup_json", "amber_dispatch_json_body"),
   ]
 
@@ -83,6 +93,18 @@ module AmberFrameworkPerfLab
   Amber::Validators::Params.compile JSON_BODY_VALIDATION do
     required(:id)
     required(:name)
+    required(:active)
+  end
+
+  Amber::Validators::Params.compile QUERY_HYBRID_VALIDATION do
+    required(:page)
+    required(:sort)
+    required(QUERY_HYBRID_FILTER_FIELD, QUERY_HYBRID_FILTER_MSG) { |value| value == "active" }
+  end
+
+  Amber::Validators::Params.compile JSON_BODY_HYBRID_VALIDATION do
+    required(:id)
+    required(JSON_HYBRID_NAME_FIELD, JSON_HYBRID_NAME_MSG) { |value| value == "amber" }
     required(:active)
   end
 
@@ -145,6 +167,30 @@ module AmberFrameworkPerfLab
       )
       set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
     end
+
+    def mixed_validated_index
+      validated_params = params.validation do
+        required(:page)
+        required(:sort)
+        required(AmberFrameworkPerfLab::QUERY_HYBRID_FILTER_FIELD, AmberFrameworkPerfLab::QUERY_HYBRID_FILTER_MSG) { |value| value == "active" }
+      end.validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["page"].not_nil!.bytesize +
+        validated_params["sort"].not_nil!.bytesize +
+        validated_params["filter"].not_nil!.bytesize
+      )
+      set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
+    end
+
+    def hybrid_validated_index
+      validated_params = legacy_params.validation(AmberFrameworkPerfLab::QUERY_HYBRID_VALIDATION).validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["page"].not_nil!.bytesize +
+        validated_params["sort"].not_nil!.bytesize +
+        validated_params["filter"].not_nil!.bytesize
+      )
+      set_response(AmberFrameworkPerfLab::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfLab::CONTENT_TEXT)
+    end
   end
 
   class RouteQueryController < Amber::Controller::Base
@@ -182,6 +228,30 @@ module AmberFrameworkPerfLab
 
     def compiled_validated_create
       validated_params = legacy_params.validation(AmberFrameworkPerfLab::JSON_BODY_VALIDATION).validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["id"].not_nil!.bytesize +
+        validated_params["name"].not_nil!.bytesize +
+        validated_params["active"].not_nil!.bytesize
+      )
+      set_response(AmberFrameworkPerfLab::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfLab::CONTENT_JSON)
+    end
+
+    def mixed_validated_create
+      validated_params = params.validation do
+        required(:id)
+        required(AmberFrameworkPerfLab::JSON_HYBRID_NAME_FIELD, AmberFrameworkPerfLab::JSON_HYBRID_NAME_MSG) { |value| value == "amber" }
+        required(:active)
+      end.validate!
+      AmberFrameworkPerfLab.consume(
+        validated_params["id"].not_nil!.bytesize +
+        validated_params["name"].not_nil!.bytesize +
+        validated_params["active"].not_nil!.bytesize
+      )
+      set_response(AmberFrameworkPerfLab::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfLab::CONTENT_JSON)
+    end
+
+    def hybrid_validated_create
+      validated_params = legacy_params.validation(AmberFrameworkPerfLab::JSON_BODY_HYBRID_VALIDATION).validate!
       AmberFrameworkPerfLab.consume(
         validated_params["id"].not_nil!.bytesize +
         validated_params["name"].not_nil!.bytesize +
@@ -314,6 +384,20 @@ module AmberFrameworkPerfLab
     context.bench_finalize_response!
   end
 
+  def amber_action_query_mixed_validated_params
+    tuple = build_context("GET", QUERY_RESOURCE)
+    context = tuple[0]
+    QueryParamsController.new(context).mixed_validated_index
+    context.bench_finalize_response!
+  end
+
+  def amber_action_query_hybrid_validated_params
+    tuple = build_context("GET", QUERY_RESOURCE)
+    context = tuple[0]
+    QueryParamsController.new(context).hybrid_validated_index
+    context.bench_finalize_response!
+  end
+
   def amber_dispatch_route_query_params(pipeline : Amber::Pipe::Pipeline)
     tuple = build_context("GET", ROUTE_QUERY_PATH)
     context = tuple[0]
@@ -353,6 +437,20 @@ module AmberFrameworkPerfLab
     context.bench_finalize_response!
   end
 
+  def amber_action_json_body_mixed_validated_params
+    tuple = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    context = tuple[0]
+    JsonBodyController.new(context).mixed_validated_create
+    context.bench_finalize_response!
+  end
+
+  def amber_action_json_body_hybrid_validated_params
+    tuple = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    context = tuple[0]
+    JsonBodyController.new(context).hybrid_validated_create
+    context.bench_finalize_response!
+  end
+
   def amber_dispatch_json_body(pipeline : Amber::Pipe::Pipeline)
     tuple = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
     context = tuple[0]
@@ -387,27 +485,31 @@ dispatch_pipeline = AmberFrameworkPerfLab.build_pipeline
 dispatch_pipeline_with_pipes = AmberFrameworkPerfLab.build_pipeline(3)
 
 scenario_actions = {
-  "raw_plaintext"                           => -> { AmberFrameworkPerfLab.raw_plaintext },
-  "amber_action_plaintext"                  => -> { AmberFrameworkPerfLab.amber_action_plaintext },
-  "amber_dispatch_plaintext"                => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline) },
-  "amber_dispatch_plaintext_3pipes"         => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline_with_pipes) },
-  "raw_json"                                => -> { AmberFrameworkPerfLab.raw_json },
-  "amber_action_json_direct"                => -> { AmberFrameworkPerfLab.amber_action_json_direct },
-  "amber_action_json_respond_with"          => -> { AmberFrameworkPerfLab.amber_action_json_respond_with },
-  "amber_dispatch_json"                     => -> { AmberFrameworkPerfLab.amber_dispatch_json(dispatch_pipeline) },
-  "raw_query_lookup"                        => -> { AmberFrameworkPerfLab.raw_query_lookup },
-  "amber_params_lookup_query"               => -> { AmberFrameworkPerfLab.amber_params_lookup_query },
-  "amber_action_query_raw_params"           => -> { AmberFrameworkPerfLab.amber_action_query_raw_params },
-  "amber_action_query_params"               => -> { AmberFrameworkPerfLab.amber_action_query_params },
-  "amber_action_query_validated_params"     => -> { AmberFrameworkPerfLab.amber_action_query_validated_params },
-  "amber_action_query_compiled_validated_params" => -> { AmberFrameworkPerfLab.amber_action_query_compiled_validated_params },
-  "amber_dispatch_route_query_params"       => -> { AmberFrameworkPerfLab.amber_dispatch_route_query_params(dispatch_pipeline) },
-  "raw_json_body_parse"                     => -> { AmberFrameworkPerfLab.raw_json_body_parse },
-  "amber_params_lookup_json"                => -> { AmberFrameworkPerfLab.amber_params_lookup_json },
-  "amber_action_json_body_raw_params"       => -> { AmberFrameworkPerfLab.amber_action_json_body_raw_params },
-  "amber_action_json_body_validated_params" => -> { AmberFrameworkPerfLab.amber_action_json_body_validated_params },
+  "raw_plaintext"                                    => -> { AmberFrameworkPerfLab.raw_plaintext },
+  "amber_action_plaintext"                           => -> { AmberFrameworkPerfLab.amber_action_plaintext },
+  "amber_dispatch_plaintext"                         => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline) },
+  "amber_dispatch_plaintext_3pipes"                  => -> { AmberFrameworkPerfLab.amber_dispatch_plaintext(dispatch_pipeline_with_pipes) },
+  "raw_json"                                         => -> { AmberFrameworkPerfLab.raw_json },
+  "amber_action_json_direct"                         => -> { AmberFrameworkPerfLab.amber_action_json_direct },
+  "amber_action_json_respond_with"                   => -> { AmberFrameworkPerfLab.amber_action_json_respond_with },
+  "amber_dispatch_json"                              => -> { AmberFrameworkPerfLab.amber_dispatch_json(dispatch_pipeline) },
+  "raw_query_lookup"                                 => -> { AmberFrameworkPerfLab.raw_query_lookup },
+  "amber_params_lookup_query"                        => -> { AmberFrameworkPerfLab.amber_params_lookup_query },
+  "amber_action_query_raw_params"                    => -> { AmberFrameworkPerfLab.amber_action_query_raw_params },
+  "amber_action_query_params"                        => -> { AmberFrameworkPerfLab.amber_action_query_params },
+  "amber_action_query_validated_params"              => -> { AmberFrameworkPerfLab.amber_action_query_validated_params },
+  "amber_action_query_compiled_validated_params"     => -> { AmberFrameworkPerfLab.amber_action_query_compiled_validated_params },
+  "amber_action_query_mixed_validated_params"        => -> { AmberFrameworkPerfLab.amber_action_query_mixed_validated_params },
+  "amber_action_query_hybrid_validated_params"       => -> { AmberFrameworkPerfLab.amber_action_query_hybrid_validated_params },
+  "amber_dispatch_route_query_params"                => -> { AmberFrameworkPerfLab.amber_dispatch_route_query_params(dispatch_pipeline) },
+  "raw_json_body_parse"                              => -> { AmberFrameworkPerfLab.raw_json_body_parse },
+  "amber_params_lookup_json"                         => -> { AmberFrameworkPerfLab.amber_params_lookup_json },
+  "amber_action_json_body_raw_params"                => -> { AmberFrameworkPerfLab.amber_action_json_body_raw_params },
+  "amber_action_json_body_validated_params"          => -> { AmberFrameworkPerfLab.amber_action_json_body_validated_params },
   "amber_action_json_body_compiled_validated_params" => -> { AmberFrameworkPerfLab.amber_action_json_body_compiled_validated_params },
-  "amber_dispatch_json_body"                => -> { AmberFrameworkPerfLab.amber_dispatch_json_body(dispatch_pipeline) },
+  "amber_action_json_body_mixed_validated_params"    => -> { AmberFrameworkPerfLab.amber_action_json_body_mixed_validated_params },
+  "amber_action_json_body_hybrid_validated_params"   => -> { AmberFrameworkPerfLab.amber_action_json_body_hybrid_validated_params },
+  "amber_dispatch_json_body"                         => -> { AmberFrameworkPerfLab.amber_dispatch_json_body(dispatch_pipeline) },
 } of String => Proc(Nil)
 
 results = [] of Hash(String, Float64 | String)
