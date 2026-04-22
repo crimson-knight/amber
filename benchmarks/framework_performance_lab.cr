@@ -74,13 +74,13 @@ module AmberFrameworkPerfLab
 
   @@sink = 0
 
-  QUERY_VALIDATION = Amber::Validators::Params.define do
+  Amber::Validators::Params.compile QUERY_VALIDATION do
     required(:page)
     required(:sort)
     required(:filter)
   end
 
-  JSON_BODY_VALIDATION = Amber::Validators::Params.define do
+  Amber::Validators::Params.compile JSON_BODY_VALIDATION do
     required(:id)
     required(:name)
     required(:active)

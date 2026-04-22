@@ -114,6 +114,10 @@ module Amber::Controller
     def validation(definition : Amber::Validators::Definition)
       Amber::Validators::Params.new(raw_params).validation(definition)
     end
+
+    def validation(definition : Amber::Validators::CompiledDefinition)
+      Amber::Validators::Params.new(raw_params).validation(definition)
+    end
     
     # Convert to hash combining validated and raw data
     def to_h

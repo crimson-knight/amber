@@ -224,6 +224,50 @@ Useful takeaway:
 - the better next version is probably a more specialized or macro-generated
   validator path
 
+### Round 8
+
+- branch base: `experiment/framework-performance-validation-compiled-dsl-round8`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND8.md`
+
+Kept direction:
+
+- direct generated compiled validators via `Params.compile NAME do ... end`
+- reuse through `validation(compiled_definition)`
+
+Phase 1 result:
+
+- macro-generated proc-based validators were an improvement over Round 7
+- they still were not strong enough on stock `crystal` query validation
+
+Phase 2 result:
+
+- switching from a proc-based compiled validator to a generated validator type
+  produced the first clean validation win on both compilers
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+- `src/amber/controller/schema_integration.cr`
+- `spec/amber/validations/params_spec.cr`
+- `benchmarks/framework_performance_lab.cr`
+- `benchmarks/framework_performance_profile.cr`
+
+Key measured read from the focused profile harness:
+
+- `crystal` query compiled vs validated: `1.1627x`
+- `crystal` JSON-body compiled vs validated: `1.2689x`
+- `acrystal` query compiled vs validated: `1.1042x`
+- `acrystal` JSON-body compiled vs validated: `1.0803x`
+
+Useful takeaway:
+
+- the user instinct was right
+- if the validation shape is known ahead of time, generating the checks
+  directly is better than rebuilding or interpreting generic rule objects in
+  the request path
+- the next step is to expand this direct generated path carefully without
+  falling back to a generic interpreter
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

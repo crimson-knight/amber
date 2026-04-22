@@ -18,6 +18,10 @@ module Amber::Validators
     end
   end
 
+  abstract class CompiledDefinition
+    abstract def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error))
+  end
+
   # Holds a validation error message
   record Error, param : String, value : String?, message : String
 
@@ -122,6 +126,7 @@ module Amber::Validators
     @params : Hash(String, String?)?
     @errors : Array(Error)?
     @definition : Definition?
+    @compiled_definition : CompiledDefinition?
 
     def initialize(@raw_params); end
 
@@ -129,6 +134,86 @@ module Amber::Validators
       builder = DefinitionBuilder.new([] of CompiledRule)
       with builder yield
       Definition.new(builder._rules)
+    end
+
+    macro compile(name, &block)
+      {% validator_name = "CompiledValidation#{name.id}".id %}
+      class {{validator_name}} < Amber::Validators::CompiledDefinition
+        @[AlwaysInline]
+        def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Amber::Validators::Error))
+          {% expressions = block.body.is_a?(Expressions) ? block.body.expressions : [block.body] %}
+          {% for expression in expressions %}
+            {% unless expression.is_a?(Call) %}
+              {% raise "Params.compile only supports required/optional rule calls" %}
+            {% end %}
+            {% rule_name = expression.name.stringify %}
+            {% unless rule_name == "required" || rule_name == "optional" %}
+              {% raise "Params.compile only supports required/optional rules" %}
+            {% end %}
+            {% if expression.block %}
+              {% raise "Params.compile does not support predicate blocks yet" %}
+            {% end %}
+            {% field_arg = expression.args[0] %}
+            {% if field_arg.is_a?(SymbolLiteral) %}
+              {% field_name = field_arg.stringify[1..-1] %}
+            {% elsif field_arg.is_a?(StringLiteral) %}
+              {% field_name = field_arg.stringify[1..-2] %}
+            {% else %}
+              {% raise "Params.compile only supports String or Symbol field names" %}
+            {% end %}
+            {% allow_blank = rule_name == "required" ? false : true %}
+            {% message = nil %}
+            {% if expression.args.size >= 2 %}
+              {% second_arg = expression.args[1] %}
+              {% if second_arg.is_a?(StringLiteral) %}
+                {% message = second_arg.stringify[1..-2] %}
+              {% elsif second_arg.is_a?(BoolLiteral) %}
+                {% allow_blank = second_arg.stringify == "true" %}
+              {% else %}
+                {% raise "Params.compile only supports String messages and Bool allow_blank arguments" %}
+              {% end %}
+            {% end %}
+            {% if expression.args.size >= 3 %}
+              {% third_arg = expression.args[2] %}
+              {% unless third_arg.is_a?(BoolLiteral) %}
+                {% raise "Params.compile only supports Bool allow_blank as the third argument" %}
+              {% end %}
+              {% allow_blank = third_arg.stringify == "true" %}
+            {% end %}
+            {% unless expression.named_args.is_a?(Nop) %}
+              {% for named_arg in expression.named_args %}
+                {% if named_arg.name.stringify == "allow_blank" %}
+                  {% unless named_arg.value.is_a?(BoolLiteral) %}
+                    {% raise "Params.compile only supports Bool values for allow_blank" %}
+                  {% end %}
+                  {% allow_blank = named_arg.value.stringify == "true" %}
+                {% else %}
+                  {% raise "Params.compile does not support named argument '#{named_arg.name}'" %}
+                {% end %}
+              {% end %}
+            {% end %}
+            {% error_message = message || "Field #{field_name} is required" %}
+
+            {% if rule_name == "required" %}
+              if value = raw_params[{{field_name}}]?
+                if value.blank? && !{{allow_blank}}
+                  current_errors << Amber::Validators::Error.new({{field_name}}, value, {{error_message}})
+                else
+                  current_params[{{field_name}}] = value
+                end
+              else
+                current_errors << Amber::Validators::Error.new({{field_name}}, nil, {{error_message}})
+              end
+            {% else %}
+              if value = raw_params[{{field_name}}]?
+                current_params[{{field_name}}] = value
+              end
+            {% end %}
+          {% end %}
+        end
+      end
+
+      {{name.id}} = {{validator_name}}.new
     end
 
     def rules
@@ -215,6 +300,11 @@ module Amber::Validators
       self
     end
 
+    def validation(definition : CompiledDefinition)
+      @compiled_definition = definition
+      self
+    end
+
     # Input must be valid otherwise raises error, if valid returns a hash
     # of validated params Otherwise raises a Validator::ValidationFailed error
     # messages contain errors.
@@ -242,10 +332,14 @@ module Amber::Validators
       current_params.clear
 
       current_definition = @definition
+      current_compiled_definition = @compiled_definition
       current_rules = @rules
       has_definition = !current_definition.nil? && !current_definition.rules.empty?
+      has_compiled_definition = !current_compiled_definition.nil?
       has_dynamic_rules = !current_rules.nil? && !current_rules.empty?
-      return true unless has_definition || has_dynamic_rules
+      return true unless has_definition || has_compiled_definition || has_dynamic_rules
+
+      current_compiled_definition.try &.apply(raw_params, current_params, current_errors)
 
       if current_definition
         current_definition.rules.each do |rule|

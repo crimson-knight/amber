@@ -1,7 +1,48 @@
 require "../../spec_helper"
 
 module Amber::Validators
+  Validators::Params.compile COMPILED_SIMPLE_DEFINITION do
+    required(:name)
+    optional(:last_name)
+  end
+
+  Validators::Params.compile COMPILED_REQUIRED_DEFINITION do
+    required(:name)
+    required(:last_name)
+  end
+
+  Validators::Params.compile COMPILED_MESSAGE_DEFINITION do
+    required(:name, "Name is required")
+    required(:nickname, allow_blank: true)
+  end
+
   describe Params do
+    describe ".compile" do
+      it "reuses compile-time validators across validator instances" do
+        first = Validators::Params.new(params_builder("name=elias"))
+        second = Validators::Params.new(params_builder("name=elias&last_name=perez"))
+
+        first.validation(COMPILED_SIMPLE_DEFINITION).validate!.should eq({"name" => "elias"})
+        second.validation(COMPILED_SIMPLE_DEFINITION).validate!.should eq({"name" => "elias", "last_name" => "perez"})
+      end
+
+      it "matches required blank-field behavior without a runtime builder" do
+        validator = Validators::Params.new(params_builder("name= &last_name=&middle=j"))
+        validator.validation(COMPILED_REQUIRED_DEFINITION)
+
+        validator.valid?.should be_false
+        validator.errors.map(&.param).should eq(["name", "last_name"])
+      end
+
+      it "supports allow_blank and custom error messages for simple rules" do
+        validator = Validators::Params.new(params_builder("name=&nickname="))
+        validator.validation(COMPILED_MESSAGE_DEFINITION)
+
+        validator.valid?.should be_false
+        validator.errors.map(&.message).should eq(["Name is required"])
+      end
+    end
+
     describe ".define" do
       it "reuses compiled rules across validator instances" do
         definition = Validators::Params.define do
