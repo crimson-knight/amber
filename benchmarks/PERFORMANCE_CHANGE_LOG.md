@@ -438,6 +438,60 @@ Useful takeaway:
 - the next step should be a quiet single-host DigitalOcean rerun of this same
   truth harness, not another broad local rewrite
 
+### Round 15
+
+- branch base: `experiment/framework-performance-router-response-round15`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND15.md`
+
+Kept:
+
+- the focused router/response truth runner
+- additional profile scenarios for response finalization, direct JSON,
+  `respond_with`, query params lookup, route+query dispatch, and JSON body
+  dispatch
+
+Rejected:
+
+- responder helper cleanup
+- eager `Amber::Router::Params` body-source detection
+
+What this round tested:
+
+- whether small response helper cleanup could improve direct JSON or
+  `respond_with`
+- whether params source lookup could be trimmed by detecting the body source
+  once at wrapper construction
+- where the next non-validation bottlenecks appear in repeated profile/lab runs
+
+Files changed:
+
+- `benchmarks/framework_performance_profile.cr`
+- `benchmarks/bin/framework_router_response_truth_round.rb`
+- `benchmarks/FRAMEWORK_PERFORMANCE_ROUND15.md`
+
+Compatibility checks:
+
+- `crystal` targeted controller/router/validation specs: pass
+- `acrystal` targeted controller/router/validation specs: pass
+
+Key repeated standard Crystal baseline lab read:
+
+- plaintext action vs raw response: `0.9709x`
+- direct JSON action vs raw response: `0.9765x`
+- `respond_with` JSON vs direct JSON: `0.9550x`
+- Amber query params lookup vs raw `HTTP::Params`: `0.6763x`
+- controller params wrapper query action vs raw params action: `1.0104x`
+- route+query dispatch vs direct controller action: `0.9076x`
+- Amber JSON body params lookup vs raw `JSON.parse`: `0.5904x`
+- JSON body dispatch vs params lookup: `0.2879x`
+
+Useful takeaway:
+
+- tiny responder and params-source tweaks are not reliable enough to promote
+- JSON body dispatch and route+query dispatch are the best next local targets
+- the next benchmark harness should add local HTTP pressure with `oha` before we
+  spend another round on helper-level cleanup
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:
