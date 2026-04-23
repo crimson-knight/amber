@@ -513,7 +513,24 @@ module Amber::Validators
     end
 
     def params
-      @params ||= {} of String => String?
+      @params ||= begin
+        capacity = validated_param_capacity
+        if capacity > 0
+          Hash(String, String?).new(initial_capacity: capacity)
+        else
+          {} of String => String?
+        end
+      end
+    end
+
+    private def validated_param_capacity : Int32
+      if definition = @reusable_definition
+        definition.total_rule_count
+      elsif current_rules = @rules
+        current_rules.size
+      else
+        0
+      end
     end
 
     def errors

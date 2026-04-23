@@ -438,6 +438,49 @@ Useful takeaway:
 - the next step should be a quiet single-host DigitalOcean rerun of this same
   truth harness, not another broad local rewrite
 
+### Round 13
+
+- branch base: `experiment/framework-performance-validation-round13`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND13.md`
+
+Rejected:
+
+- pre-sizing the validated params Hash from the known rule count
+
+What this round tested:
+
+- whether the remaining `validate!` success-path cost could be trimmed by
+  avoiding default Hash growth when compiled or dynamic validation already knows
+  the maximum validated field count
+- whether that small allocation tweak was safe across normal query and JSON-body
+  validation shapes
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+
+Compatibility checks:
+
+- `crystal` targeted validation/controller specs: pass
+- `acrystal` targeted validation/controller specs: pass
+
+Key measured read from the repeated standard Crystal focused profile:
+
+- simple query compiled vs validated: `1.3247x` versus Round 11 `1.3428x`
+- hybrid query compiled vs mixed: `0.8775x` versus Round 11 `1.2904x`
+- predicate-only query compiled vs validated: `0.9970x` versus Round 11
+  `1.0065x`
+- simple JSON-body compiled vs validated: `1.2061x` versus Round 11 `1.0653x`
+- hybrid JSON-body compiled vs mixed: `1.1448x` versus Round 11 `1.1291x`
+
+Useful takeaway:
+
+- pre-sizing the Hash is not stable enough to promote as a default framework
+  change
+- the next worthwhile validation experiment should remove successful validated
+  Hash materialization for opt-in hot endpoints instead of making that Hash
+  slightly different
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:
