@@ -438,6 +438,40 @@ Useful takeaway:
 - the next step should be a quiet single-host DigitalOcean rerun of this same
   truth harness, not another broad local rewrite
 
+### Round 12
+
+- branch base: `experiment/framework-performance-validation-round12`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND12.md`
+
+Rejected for promotion:
+
+- lazy error-buffer runtime tweak in `Amber::Validators::Params`
+
+What this round proved:
+
+- lazily allocating the error array does not break the validation direction
+- the repeated Round 11 truth harness still returned `keep` on both compilers
+- but the new runtime tweak did not clearly outperform Round 11 overall
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+
+Key measured read:
+
+- `crystal` still stayed positive across the truth harness, but query-focused
+  profile medians softened while JSON-body medians improved
+- `acrystal` lab medians were slightly stronger overall, but the focused profile
+  mostly moved sideways or down except for hybrid query
+
+Useful takeaway:
+
+- not every success-path allocation cleanup is worth keeping
+- the current promotion bar is now good enough to reject “interesting but not
+  clearly better” runtime tweaks
+- the next high-confidence step should be hosted confirmation for Round 11, not
+  promoting this Round 12 branch
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

@@ -12,7 +12,7 @@ module Amber::Validators
     predicate : (String -> Bool)?
 
   abstract class ReusableDefinition
-    abstract def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error))
+    abstract def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : ErrorBuffer)
     abstract def total_rule_count : Int32
     abstract def direct_rule_count : Int32
     abstract def fallback_rule_count : Int32
@@ -28,7 +28,7 @@ module Amber::Validators
     def initialize(@rules : Array(CompiledRule))
     end
 
-    def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error))
+    def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : ErrorBuffer)
       @rules.each do |rule|
         apply_rule(raw_params, rule, current_params, current_errors)
       end
@@ -46,7 +46,7 @@ module Amber::Validators
       @rules.size
     end
 
-    private def apply_rule(raw_params : Amber::Router::Params, rule : CompiledRule, current_params : Hash(String, String?), current_errors : Array(Error))
+    private def apply_rule(raw_params : Amber::Router::Params, rule : CompiledRule, current_params : Hash(String, String?), current_errors : ErrorBuffer)
       value = raw_params[rule.field]?
 
       case rule.kind
@@ -68,15 +68,15 @@ module Amber::Validators
       predicate.call(value)
     end
 
-    private def append_missing_error(rule : CompiledRule, current_errors : Array(Error))
+    private def append_missing_error(rule : CompiledRule, current_errors : ErrorBuffer)
       current_errors << Error.new(rule.field, nil, rule_error_message(rule))
     end
 
-    private def append_blank_error(rule : CompiledRule, value : String, current_errors : Array(Error))
+    private def append_blank_error(rule : CompiledRule, value : String, current_errors : ErrorBuffer)
       current_errors << Error.new(rule.field, value, rule_error_message(rule))
     end
 
-    private def append_predicate_error(rule : CompiledRule, value : String, current_errors : Array(Error))
+    private def append_predicate_error(rule : CompiledRule, value : String, current_errors : ErrorBuffer)
       current_errors << Error.new(rule.field, value, rule_error_message(rule))
     end
 
@@ -87,7 +87,7 @@ module Amber::Validators
 
   abstract class CompiledDefinition < ReusableDefinition
     @[AlwaysInline]
-    protected def apply_required_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool)
+    protected def apply_required_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : ErrorBuffer, field : String, msg : String?, allow_blank : Bool)
       if value = raw_params[field]?
         if value.blank? && !allow_blank
           current_errors << Error.new(field, value, rule_error_message(field, msg))
@@ -100,7 +100,7 @@ module Amber::Validators
     end
 
     @[AlwaysInline]
-    protected def apply_required_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
+    protected def apply_required_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : ErrorBuffer, field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
       if value = raw_params[field]?
         if value.blank? && !allow_blank
           current_errors << Error.new(field, value, rule_error_message(field, msg))
@@ -114,14 +114,14 @@ module Amber::Validators
     end
 
     @[AlwaysInline]
-    protected def apply_optional_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), _current_errors : Array(Error), field : String, _msg : String?, _allow_blank : Bool)
+    protected def apply_optional_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), _current_errors : ErrorBuffer, field : String, _msg : String?, _allow_blank : Bool)
       if value = raw_params[field]?
         current_params[field] = value
       end
     end
 
     @[AlwaysInline]
-    protected def apply_optional_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
+    protected def apply_optional_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : ErrorBuffer, field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
       if value = raw_params[field]?
         current_params[field] = value
         return if value.blank? && allow_blank
@@ -136,6 +136,29 @@ module Amber::Validators
 
   # Holds a validation error message
   record Error, param : String, value : String?, message : String
+
+  class ErrorBuffer
+    @errors : Array(Error)?
+
+    def clear
+      @errors.try &.clear
+    end
+
+    @[AlwaysInline]
+    def <<(error : Error)
+      (@errors ||= [] of Error) << error
+    end
+
+    @[AlwaysInline]
+    def empty? : Bool
+      current_errors = @errors
+      current_errors.nil? || current_errors.empty?
+    end
+
+    def to_a : Array(Error)
+      @errors || ([] of Error)
+    end
+  end
 
   # This struct holds the validation rules to be performed
   class BaseRule
@@ -236,7 +259,7 @@ module Amber::Validators
     getter raw_params : Amber::Router::Params
     @rules : Array(BaseRule)?
     @params : Hash(String, String?)?
-    @errors : Array(Error)?
+    @error_buffer : ErrorBuffer?
     @reusable_definition : ReusableDefinition?
 
     def initialize(@raw_params); end
@@ -424,7 +447,7 @@ module Amber::Validators
         end
 
         @[AlwaysInline]
-        def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Amber::Validators::Error))
+        def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Amber::Validators::ErrorBuffer)
           {% for expression, index in expressions %}
             {% unless expression.is_a?(Call) %}
               {% raise "Params.compile only supports required/optional rule calls" %}
@@ -516,8 +539,12 @@ module Amber::Validators
       @params ||= {} of String => String?
     end
 
+    def error_buffer
+      @error_buffer ||= ErrorBuffer.new
+    end
+
     def errors
-      @errors ||= [] of Error
+      error_buffer.to_a
     end
 
     @[AlwaysInline]
@@ -613,7 +640,7 @@ module Amber::Validators
     # end
     # ```
     def valid?
-      current_errors = errors
+      current_errors = error_buffer
       current_params = params
       current_errors.clear
       current_params.clear
