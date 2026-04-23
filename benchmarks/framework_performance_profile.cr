@@ -62,6 +62,12 @@ module AmberFrameworkPerfProfile
     end
   end
 
+  class PlaintextController < Amber::Controller::Base
+    def index
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+  end
+
   class QueryParamsController < Amber::Controller::Base
     def raw_index
       AmberFrameworkPerfProfile.consume(raw_params["page"].bytesize + raw_params["sort"].bytesize + raw_params["filter"].bytesize)
@@ -136,7 +142,18 @@ module AmberFrameworkPerfProfile
     end
   end
 
+  class RouteQueryController < Amber::Controller::Base
+    def show
+      AmberFrameworkPerfProfile.consume(params["id"].bytesize + params["page"].bytesize + params["sort"].bytesize + params["filter"].bytesize)
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+  end
+
   class JsonController < Amber::Controller::Base
+    def direct
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
     def negotiated
       respond_with do
         json(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY)
@@ -211,7 +228,9 @@ module AmberFrameworkPerfProfile
   def install_routes
     router = Amber::Server.router
     routes = [
+      Amber::Route.new("GET", "/bench/plaintext", ->(context : HTTP::Server::Context) { PlaintextController.new(context).index }, :index, :web, controller: "AmberFrameworkPerfProfile::PlaintextController"),
       Amber::Route.new("GET", "/bench/json", ->(context : HTTP::Server::Context) { JsonController.new(context).negotiated }, :negotiated, :web, controller: "AmberFrameworkPerfProfile::JsonController"),
+      Amber::Route.new("GET", "/bench/users/:id", ->(context : HTTP::Server::Context) { RouteQueryController.new(context).show }, :show, :web, controller: "AmberFrameworkPerfProfile::RouteQueryController"),
       Amber::Route.new("GET", "/bench/query", ->(context : HTTP::Server::Context) { QueryParamsController.new(context).index }, :index, :web, controller: "AmberFrameworkPerfProfile::QueryParamsController"),
       Amber::Route.new("POST", "/bench/json-body", ->(context : HTTP::Server::Context) { JsonBodyController.new(context).create }, :create, :web, controller: "AmberFrameworkPerfProfile::JsonBodyController"),
     ]
@@ -229,6 +248,32 @@ module AmberFrameworkPerfProfile
     request = HTTP::Request.new(method, resource, headers, body)
     response = HTTP::Server::Response.new(IO::Memory.new)
     HTTP::Server::Context.new(request, response)
+  end
+
+  def raw_plaintext
+    context = build_context("GET", "/raw/plaintext")
+    context.response.status_code = 200
+    context.response.content_type = CONTENT_TEXT
+    context.response.print(PLAIN_TEXT_RESPONSE)
+  end
+
+  def action_plaintext
+    context = build_context("GET", "/bench/plaintext")
+    PlaintextController.new(context).index
+    context.bench_finalize_response!
+  end
+
+  def raw_json
+    context = build_context("GET", "/raw/json", JSON_ACCEPT)
+    context.response.status_code = 200
+    context.response.content_type = CONTENT_JSON
+    context.response.print(JSON_RESPONSE_BODY)
+  end
+
+  def action_json_direct
+    context = build_context("GET", "/bench/json", JSON_ACCEPT)
+    JsonController.new(context).direct
+    context.bench_finalize_response!
   end
 
   def action_query_params
@@ -290,10 +335,26 @@ module AmberFrameworkPerfProfile
     pipeline.call(context)
   end
 
+  def raw_query_lookup
+    request = HTTP::Request.new("GET", QUERY_RESOURCE)
+    query = request.query_params
+    consume(query["page"].bytesize + query["sort"].bytesize + query["filter"].bytesize)
+  end
+
   def params_lookup_query
     context = build_context("GET", QUERY_RESOURCE)
     params = context.params
     consume(params["page"].bytesize + params["sort"].bytesize + params["filter"].bytesize)
+  end
+
+  def dispatch_route_query_params(pipeline : Amber::Pipe::Pipeline)
+    context = build_context("GET", "/bench/users/42?page=10&sort=asc&filter=active")
+    pipeline.call(context)
+  end
+
+  def raw_json_body_parse
+    parsed = JSON.parse(JSON_BODY_PAYLOAD).as_h
+    consume(parsed["id"].to_s.bytesize + parsed["name"].to_s.bytesize + parsed["active"].to_s.bytesize)
   end
 
   def dispatch_json_body(pipeline : Amber::Pipe::Pipeline)
@@ -344,7 +405,7 @@ duration_seconds = 20.0
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_profile.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, dispatch_json, params_lookup_query, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
+  parser.on("--scenario=NAME", "Scenario: raw_plaintext, action_plaintext, raw_json, action_json_direct, action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, dispatch_json, raw_query_lookup, params_lookup_query, dispatch_route_query_params, raw_json_body_parse, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
     scenario = value
   end
 
@@ -357,6 +418,14 @@ AmberFrameworkPerfProfile.install_routes
 pipeline = AmberFrameworkPerfProfile.build_pipeline
 
 scenario_proc = case scenario
+                when "raw_plaintext"
+                  -> { AmberFrameworkPerfProfile.raw_plaintext }
+                when "action_plaintext"
+                  -> { AmberFrameworkPerfProfile.action_plaintext }
+                when "raw_json"
+                  -> { AmberFrameworkPerfProfile.raw_json }
+                when "action_json_direct"
+                  -> { AmberFrameworkPerfProfile.action_json_direct }
                 when "action_query_params"
                   -> { AmberFrameworkPerfProfile.action_query_params }
                 when "action_query_raw_params"
@@ -377,8 +446,14 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.action_json_respond_with }
                 when "dispatch_json"
                   -> { AmberFrameworkPerfProfile.dispatch_json(pipeline) }
+                when "raw_query_lookup"
+                  -> { AmberFrameworkPerfProfile.raw_query_lookup }
                 when "params_lookup_query"
                   -> { AmberFrameworkPerfProfile.params_lookup_query }
+                when "dispatch_route_query_params"
+                  -> { AmberFrameworkPerfProfile.dispatch_route_query_params(pipeline) }
+                when "raw_json_body_parse"
+                  -> { AmberFrameworkPerfProfile.raw_json_body_parse }
                 when "dispatch_json_body"
                   -> { AmberFrameworkPerfProfile.dispatch_json_body(pipeline) }
                 when "action_json_body_raw_params"

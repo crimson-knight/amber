@@ -1,0 +1,370 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-04-23T23:31:33Z",
+    "compiler": "crystal",
+    "profile_duration_seconds": 1.0,
+    "profile_warmup_duration_seconds": 0.75,
+    "profile_repetitions": 1,
+    "lab_warmup_seconds": 0.1,
+    "lab_calc_seconds": 0.25,
+    "lab_repetitions": 1,
+    "branch": "experiment/framework-performance-router-response-round15",
+    "commit": "9ab26dc0abb48dfbc570a2895f8887bc02fbca1f"
+  },
+  "profile_pairs": {
+    "plaintext_action_vs_raw": {
+      "label": "Amber plaintext action vs raw Crystal response",
+      "base_scenario": "raw_plaintext",
+      "candidate_scenario": "action_plaintext",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "raw_plaintext",
+            "action_plaintext"
+          ],
+          "base_iterations": 327752,
+          "candidate_iterations": 360387,
+          "ratio": 1.0995722375454613
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        1.0995722375454613
+      ],
+      "median_ratio": 1.0995722375454613,
+      "mean_ratio": 1.0995722375454613,
+      "min_ratio": 1.0995722375454613,
+      "max_ratio": 1.0995722375454613,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 1
+    },
+    "json_action_direct_vs_raw": {
+      "label": "Amber direct JSON action vs raw Crystal response",
+      "base_scenario": "raw_json",
+      "candidate_scenario": "action_json_direct",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "raw_json",
+            "action_json_direct"
+          ],
+          "base_iterations": 321656,
+          "candidate_iterations": 285793,
+          "ratio": 0.8885051110503146
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.8885051110503146
+      ],
+      "median_ratio": 0.8885051110503146,
+      "mean_ratio": 0.8885051110503146,
+      "min_ratio": 0.8885051110503146,
+      "max_ratio": 0.8885051110503146,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    },
+    "json_respond_with_vs_direct": {
+      "label": "respond_with JSON vs direct JSON action",
+      "base_scenario": "action_json_direct",
+      "candidate_scenario": "action_json_respond_with",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 275201,
+          "candidate_iterations": 249003,
+          "ratio": 0.904804124985011
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.904804124985011
+      ],
+      "median_ratio": 0.904804124985011,
+      "mean_ratio": 0.904804124985011,
+      "min_ratio": 0.904804124985011,
+      "max_ratio": 0.904804124985011,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    },
+    "query_params_vs_raw": {
+      "label": "Amber params query lookup vs raw HTTP::Params lookup",
+      "base_scenario": "raw_query_lookup",
+      "candidate_scenario": "params_lookup_query",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "raw_query_lookup",
+            "params_lookup_query"
+          ],
+          "base_iterations": 1905939,
+          "candidate_iterations": 1319737,
+          "ratio": 0.6924340180876722
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.6924340180876722
+      ],
+      "median_ratio": 0.6924340180876722,
+      "mean_ratio": 0.6924340180876722,
+      "min_ratio": 0.6924340180876722,
+      "max_ratio": 0.6924340180876722,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    },
+    "query_action_wrapper_vs_raw_action": {
+      "label": "Controller params wrapper query action vs raw params action",
+      "base_scenario": "action_query_raw_params",
+      "candidate_scenario": "action_query_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_raw_params",
+            "action_query_params"
+          ],
+          "base_iterations": 223268,
+          "candidate_iterations": 288855,
+          "ratio": 1.293759069817439
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        1.293759069817439
+      ],
+      "median_ratio": 1.293759069817439,
+      "mean_ratio": 1.293759069817439,
+      "min_ratio": 1.293759069817439,
+      "max_ratio": 1.293759069817439,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 1
+    },
+    "route_query_dispatch_vs_action": {
+      "label": "Route+query dispatch vs direct controller query action",
+      "base_scenario": "action_query_params",
+      "candidate_scenario": "dispatch_route_query_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_params",
+            "dispatch_route_query_params"
+          ],
+          "base_iterations": 212847,
+          "candidate_iterations": 207933,
+          "ratio": 0.9769129938406461
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.9769129938406461
+      ],
+      "median_ratio": 0.9769129938406461,
+      "mean_ratio": 0.9769129938406461,
+      "min_ratio": 0.9769129938406461,
+      "max_ratio": 0.9769129938406461,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    },
+    "json_params_vs_raw_parse": {
+      "label": "Amber JSON params lookup vs raw JSON.parse",
+      "base_scenario": "raw_json_body_parse",
+      "candidate_scenario": "params_lookup_json",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "raw_json_body_parse",
+            "params_lookup_json"
+          ],
+          "base_iterations": 1769155,
+          "candidate_iterations": 1093639,
+          "ratio": 0.6181702564218511
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.6181702564218511
+      ],
+      "median_ratio": 0.6181702564218511,
+      "mean_ratio": 0.6181702564218511,
+      "min_ratio": 0.6181702564218511,
+      "max_ratio": 0.6181702564218511,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    },
+    "json_dispatch_vs_params": {
+      "label": "JSON body dispatch vs params lookup",
+      "base_scenario": "params_lookup_json",
+      "candidate_scenario": "dispatch_json_body",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "params_lookup_json",
+            "dispatch_json_body"
+          ],
+          "base_iterations": 1079368,
+          "candidate_iterations": 237393,
+          "ratio": 0.2199370372291934
+        }
+      ],
+      "sample_count": 1,
+      "ratios": [
+        0.2199370372291934
+      ],
+      "median_ratio": 0.2199370372291934,
+      "mean_ratio": 0.2199370372291934,
+      "min_ratio": 0.2199370372291934,
+      "max_ratio": 0.2199370372291934,
+      "stddev_ratio": 0.0,
+      "cv_ratio": 0.0,
+      "positive_samples": 0
+    }
+  },
+  "lab": {
+    "samples": [
+      {
+        "repetition": 1,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-router-response-truth-20260423-59710-nvuuyu/framework_router_response_truth_lab_run_1.json"
+      }
+    ],
+    "comparisons": {
+      "plaintext_action_vs_raw": {
+        "label": "Amber plaintext action vs raw Crystal response",
+        "comparison_key": "plaintext_controller_vs_raw",
+        "sample_count": 1,
+        "ratios": [
+          1.0032636322170203
+        ],
+        "median_ratio": 1.0032636322170203,
+        "mean_ratio": 1.0032636322170203,
+        "min_ratio": 1.0032636322170203,
+        "max_ratio": 1.0032636322170203,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 1
+      },
+      "json_action_direct_vs_raw": {
+        "label": "Amber direct JSON action vs raw Crystal response",
+        "comparison_key": "json_direct_vs_raw",
+        "sample_count": 1,
+        "ratios": [
+          0.9810793487878753
+        ],
+        "median_ratio": 0.9810793487878753,
+        "mean_ratio": 0.9810793487878753,
+        "min_ratio": 0.9810793487878753,
+        "max_ratio": 0.9810793487878753,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "json_respond_with_vs_direct": {
+        "label": "respond_with JSON vs direct JSON action",
+        "comparison_key": "json_respond_with_vs_direct",
+        "sample_count": 1,
+        "ratios": [
+          0.9330576846910414
+        ],
+        "median_ratio": 0.9330576846910414,
+        "mean_ratio": 0.9330576846910414,
+        "min_ratio": 0.9330576846910414,
+        "max_ratio": 0.9330576846910414,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "query_params_vs_raw": {
+        "label": "Amber params query lookup vs raw HTTP::Params lookup",
+        "comparison_key": "query_params_vs_raw",
+        "sample_count": 1,
+        "ratios": [
+          0.6721294080370028
+        ],
+        "median_ratio": 0.6721294080370028,
+        "mean_ratio": 0.6721294080370028,
+        "min_ratio": 0.6721294080370028,
+        "max_ratio": 0.6721294080370028,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "query_action_wrapper_vs_raw_action": {
+        "label": "Controller params wrapper query action vs raw params action",
+        "comparison_key": "query_action_wrapper_vs_raw_action",
+        "sample_count": 1,
+        "ratios": [
+          0.9996718437343379
+        ],
+        "median_ratio": 0.9996718437343379,
+        "mean_ratio": 0.9996718437343379,
+        "min_ratio": 0.9996718437343379,
+        "max_ratio": 0.9996718437343379,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "route_query_dispatch_vs_action": {
+        "label": "Route+query dispatch vs direct controller query action",
+        "comparison_key": "route_query_dispatch_vs_action",
+        "sample_count": 1,
+        "ratios": [
+          0.8819329335404904
+        ],
+        "median_ratio": 0.8819329335404904,
+        "mean_ratio": 0.8819329335404904,
+        "min_ratio": 0.8819329335404904,
+        "max_ratio": 0.8819329335404904,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "json_params_vs_raw_parse": {
+        "label": "Amber JSON params lookup vs raw JSON.parse",
+        "comparison_key": "json_params_vs_raw_parse",
+        "sample_count": 1,
+        "ratios": [
+          0.602762334660613
+        ],
+        "median_ratio": 0.602762334660613,
+        "mean_ratio": 0.602762334660613,
+        "min_ratio": 0.602762334660613,
+        "max_ratio": 0.602762334660613,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      },
+      "json_dispatch_vs_params": {
+        "label": "JSON body dispatch vs params lookup",
+        "comparison_key": "json_dispatch_vs_params",
+        "sample_count": 1,
+        "ratios": [
+          0.18356016240894926
+        ],
+        "median_ratio": 0.18356016240894926,
+        "mean_ratio": 0.18356016240894926,
+        "min_ratio": 0.18356016240894926,
+        "max_ratio": 0.18356016240894926,
+        "stddev_ratio": 0.0,
+        "cv_ratio": 0.0,
+        "positive_samples": 0
+      }
+    }
+  }
+}
