@@ -381,6 +381,63 @@ Useful takeaway:
   seam or quieter hosted reruns, not on stacking more complexity onto this
   version of the specialization
 
+### Round 11
+
+- branch base: `experiment/framework-performance-validation-round11`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND11.md`
+
+Kept:
+
+- the Round 10 runtime validation slice
+- a stronger repeated-run measurement method for validation work
+
+What this round proved:
+
+- the Round 10 disagreement was mostly a measurement-discipline problem
+- when the same validation comparisons were rerun with alternating-order focused
+  pairs and repeated filtered framework-lab medians, the important compiled and
+  hybrid validation comparisons stayed positive on both compilers
+- that is enough to treat the compiled predicate/hybrid validation direction as
+  a real keep instead of a research-only branch
+
+Files changed:
+
+- `benchmarks/framework_performance_lab.cr`
+- `benchmarks/bin/framework_profile_build.sh`
+- `benchmarks/bin/framework_validation_truth_round.rb`
+
+Key measured read from the repeated focused profile:
+
+- `crystal` simple query compiled vs validated: `1.3428x`
+- `crystal` hybrid query vs mixed: `1.2904x`
+- `crystal` predicate-only query compiled vs validated: `1.0065x`
+- `crystal` simple JSON-body compiled vs validated: `1.0653x`
+- `crystal` hybrid JSON-body vs mixed: `1.1291x`
+- `acrystal` simple query compiled vs validated: `1.2590x`
+- `acrystal` hybrid query vs mixed: `1.1232x`
+- `acrystal` predicate-only query compiled vs validated: `1.1498x`
+- `acrystal` simple JSON-body compiled vs validated: `1.3149x`
+- `acrystal` hybrid JSON-body vs mixed: `1.3262x`
+
+Key measured read from the repeated filtered framework lab:
+
+- `crystal` query compiled vs validated: `1.0936x`
+- `crystal` query hybrid vs mixed: `1.0974x`
+- `crystal` JSON-body compiled vs validated: `1.0740x`
+- `crystal` JSON-body hybrid vs mixed: `1.0478x`
+- `acrystal` query compiled vs validated: `1.0900x`
+- `acrystal` query hybrid vs mixed: `1.0900x`
+- `acrystal` JSON-body compiled vs validated: `1.0711x`
+- `acrystal` JSON-body hybrid vs mixed: `1.0535x`
+
+Useful takeaway:
+
+- the runtime change from Round 10 is worth keeping
+- the safer way to evaluate close Amber perf work is repeated medians, not
+  single short samples
+- the next step should be a quiet single-host DigitalOcean rerun of this same
+  truth harness, not another broad local rewrite
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

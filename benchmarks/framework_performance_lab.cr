@@ -536,6 +536,7 @@ warmup_seconds = 2.0
 calculation_seconds = 5.0
 output_path = "benchmarks/results/framework_performance_lab_latest.json"
 compiler_label = ENV["AMBER_BENCH_COMPILER"]? || "unknown"
+selected_scenario_keys = nil
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_lab.cr -- [options]"
@@ -550,6 +551,10 @@ OptionParser.parse do |parser|
 
   parser.on("--output=PATH", "Where to write the JSON results") do |value|
     output_path = value
+  end
+
+  parser.on("--scenarios=KEYS", "Comma-separated scenario keys to run instead of the full suite") do |value|
+    selected_scenario_keys = value.split(",").map(&.strip).reject(&.empty?)
   end
 end
 
@@ -586,6 +591,13 @@ scenario_actions = {
   "amber_dispatch_json_body"                         => -> { AmberFrameworkPerfLab.amber_dispatch_json_body(dispatch_pipeline) },
 } of String => Proc(Nil)
 
+scenario_plan = AmberFrameworkPerfLab::SCENARIOS
+if keys = selected_scenario_keys
+  unknown_keys = keys.reject { |key| scenario_actions.has_key?(key) }
+  raise "Unknown scenario keys: #{unknown_keys.join(", ")}" unless unknown_keys.empty?
+  scenario_plan = AmberFrameworkPerfLab::SCENARIOS.select { |scenario| keys.includes?(scenario.key) }
+end
+
 results = [] of Hash(String, Float64 | String)
 
 puts "Amber Framework Performance Lab"
@@ -593,7 +605,7 @@ puts "Crystal #{Crystal::VERSION}"
 puts "Compiler: #{compiler_label}"
 puts "Warmup: #{warmup_seconds}s | Calculation: #{calculation_seconds}s"
 
-AmberFrameworkPerfLab::SCENARIOS.each do |scenario|
+scenario_plan.each do |scenario|
   action = scenario_actions[scenario.key]
   memory = Benchmark.memory { action.call }
   job = Benchmark.ips(warmup: warmup_seconds.seconds, calculation: calculation_seconds.seconds) do |x|
@@ -614,6 +626,8 @@ end
 result_index = results.index_by { |row| row["key"].as(String) }
 
 comparisons = AmberFrameworkPerfLab::COMPARISONS.map do |comparison|
+  next unless result_index.has_key?(comparison.base_key) && result_index.has_key?(comparison.candidate_key)
+
   base = result_index[comparison.base_key]
   candidate = result_index[comparison.candidate_key]
 
@@ -635,7 +649,7 @@ comparisons = AmberFrameworkPerfLab::COMPARISONS.map do |comparison|
     "memory_ratio"      => memory_comparable ? candidate_memory / base_memory : 0.0,
     "memory_delta_pct"  => memory_comparable ? ((candidate_memory / base_memory) - 1.0) * 100.0 : 0.0,
   }
-end.sort_by { |row| row["ips_ratio"].as(Float64) }
+end.compact.sort_by { |row| row["ips_ratio"].as(Float64) }
 
 payload = {
   "metadata" => {
@@ -644,6 +658,7 @@ payload = {
     "generated_at_utc"    => Time.utc.to_s("%Y-%m-%dT%H:%M:%SZ"),
     "warmup_seconds"      => warmup_seconds,
     "calculation_seconds" => calculation_seconds,
+    "selected_scenarios"  => scenario_plan.map(&.key),
     "validation_definitions" => AmberFrameworkPerfLab.validation_definition_metadata,
   },
   "results" => results,

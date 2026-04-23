@@ -1,0 +1,678 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-04-23T15:34:43Z",
+    "compiler": "acrystal",
+    "profile_duration_seconds": 6.0,
+    "profile_warmup_duration_seconds": 0.75,
+    "profile_repetitions": 5,
+    "lab_warmup_seconds": 1.0,
+    "lab_calc_seconds": 2.0,
+    "lab_repetitions": 4,
+    "branch": "experiment/framework-performance-validation-round11",
+    "commit": "16edb84487f73b1066fbdd100fe7c94d4ca88bbf"
+  },
+  "profile_pairs": {
+    "query_simple": {
+      "label": "Simple compiled query vs runtime validated",
+      "base_scenario": "action_query_validated_params",
+      "candidate_scenario": "action_query_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_validated_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 1246769,
+          "candidate_iterations": 1716807,
+          "ratio": 1.377004882219561
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_compiled_validated_params",
+            "action_query_validated_params"
+          ],
+          "base_iterations": 1116600,
+          "candidate_iterations": 1676763,
+          "ratio": 1.5016684578183772
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_query_validated_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 1342224,
+          "candidate_iterations": 1689803,
+          "ratio": 1.2589575212483162
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_query_compiled_validated_params",
+            "action_query_validated_params"
+          ],
+          "base_iterations": 1457177,
+          "candidate_iterations": 1560933,
+          "ratio": 1.071203429645129
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_query_validated_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 1493404,
+          "candidate_iterations": 1819634,
+          "ratio": 1.2184472520496799
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.377004882219561,
+        1.5016684578183772,
+        1.2589575212483162,
+        1.071203429645129,
+        1.2184472520496799
+      ],
+      "median_ratio": 1.2589575212483162,
+      "mean_ratio": 1.2854563085962127,
+      "min_ratio": 1.071203429645129,
+      "max_ratio": 1.5016684578183772,
+      "stddev_ratio": 0.16296129167131254,
+      "cv_ratio": 0.12677310818076346,
+      "positive_samples": 5
+    },
+    "query_hybrid": {
+      "label": "Hybrid compiled query vs mixed runtime validated",
+      "base_scenario": "action_query_mixed_validated_params",
+      "candidate_scenario": "action_query_hybrid_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_mixed_validated_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 1508747,
+          "candidate_iterations": 1694596,
+          "ratio": 1.1231810237236595
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_hybrid_validated_params",
+            "action_query_mixed_validated_params"
+          ],
+          "base_iterations": 1243938,
+          "candidate_iterations": 1173925,
+          "ratio": 0.943716648257389
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_query_mixed_validated_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 1342938,
+          "candidate_iterations": 1810062,
+          "ratio": 1.3478373536231754
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_query_hybrid_validated_params",
+            "action_query_mixed_validated_params"
+          ],
+          "base_iterations": 1233458,
+          "candidate_iterations": 1678468,
+          "ratio": 1.3607824506387733
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_query_mixed_validated_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 1672352,
+          "candidate_iterations": 1825729,
+          "ratio": 1.0917133474292493
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.1231810237236595,
+        0.943716648257389,
+        1.3478373536231754,
+        1.3607824506387733,
+        1.0917133474292493
+      ],
+      "median_ratio": 1.1231810237236595,
+      "mean_ratio": 1.1734461647344492,
+      "min_ratio": 0.943716648257389,
+      "max_ratio": 1.3607824506387733,
+      "stddev_ratio": 0.17852847065994382,
+      "cv_ratio": 0.15214031629678113,
+      "positive_samples": 4
+    },
+    "query_predicate_only": {
+      "label": "Predicate-only compiled query vs runtime validated",
+      "base_scenario": "action_query_predicate_only_validated_params",
+      "candidate_scenario": "action_query_predicate_only_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_predicate_only_validated_params",
+            "action_query_predicate_only_compiled_validated_params"
+          ],
+          "base_iterations": 1760144,
+          "candidate_iterations": 1900941,
+          "ratio": 1.0799917506749448
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_predicate_only_compiled_validated_params",
+            "action_query_predicate_only_validated_params"
+          ],
+          "base_iterations": 1789825,
+          "candidate_iterations": 1741529,
+          "ratio": 0.9730163563476876
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_query_predicate_only_validated_params",
+            "action_query_predicate_only_compiled_validated_params"
+          ],
+          "base_iterations": 1472016,
+          "candidate_iterations": 1692471,
+          "ratio": 1.149763997130466
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_query_predicate_only_compiled_validated_params",
+            "action_query_predicate_only_validated_params"
+          ],
+          "base_iterations": 1495289,
+          "candidate_iterations": 1752224,
+          "ratio": 1.171829659684516
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_query_predicate_only_validated_params",
+            "action_query_predicate_only_compiled_validated_params"
+          ],
+          "base_iterations": 1352747,
+          "candidate_iterations": 1695710,
+          "ratio": 1.2535307784825986
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.0799917506749448,
+        0.9730163563476876,
+        1.149763997130466,
+        1.171829659684516,
+        1.2535307784825986
+      ],
+      "median_ratio": 1.149763997130466,
+      "mean_ratio": 1.1256265084640424,
+      "min_ratio": 0.9730163563476876,
+      "max_ratio": 1.2535307784825986,
+      "stddev_ratio": 0.10541494376777183,
+      "cv_ratio": 0.0936500188784771,
+      "positive_samples": 4
+    },
+    "json_body_simple": {
+      "label": "Simple compiled JSON body vs runtime validated",
+      "base_scenario": "action_json_body_validated_params",
+      "candidate_scenario": "action_json_body_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_validated_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 1499616,
+          "candidate_iterations": 1228125,
+          "ratio": 0.8189596536713398
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_compiled_validated_params",
+            "action_json_body_validated_params"
+          ],
+          "base_iterations": 1138239,
+          "candidate_iterations": 1521960,
+          "ratio": 1.337118127212299
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_body_validated_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 1204235,
+          "candidate_iterations": 1144163,
+          "ratio": 0.9501160487778548
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_json_body_compiled_validated_params",
+            "action_json_body_validated_params"
+          ],
+          "base_iterations": 1222544,
+          "candidate_iterations": 1607501,
+          "ratio": 1.3148819183604026
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_body_validated_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 1149206,
+          "candidate_iterations": 1582085,
+          "ratio": 1.3766765923602904
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.8189596536713398,
+        1.337118127212299,
+        0.9501160487778548,
+        1.3148819183604026,
+        1.3766765923602904
+      ],
+      "median_ratio": 1.3148819183604026,
+      "mean_ratio": 1.1595504680764372,
+      "min_ratio": 0.8189596536713398,
+      "max_ratio": 1.3766765923602904,
+      "stddev_ratio": 0.25625512956275565,
+      "cv_ratio": 0.22099523618653172,
+      "positive_samples": 3
+    },
+    "json_body_hybrid": {
+      "label": "Hybrid compiled JSON body vs mixed runtime validated",
+      "base_scenario": "action_json_body_mixed_validated_params",
+      "candidate_scenario": "action_json_body_hybrid_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_mixed_validated_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 1509637,
+          "candidate_iterations": 1707461,
+          "ratio": 1.131040773377971
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_hybrid_validated_params",
+            "action_json_body_mixed_validated_params"
+          ],
+          "base_iterations": 1142287,
+          "candidate_iterations": 1514851,
+          "ratio": 1.3261562111798524
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_body_mixed_validated_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 1062319,
+          "candidate_iterations": 1602340,
+          "ratio": 1.508341656319806
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_json_body_hybrid_validated_params",
+            "action_json_body_mixed_validated_params"
+          ],
+          "base_iterations": 1217733,
+          "candidate_iterations": 1620275,
+          "ratio": 1.3305667170061088
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_body_mixed_validated_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 1150651,
+          "candidate_iterations": 1293890,
+          "ratio": 1.124485182735686
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.131040773377971,
+        1.3261562111798524,
+        1.508341656319806,
+        1.3305667170061088,
+        1.124485182735686
+      ],
+      "median_ratio": 1.3261562111798524,
+      "mean_ratio": 1.2841181081238848,
+      "min_ratio": 1.124485182735686,
+      "max_ratio": 1.508341656319806,
+      "stddev_ratio": 0.16055856892588552,
+      "cv_ratio": 0.12503411322535116,
+      "positive_samples": 5
+    }
+  },
+  "lab": {
+    "samples": [
+      {
+        "repetition": 1,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-47741-i1ysuh/framework_validation_truth_lab_run_1.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      },
+      {
+        "repetition": 2,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-47741-i1ysuh/framework_validation_truth_lab_run_2.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      },
+      {
+        "repetition": 3,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-47741-i1ysuh/framework_validation_truth_lab_run_3.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      },
+      {
+        "repetition": 4,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-47741-i1ysuh/framework_validation_truth_lab_run_4.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      }
+    ],
+    "comparisons": {
+      "query_simple": {
+        "label": "Simple compiled query vs runtime validated",
+        "comparison_key": "query_action_compiled_vs_validated",
+        "sample_count": 4,
+        "ratios": [
+          1.1187142409830197,
+          1.0504303882276433,
+          1.0887924041432617,
+          1.0912652157588258
+        ],
+        "median_ratio": 1.0900288099510438,
+        "mean_ratio": 1.0873005622781877,
+        "min_ratio": 1.0504303882276433,
+        "max_ratio": 1.1187142409830197,
+        "stddev_ratio": 0.028072364902514458,
+        "cv_ratio": 0.025818403738976543,
+        "positive_samples": 4
+      },
+      "query_hybrid": {
+        "label": "Hybrid compiled query vs mixed runtime validated",
+        "comparison_key": "query_action_hybrid_vs_mixed",
+        "sample_count": 4,
+        "ratios": [
+          1.096140539981241,
+          1.0838613778707735,
+          1.0678459269688194,
+          1.1033620983084056
+        ],
+        "median_ratio": 1.0900009589260073,
+        "mean_ratio": 1.0878024857823099,
+        "min_ratio": 1.0678459269688194,
+        "max_ratio": 1.1033620983084056,
+        "stddev_ratio": 0.015550147491618047,
+        "cv_ratio": 0.014295010072931501,
+        "positive_samples": 4
+      },
+      "json_body_simple": {
+        "label": "Simple compiled JSON body vs runtime validated",
+        "comparison_key": "json_body_action_compiled_vs_validated",
+        "sample_count": 4,
+        "ratios": [
+          1.1995591614989733,
+          1.0482594460025854,
+          1.0762387898752408,
+          1.066044395858658
+        ],
+        "median_ratio": 1.0711415928669494,
+        "mean_ratio": 1.0975254483088643,
+        "min_ratio": 1.0482594460025854,
+        "max_ratio": 1.1995591614989733,
+        "stddev_ratio": 0.06899805818824688,
+        "cv_ratio": 0.06286693242016701,
+        "positive_samples": 4
+      },
+      "json_body_hybrid": {
+        "label": "Hybrid compiled JSON body vs mixed runtime validated",
+        "comparison_key": "json_body_action_hybrid_vs_mixed",
+        "sample_count": 4,
+        "ratios": [
+          1.0036953542879736,
+          1.0502549389650373,
+          1.0706206056693275,
+          1.0566703937018376
+        ],
+        "median_ratio": 1.0534626663334374,
+        "mean_ratio": 1.0453103231560439,
+        "min_ratio": 1.0036953542879736,
+        "max_ratio": 1.0706206056693275,
+        "stddev_ratio": 0.029016756441159093,
+        "cv_ratio": 0.02775898773634083,
+        "positive_samples": 4
+      }
+    }
+  },
+  "verdict": {
+    "status": "keep",
+    "reason": "Both the repeated full-lab and repeated focused profile medians stayed positive."
+  }
+}
