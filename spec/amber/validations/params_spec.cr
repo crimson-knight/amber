@@ -16,6 +16,16 @@ module Amber::Validators
     required(:nickname, allow_blank: true)
   end
 
+  Validators::Params.compile COMPILED_PREDICATE_DIRECT_DEFINITION do
+    required(:age, "Age must be 18+") { |value| value.to_i >= 18 }
+    optional(:role, "Role must be admin", allow_blank: false) { |value| value == "admin" }
+  end
+
+  PREDICATE_DIRECT_REUSABLE_DEFINITION = Validators::Params.define do
+    required(:age, "Age must be 18+") { |value| value.to_i >= 18 }
+    optional(:role, "Role must be admin", allow_blank: false) { |value| value == "admin" }
+  end
+
   HYBRID_FIELD_NAME  = "nickname"
   HYBRID_AGE_MESSAGE = "Age must be 18+"
 
@@ -31,6 +41,26 @@ module Amber::Validators
     optional(HYBRID_FIELD_NAME, "Nickname must be amber", allow_blank: false) { |value| value == "amber" }
     required(:age, HYBRID_AGE_MESSAGE) { |value| value.to_i >= 18 }
     required(:email)
+  end
+
+  MULTI_FALLBACK_ROLE_FIELD       = "role"
+  MULTI_FALLBACK_TEAM_FIELD       = "team"
+  MULTI_FALLBACK_ROLE_MESSAGE     = "Role must be admin"
+  MULTI_FALLBACK_TEAM_MESSAGE     = "Team must be ops"
+  MULTI_FALLBACK_CONTACT_MESSAGE  = "Contact must include amber.dev"
+
+  Validators::Params.compile COMPILED_MULTI_FALLBACK_DEFINITION do
+    required(:name)
+    optional(MULTI_FALLBACK_ROLE_FIELD, MULTI_FALLBACK_ROLE_MESSAGE, allow_blank: false) { |value| value == "admin" }
+    required(MULTI_FALLBACK_TEAM_FIELD, MULTI_FALLBACK_TEAM_MESSAGE) { |value| value == "ops" }
+    optional(:contact, MULTI_FALLBACK_CONTACT_MESSAGE) { |value| value.includes?("amber.dev") }
+  end
+
+  MULTI_FALLBACK_REUSABLE_DEFINITION = Validators::Params.define do
+    required(:name)
+    optional(MULTI_FALLBACK_ROLE_FIELD, MULTI_FALLBACK_ROLE_MESSAGE, allow_blank: false) { |value| value == "admin" }
+    required(MULTI_FALLBACK_TEAM_FIELD, MULTI_FALLBACK_TEAM_MESSAGE) { |value| value == "ops" }
+    optional(:contact, MULTI_FALLBACK_CONTACT_MESSAGE) { |value| value.includes?("amber.dev") }
   end
 
   describe Params do
@@ -59,6 +89,20 @@ module Amber::Validators
         validator.errors.map(&.message).should eq(["Name is required"])
       end
 
+      it "matches reusable definition parity for statically knowable predicate rules" do
+        compiled_validator = Validators::Params.new(params_builder("age=12&role=user"))
+        reusable_validator = Validators::Params.new(params_builder("age=12&role=user"))
+
+        compiled_validator.validation(COMPILED_PREDICATE_DIRECT_DEFINITION)
+        reusable_validator.validation(PREDICATE_DIRECT_REUSABLE_DEFINITION)
+
+        compiled_validator.valid?.should be_false
+        reusable_validator.valid?.should be_false
+        compiled_validator.errors.map(&.message).should eq(reusable_validator.errors.map(&.message))
+        compiled_validator.to_h.should eq({"age" => "12", "role" => "user"})
+        compiled_validator.to_h.should eq(reusable_validator.to_h)
+      end
+
       it "preserves rule and error ordering for mixed direct and fallback rules" do
         validator = Validators::Params.new(params_builder("name=amber&nickname=user&age=17"))
         validator.validation(COMPILED_HYBRID_DEFINITION)
@@ -77,6 +121,21 @@ module Amber::Validators
 
         compiled_result.should eq(reusable_result)
         compiled_result.keys.should eq(["name", HYBRID_FIELD_NAME, "age", "email"])
+      end
+
+      it "preserves ordering and params population across multiple opaque fallback rules" do
+        compiled_validator = Validators::Params.new(params_builder("name=amber&role=user&team=sales&contact=support@example.com"))
+        reusable_validator = Validators::Params.new(params_builder("name=amber&role=user&team=sales&contact=support@example.com"))
+
+        compiled_validator.validation(COMPILED_MULTI_FALLBACK_DEFINITION)
+        reusable_validator.validation(MULTI_FALLBACK_REUSABLE_DEFINITION)
+
+        compiled_validator.valid?.should be_false
+        reusable_validator.valid?.should be_false
+        compiled_validator.errors.map(&.param).should eq(["role", "team", "contact"])
+        compiled_validator.errors.map(&.message).should eq(reusable_validator.errors.map(&.message))
+        compiled_validator.to_h.should eq({"name" => "amber", "role" => "user", "team" => "sales", "contact" => "support@example.com"})
+        compiled_validator.to_h.should eq(reusable_validator.to_h)
       end
     end
 
@@ -118,6 +177,29 @@ module Amber::Validators
 
         validator.valid?.should be_false
         validator.errors.map(&.message).should eq(["Age must be 18+", "Role must be admin"])
+      end
+    end
+
+    describe "reusable definition metadata" do
+      it "reports counts for compiled definitions with direct predicate specialization" do
+        COMPILED_PREDICATE_DIRECT_DEFINITION.total_rule_count.should eq(2)
+        COMPILED_PREDICATE_DIRECT_DEFINITION.direct_rule_count.should eq(2)
+        COMPILED_PREDICATE_DIRECT_DEFINITION.fallback_rule_count.should eq(0)
+        COMPILED_PREDICATE_DIRECT_DEFINITION.hybrid?.should be_false
+      end
+
+      it "reports counts for hybrid compiled definitions" do
+        COMPILED_HYBRID_DEFINITION.total_rule_count.should eq(4)
+        COMPILED_HYBRID_DEFINITION.direct_rule_count.should eq(2)
+        COMPILED_HYBRID_DEFINITION.fallback_rule_count.should eq(2)
+        COMPILED_HYBRID_DEFINITION.hybrid?.should be_true
+      end
+
+      it "reports counts for reusable definitions" do
+        HYBRID_REUSABLE_DEFINITION.total_rule_count.should eq(4)
+        HYBRID_REUSABLE_DEFINITION.direct_rule_count.should eq(0)
+        HYBRID_REUSABLE_DEFINITION.fallback_rule_count.should eq(4)
+        HYBRID_REUSABLE_DEFINITION.hybrid?.should be_false
       end
     end
 

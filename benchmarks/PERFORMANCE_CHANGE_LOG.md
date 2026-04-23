@@ -314,6 +314,73 @@ Useful takeaway:
 - the right next move is to tighten the mixed fallback path and add compile
   diagnostics before calling this a fully promoted default fast path
 
+### Round 10
+
+- branch base: `experiment/framework-performance-validation-round10`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND10.md`
+
+Rejected for promotion:
+
+- predicate-block specialization inside the hybrid compiled validator path
+- metadata-only diagnostics were useful, but the runtime optimization itself is
+  not settled enough to promote
+
+What this round proved:
+
+- the benchmark surface is better now because compiled validator shape is
+  visible in the JSON output
+- the direct-vs-fallback counts matched the intended lowering:
+  - simple compiled validators: `3 direct / 0 fallback`
+  - hybrid compiled validators: `2 direct / 1 fallback`
+  - predicate-only validator: `0 direct / 1 fallback`
+- the exact `acrystal` mixed-query hybrid weak spot from Round 9 moved in the
+  right direction in the focused profile
+
+Why it did not advance:
+
+- the short framework lab was positive on both compilers
+- the focused validation-only profile still showed regressions in several simple
+  compiled paths
+- until those two views agree, this is not a clean default-on win
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+- `spec/amber/validations/params_spec.cr`
+- `benchmarks/framework_performance_lab.cr`
+- `benchmarks/framework_performance_profile.cr`
+
+Key measured read from the framework lab:
+
+- `crystal` query compiled vs validated: `1.0616x`
+- `crystal` query hybrid vs mixed: `1.0681x`
+- `crystal` JSON-body compiled vs validated: `1.0962x`
+- `crystal` JSON-body hybrid vs mixed: `1.0926x`
+- `acrystal` query compiled vs validated: `1.0744x`
+- `acrystal` query hybrid vs mixed: `1.1034x`
+- `acrystal` JSON-body compiled vs validated: `1.1172x`
+- `acrystal` JSON-body hybrid vs mixed: `1.0921x`
+
+Key measured read from the focused profile:
+
+- `crystal` simple query compiled vs validated: `0.9260x`
+- `crystal` mixed query hybrid vs validated: `0.9279x`
+- `crystal` predicate-only query compiled vs validated: `0.8706x`
+- `crystal` simple JSON-body compiled vs validated: `1.0132x`
+- `crystal` mixed JSON-body hybrid vs validated: `1.1294x`
+- `acrystal` simple query compiled vs validated: `0.8553x`
+- `acrystal` mixed query hybrid vs validated: `1.0764x`
+- `acrystal` predicate-only query compiled vs validated: `0.9668x`
+- `acrystal` simple JSON-body compiled vs validated: `0.9029x`
+- `acrystal` mixed JSON-body hybrid vs validated: `0.9001x`
+
+Useful takeaway:
+
+- compile diagnostics were worth adding
+- the next reliable improvement probably depends on either a different fallback
+  seam or quieter hosted reruns, not on stacking more complexity onto this
+  version of the specialization
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

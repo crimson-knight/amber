@@ -102,6 +102,10 @@ module AmberFrameworkPerfLab
     required(QUERY_HYBRID_FILTER_FIELD, QUERY_HYBRID_FILTER_MSG) { |value| value == "active" }
   end
 
+  Amber::Validators::Params.compile QUERY_PREDICATE_ONLY_VALIDATION do
+    required(QUERY_HYBRID_FILTER_FIELD, QUERY_HYBRID_FILTER_MSG) { |value| value == "active" }
+  end
+
   Amber::Validators::Params.compile JSON_BODY_HYBRID_VALIDATION do
     required(:id)
     required(JSON_HYBRID_NAME_FIELD, JSON_HYBRID_NAME_MSG) { |value| value == "amber" }
@@ -262,6 +266,76 @@ module AmberFrameworkPerfLab
   end
 
   class NoopPipe < Amber::Pipe::Base
+  end
+
+  def definition_metadata_entry(key : String, label : String, definition, scenario_key : String? = nil) : JSON::Any
+    payload = {
+      "key"   => JSON::Any.new(key),
+      "label" => JSON::Any.new(label),
+    } of String => JSON::Any
+
+    if scenario_key
+      payload["scenario_key"] = JSON::Any.new(scenario_key)
+    end
+
+    metadata_available = false
+
+    if definition.responds_to?(:total_rule_count)
+      payload["total_rule_count"] = JSON::Any.new(definition.total_rule_count.to_i64)
+      metadata_available = true
+    end
+
+    if definition.responds_to?(:direct_rule_count)
+      payload["direct_rule_count"] = JSON::Any.new(definition.direct_rule_count.to_i64)
+      metadata_available = true
+    end
+
+    if definition.responds_to?(:fallback_rule_count)
+      payload["fallback_rule_count"] = JSON::Any.new(definition.fallback_rule_count.to_i64)
+      metadata_available = true
+    end
+
+    if definition.responds_to?(:hybrid?)
+      payload["hybrid"] = JSON::Any.new(definition.hybrid?)
+      metadata_available = true
+    end
+
+    payload["metadata_available"] = JSON::Any.new(metadata_available)
+    JSON::Any.new(payload)
+  end
+
+  def validation_definition_metadata : Array(JSON::Any)
+    [
+      definition_metadata_entry(
+        "query_compiled_simple",
+        "Simple compiled query params",
+        QUERY_VALIDATION,
+        scenario_key: "amber_action_query_compiled_validated_params"
+      ),
+      definition_metadata_entry(
+        "query_compiled_hybrid",
+        "Hybrid compiled query params",
+        QUERY_HYBRID_VALIDATION,
+        scenario_key: "amber_action_query_hybrid_validated_params"
+      ),
+      definition_metadata_entry(
+        "query_compiled_predicate_only",
+        "Predicate-only compiled query params",
+        QUERY_PREDICATE_ONLY_VALIDATION
+      ),
+      definition_metadata_entry(
+        "json_body_compiled_simple",
+        "Simple compiled JSON body params",
+        JSON_BODY_VALIDATION,
+        scenario_key: "amber_action_json_body_compiled_validated_params"
+      ),
+      definition_metadata_entry(
+        "json_body_compiled_hybrid",
+        "Hybrid compiled JSON body params",
+        JSON_BODY_HYBRID_VALIDATION,
+        scenario_key: "amber_action_json_body_hybrid_validated_params"
+      ),
+    ]
   end
 
   def consume(value : Int32)
@@ -570,6 +644,7 @@ payload = {
     "generated_at_utc"    => Time.utc.to_s("%Y-%m-%dT%H:%M:%SZ"),
     "warmup_seconds"      => warmup_seconds,
     "calculation_seconds" => calculation_seconds,
+    "validation_definitions" => AmberFrameworkPerfLab.validation_definition_metadata,
   },
   "results" => results,
   "summary" => {
