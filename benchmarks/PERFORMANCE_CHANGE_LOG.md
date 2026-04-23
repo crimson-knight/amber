@@ -438,6 +438,69 @@ Useful takeaway:
 - the next step should be a quiet single-host DigitalOcean rerun of this same
   truth harness, not another broad local rewrite
 
+### Round 14
+
+- branch base: `experiment/framework-performance-validation-round14`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND14.md`
+
+Rejected:
+
+- `ensure_valid!(definition)` as a promoted hot endpoint API
+- a benchmark-only one-pass validation floor as evidence of a large hidden
+  validation win
+
+What this round tested:
+
+- whether hot endpoints could skip materializing the validated params Hash
+- whether the faster path was simply "validate, then read raw params"
+- whether a one-pass hand-written floor showed meaningful room for generated
+  typed validation to beat the accepted compiled `validate!` path
+
+Files changed:
+
+- `src/amber/validators/params.cr`
+- `spec/amber/validations/params_spec.cr`
+- `benchmarks/framework_performance_profile.cr`
+- `benchmarks/framework_performance_lab.cr`
+- `benchmarks/bin/framework_validation_truth_round.rb`
+
+Compatibility checks:
+
+- `crystal` targeted validation/controller specs: pass
+- `acrystal` targeted validation/controller specs: pass
+
+Key measured read from the standard Crystal smoke profile:
+
+- query simple `ensure_valid!` vs compiled `validate!`: `0.9929x`
+- query simple one-pass floor vs compiled `validate!`: `0.9518x`
+- query hybrid `ensure_valid!` vs compiled `validate!`: `1.0611x`
+- query hybrid one-pass floor vs compiled `validate!`: `0.8861x`
+- JSON-body simple `ensure_valid!` vs compiled `validate!`: `1.1844x`
+- JSON-body simple one-pass floor vs compiled `validate!`: `1.1240x`
+- JSON-body hybrid `ensure_valid!` vs compiled `validate!`: `1.1714x`
+- JSON-body hybrid one-pass floor vs compiled `validate!`: `1.0727x`
+
+Key measured read from the standard Crystal smoke lab:
+
+- query simple `ensure_valid!` vs compiled `validate!`: `0.9850x`
+- query simple one-pass floor vs compiled `validate!`: `1.0030x`
+- query hybrid `ensure_valid!` vs compiled `validate!`: `0.9936x`
+- query hybrid one-pass floor vs compiled `validate!`: `1.0038x`
+- JSON-body simple `ensure_valid!` vs compiled `validate!`: `0.9671x`
+- JSON-body simple one-pass floor vs compiled `validate!`: `0.9529x`
+- JSON-body hybrid `ensure_valid!` vs compiled `validate!`: `0.9811x`
+- JSON-body hybrid one-pass floor vs compiled `validate!`: `0.9860x`
+
+Useful takeaway:
+
+- the accepted compiled validation Hash path is already close to the local
+  in-process floor for tiny controller validation actions
+- rereading from `raw_params` can cost more than reading the small validated
+  Hash, so "skip the Hash" is not a free win
+- the next serious wins should move toward router/source lookup, response
+  writing, JSON serialization, hosted HTTP pressure tests, or a bigger typed
+  request contract rather than another small validation Hash tweak
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

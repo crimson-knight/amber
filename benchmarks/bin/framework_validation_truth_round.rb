@@ -16,10 +16,34 @@ PROFILE_PAIRS = [
     candidate: "action_query_compiled_validated_params",
   },
   {
+    key: "query_simple_ensure_valid",
+    label: "Simple query ensure_valid! vs compiled validate!",
+    base: "action_query_compiled_validated_params",
+    candidate: "action_query_compiled_ensure_valid_params",
+  },
+  {
+    key: "query_simple_one_pass_floor",
+    label: "Benchmark-only one-pass query validation floor vs compiled validate!",
+    base: "action_query_compiled_validated_params",
+    candidate: "action_query_one_pass_validated_params",
+  },
+  {
     key: "query_hybrid",
     label: "Hybrid compiled query vs mixed runtime validated",
     base: "action_query_mixed_validated_params",
     candidate: "action_query_hybrid_validated_params",
+  },
+  {
+    key: "query_hybrid_ensure_valid",
+    label: "Hybrid query ensure_valid! vs compiled validate!",
+    base: "action_query_hybrid_validated_params",
+    candidate: "action_query_hybrid_ensure_valid_params",
+  },
+  {
+    key: "query_hybrid_one_pass_floor",
+    label: "Benchmark-only one-pass hybrid query validation floor vs compiled validate!",
+    base: "action_query_hybrid_validated_params",
+    candidate: "action_query_hybrid_one_pass_validated_params",
   },
   {
     key: "query_predicate_only",
@@ -34,10 +58,34 @@ PROFILE_PAIRS = [
     candidate: "action_json_body_compiled_validated_params",
   },
   {
+    key: "json_body_simple_ensure_valid",
+    label: "Simple JSON body ensure_valid! vs compiled validate!",
+    base: "action_json_body_compiled_validated_params",
+    candidate: "action_json_body_compiled_ensure_valid_params",
+  },
+  {
+    key: "json_body_simple_one_pass_floor",
+    label: "Benchmark-only one-pass JSON body validation floor vs compiled validate!",
+    base: "action_json_body_compiled_validated_params",
+    candidate: "action_json_body_one_pass_validated_params",
+  },
+  {
     key: "json_body_hybrid",
     label: "Hybrid compiled JSON body vs mixed runtime validated",
     base: "action_json_body_mixed_validated_params",
     candidate: "action_json_body_hybrid_validated_params",
+  },
+  {
+    key: "json_body_hybrid_ensure_valid",
+    label: "Hybrid JSON body ensure_valid! vs compiled validate!",
+    base: "action_json_body_hybrid_validated_params",
+    candidate: "action_json_body_hybrid_ensure_valid_params",
+  },
+  {
+    key: "json_body_hybrid_one_pass_floor",
+    label: "Benchmark-only one-pass hybrid JSON body validation floor vs compiled validate!",
+    base: "action_json_body_hybrid_validated_params",
+    candidate: "action_json_body_hybrid_one_pass_validated_params",
   },
 ].freeze
 
@@ -48,9 +96,29 @@ LAB_COMPARISONS = [
     label: "Simple compiled query vs runtime validated",
   },
   {
+    key: "query_simple_ensure_valid",
+    comparison_key: "query_action_ensure_valid_vs_compiled",
+    label: "Simple query ensure_valid! vs compiled validate!",
+  },
+  {
+    key: "query_simple_one_pass_floor",
+    comparison_key: "query_action_one_pass_vs_compiled",
+    label: "Benchmark-only one-pass query validation floor vs compiled validate!",
+  },
+  {
     key: "query_hybrid",
     comparison_key: "query_action_hybrid_vs_mixed",
     label: "Hybrid compiled query vs mixed runtime validated",
+  },
+  {
+    key: "query_hybrid_ensure_valid",
+    comparison_key: "query_action_hybrid_ensure_valid_vs_hybrid",
+    label: "Hybrid query ensure_valid! vs compiled validate!",
+  },
+  {
+    key: "query_hybrid_one_pass_floor",
+    comparison_key: "query_action_hybrid_one_pass_vs_hybrid",
+    label: "Benchmark-only one-pass hybrid query validation floor vs compiled validate!",
   },
   {
     key: "json_body_simple",
@@ -58,21 +126,49 @@ LAB_COMPARISONS = [
     label: "Simple compiled JSON body vs runtime validated",
   },
   {
+    key: "json_body_simple_ensure_valid",
+    comparison_key: "json_body_action_ensure_valid_vs_compiled",
+    label: "Simple JSON body ensure_valid! vs compiled validate!",
+  },
+  {
+    key: "json_body_simple_one_pass_floor",
+    comparison_key: "json_body_action_one_pass_vs_compiled",
+    label: "Benchmark-only one-pass JSON body validation floor vs compiled validate!",
+  },
+  {
     key: "json_body_hybrid",
     comparison_key: "json_body_action_hybrid_vs_mixed",
     label: "Hybrid compiled JSON body vs mixed runtime validated",
+  },
+  {
+    key: "json_body_hybrid_ensure_valid",
+    comparison_key: "json_body_action_hybrid_ensure_valid_vs_hybrid",
+    label: "Hybrid JSON body ensure_valid! vs compiled validate!",
+  },
+  {
+    key: "json_body_hybrid_one_pass_floor",
+    comparison_key: "json_body_action_hybrid_one_pass_vs_hybrid",
+    label: "Benchmark-only one-pass hybrid JSON body validation floor vs compiled validate!",
   },
 ].freeze
 
 VALIDATION_SCENARIO_KEYS = [
   "amber_action_query_validated_params",
   "amber_action_query_compiled_validated_params",
+  "amber_action_query_compiled_ensure_valid_params",
+  "amber_action_query_one_pass_validated_params",
   "amber_action_query_mixed_validated_params",
   "amber_action_query_hybrid_validated_params",
+  "amber_action_query_hybrid_ensure_valid_params",
+  "amber_action_query_hybrid_one_pass_validated_params",
   "amber_action_json_body_validated_params",
   "amber_action_json_body_compiled_validated_params",
+  "amber_action_json_body_compiled_ensure_valid_params",
+  "amber_action_json_body_one_pass_validated_params",
   "amber_action_json_body_mixed_validated_params",
   "amber_action_json_body_hybrid_validated_params",
+  "amber_action_json_body_hybrid_ensure_valid_params",
+  "amber_action_json_body_hybrid_one_pass_validated_params",
 ].freeze
 
 def median(values)
@@ -227,27 +323,39 @@ end
 def compiler_verdict(profile_pairs, lab_pairs)
   simple_profile_floor = [profile_pairs.fetch("query_simple")["median_ratio"], profile_pairs.fetch("json_body_simple")["median_ratio"]].min
   hybrid_profile_floor = [profile_pairs.fetch("query_hybrid")["median_ratio"], profile_pairs.fetch("json_body_hybrid")["median_ratio"]].min
+  ensure_profile_floor = [
+    profile_pairs.fetch("query_simple_ensure_valid")["median_ratio"],
+    profile_pairs.fetch("query_hybrid_ensure_valid")["median_ratio"],
+    profile_pairs.fetch("json_body_simple_ensure_valid")["median_ratio"],
+    profile_pairs.fetch("json_body_hybrid_ensure_valid")["median_ratio"],
+  ].min
   lab_floor = [
     lab_pairs.fetch("query_simple")["median_ratio"],
     lab_pairs.fetch("query_hybrid")["median_ratio"],
     lab_pairs.fetch("json_body_simple")["median_ratio"],
     lab_pairs.fetch("json_body_hybrid")["median_ratio"],
   ].min
+  ensure_lab_floor = [
+    lab_pairs.fetch("query_simple_ensure_valid")["median_ratio"],
+    lab_pairs.fetch("query_hybrid_ensure_valid")["median_ratio"],
+    lab_pairs.fetch("json_body_simple_ensure_valid")["median_ratio"],
+    lab_pairs.fetch("json_body_hybrid_ensure_valid")["median_ratio"],
+  ].min
 
-  if lab_floor >= 1.03 && simple_profile_floor >= 1.0 && hybrid_profile_floor >= 1.0
+  if lab_floor >= 1.03 && simple_profile_floor >= 1.0 && hybrid_profile_floor >= 1.0 && ensure_profile_floor >= 1.03 && ensure_lab_floor >= 1.03
     {
       "status" => "keep",
-      "reason" => "Both the repeated full-lab and repeated focused profile medians stayed positive.",
+      "reason" => "The accepted compiled validation path stayed positive and ensure_valid! beat compiled validate! in repeated profile and lab medians.",
     }
-  elsif lab_floor >= 1.03 && profile_pairs.fetch("query_hybrid")["median_ratio"] >= 1.0
+  elsif lab_floor >= 1.03 && ensure_lab_floor >= 1.03 && ensure_profile_floor >= 1.0
     {
       "status" => "provisional",
-      "reason" => "The repeated full-lab stayed positive and the targeted hybrid query case held up, but some focused-profile medians were still negative.",
+      "reason" => "The repeated lab supported ensure_valid!, but the focused profile did not clear the full promotion floor.",
     }
   else
     {
       "status" => "reject",
-      "reason" => "The repeated focused profile did not support a clean across-the-board win strongly enough to promote this path.",
+      "reason" => "The repeated runs did not show a clean enough ensure_valid! win over compiled validate! to promote this path.",
     }
   end
 end

@@ -1,0 +1,835 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-04-23T22:32:32Z",
+    "compiler": "crystal",
+    "profile_duration_seconds": 2.0,
+    "profile_warmup_duration_seconds": 0.75,
+    "profile_repetitions": 2,
+    "lab_warmup_seconds": 0.25,
+    "lab_calc_seconds": 0.75,
+    "lab_repetitions": 2,
+    "branch": "experiment/framework-performance-validation-round14",
+    "commit": "9ab26dc0abb48dfbc570a2895f8887bc02fbca1f"
+  },
+  "profile_pairs": {
+    "query_simple": {
+      "label": "Simple compiled query vs runtime validated",
+      "base_scenario": "action_query_validated_params",
+      "candidate_scenario": "action_query_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_validated_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 392468,
+          "candidate_iterations": 583776,
+          "ratio": 1.4874486582345567
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_compiled_validated_params",
+            "action_query_validated_params"
+          ],
+          "base_iterations": 509422,
+          "candidate_iterations": 452665,
+          "ratio": 0.8885854949334736
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.4874486582345567,
+        0.8885854949334736
+      ],
+      "median_ratio": 1.1880170765840152,
+      "mean_ratio": 1.1880170765840152,
+      "min_ratio": 0.8885854949334736,
+      "max_ratio": 1.4874486582345567,
+      "stddev_ratio": 0.4234602037730227,
+      "cv_ratio": 0.3564428593826497,
+      "positive_samples": 1
+    },
+    "query_simple_ensure_valid": {
+      "label": "Simple query ensure_valid! vs compiled validate!",
+      "base_scenario": "action_query_compiled_validated_params",
+      "candidate_scenario": "action_query_compiled_ensure_valid_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_compiled_validated_params",
+            "action_query_compiled_ensure_valid_params"
+          ],
+          "base_iterations": 530127,
+          "candidate_iterations": 485628,
+          "ratio": 0.9160597366291473
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_compiled_ensure_valid_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 457374,
+          "candidate_iterations": 489233,
+          "ratio": 1.0696563425118175
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.9160597366291473,
+        1.0696563425118175
+      ],
+      "median_ratio": 0.9928580395704825,
+      "mean_ratio": 0.9928580395704825,
+      "min_ratio": 0.9160597366291473,
+      "max_ratio": 1.0696563425118175,
+      "stddev_ratio": 0.10860920158687366,
+      "cv_ratio": 0.10939046395178387,
+      "positive_samples": 1
+    },
+    "query_simple_one_pass_floor": {
+      "label": "Benchmark-only one-pass query validation floor vs compiled validate!",
+      "base_scenario": "action_query_compiled_validated_params",
+      "candidate_scenario": "action_query_one_pass_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_compiled_validated_params",
+            "action_query_one_pass_validated_params"
+          ],
+          "base_iterations": 449979,
+          "candidate_iterations": 459483,
+          "ratio": 1.0211209856459968
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_one_pass_validated_params",
+            "action_query_compiled_validated_params"
+          ],
+          "base_iterations": 569114,
+          "candidate_iterations": 502238,
+          "ratio": 0.8824910299166775
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.0211209856459968,
+        0.8824910299166775
+      ],
+      "median_ratio": 0.9518060077813372,
+      "mean_ratio": 0.9518060077813372,
+      "min_ratio": 0.8824910299166775,
+      "max_ratio": 1.0211209856459968,
+      "stddev_ratio": 0.09802618177179259,
+      "cv_ratio": 0.10298966487960287,
+      "positive_samples": 1
+    },
+    "query_hybrid": {
+      "label": "Hybrid compiled query vs mixed runtime validated",
+      "base_scenario": "action_query_mixed_validated_params",
+      "candidate_scenario": "action_query_hybrid_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_mixed_validated_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 544243,
+          "candidate_iterations": 446222,
+          "ratio": 0.8198947896435967
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_hybrid_validated_params",
+            "action_query_mixed_validated_params"
+          ],
+          "base_iterations": 516196,
+          "candidate_iterations": 455470,
+          "ratio": 0.882358638966594
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.8198947896435967,
+        0.882358638966594
+      ],
+      "median_ratio": 0.8511267143050953,
+      "mean_ratio": 0.8511267143050953,
+      "min_ratio": 0.8198947896435967,
+      "max_ratio": 0.882358638966594,
+      "stddev_ratio": 0.044168611435306135,
+      "cv_ratio": 0.05189428400372524,
+      "positive_samples": 0
+    },
+    "query_hybrid_ensure_valid": {
+      "label": "Hybrid query ensure_valid! vs compiled validate!",
+      "base_scenario": "action_query_hybrid_validated_params",
+      "candidate_scenario": "action_query_hybrid_ensure_valid_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_hybrid_validated_params",
+            "action_query_hybrid_ensure_valid_params"
+          ],
+          "base_iterations": 464365,
+          "candidate_iterations": 569725,
+          "ratio": 1.2268904848556632
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_hybrid_ensure_valid_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 507073,
+          "candidate_iterations": 453941,
+          "ratio": 0.895218242738225
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.2268904848556632,
+        0.895218242738225
+      ],
+      "median_ratio": 1.061054363796944,
+      "mean_ratio": 1.061054363796944,
+      "min_ratio": 0.895218242738225,
+      "max_ratio": 1.2268904848556632,
+      "stddev_ratio": 0.23452769153258698,
+      "cv_ratio": 0.22103268176885701,
+      "positive_samples": 1
+    },
+    "query_hybrid_one_pass_floor": {
+      "label": "Benchmark-only one-pass hybrid query validation floor vs compiled validate!",
+      "base_scenario": "action_query_hybrid_validated_params",
+      "candidate_scenario": "action_query_hybrid_one_pass_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_hybrid_validated_params",
+            "action_query_hybrid_one_pass_validated_params"
+          ],
+          "base_iterations": 549208,
+          "candidate_iterations": 529499,
+          "ratio": 0.9641137783863308
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_hybrid_one_pass_validated_params",
+            "action_query_hybrid_validated_params"
+          ],
+          "base_iterations": 546780,
+          "candidate_iterations": 441820,
+          "ratio": 0.8080397966275285
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.9641137783863308,
+        0.8080397966275285
+      ],
+      "median_ratio": 0.8860767875069296,
+      "mean_ratio": 0.8860767875069296,
+      "min_ratio": 0.8080397966275285,
+      "max_ratio": 0.9641137783863308,
+      "stddev_ratio": 0.11036097086843469,
+      "cv_ratio": 0.12455012073947552,
+      "positive_samples": 0
+    },
+    "query_predicate_only": {
+      "label": "Predicate-only compiled query vs runtime validated",
+      "base_scenario": "action_query_predicate_only_validated_params",
+      "candidate_scenario": "action_query_predicate_only_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_query_predicate_only_validated_params",
+            "action_query_predicate_only_compiled_validated_params"
+          ],
+          "base_iterations": 475292,
+          "candidate_iterations": 464752,
+          "ratio": 0.977824158622489
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_query_predicate_only_compiled_validated_params",
+            "action_query_predicate_only_validated_params"
+          ],
+          "base_iterations": 450229,
+          "candidate_iterations": 453158,
+          "ratio": 1.0065055782723902
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.977824158622489,
+        1.0065055782723902
+      ],
+      "median_ratio": 0.9921648684474396,
+      "mean_ratio": 0.9921648684474396,
+      "min_ratio": 0.977824158622489,
+      "max_ratio": 1.0065055782723902,
+      "stddev_ratio": 0.02028082632850225,
+      "cv_ratio": 0.02044098412821058,
+      "positive_samples": 1
+    },
+    "json_body_simple": {
+      "label": "Simple compiled JSON body vs runtime validated",
+      "base_scenario": "action_json_body_validated_params",
+      "candidate_scenario": "action_json_body_compiled_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_validated_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 400480,
+          "candidate_iterations": 464803,
+          "ratio": 1.1606147622852576
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_compiled_validated_params",
+            "action_json_body_validated_params"
+          ],
+          "base_iterations": 461593,
+          "candidate_iterations": 495216,
+          "ratio": 1.0728412259284694
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.1606147622852576,
+        1.0728412259284694
+      ],
+      "median_ratio": 1.1167279941068635,
+      "mean_ratio": 1.1167279941068635,
+      "min_ratio": 1.0728412259284694,
+      "max_ratio": 1.1606147622852576,
+      "stddev_ratio": 0.062065262766608904,
+      "cv_ratio": 0.05557777999131064,
+      "positive_samples": 2
+    },
+    "json_body_simple_ensure_valid": {
+      "label": "Simple JSON body ensure_valid! vs compiled validate!",
+      "base_scenario": "action_json_body_compiled_validated_params",
+      "candidate_scenario": "action_json_body_compiled_ensure_valid_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_compiled_validated_params",
+            "action_json_body_compiled_ensure_valid_params"
+          ],
+          "base_iterations": 423561,
+          "candidate_iterations": 509650,
+          "ratio": 1.2032505353420169
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_compiled_ensure_valid_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 427063,
+          "candidate_iterations": 497747,
+          "ratio": 1.165511879980237
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.2032505353420169,
+        1.165511879980237
+      ],
+      "median_ratio": 1.184381207661127,
+      "mean_ratio": 1.184381207661127,
+      "min_ratio": 1.165511879980237,
+      "max_ratio": 1.2032505353420169,
+      "stddev_ratio": 0.026685259119176543,
+      "cv_ratio": 0.022530971402251156,
+      "positive_samples": 2
+    },
+    "json_body_simple_one_pass_floor": {
+      "label": "Benchmark-only one-pass JSON body validation floor vs compiled validate!",
+      "base_scenario": "action_json_body_compiled_validated_params",
+      "candidate_scenario": "action_json_body_one_pass_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_compiled_validated_params",
+            "action_json_body_one_pass_validated_params"
+          ],
+          "base_iterations": 422371,
+          "candidate_iterations": 438708,
+          "ratio": 1.0386792653851709
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_one_pass_validated_params",
+            "action_json_body_compiled_validated_params"
+          ],
+          "base_iterations": 431228,
+          "candidate_iterations": 521460,
+          "ratio": 1.2092442976801134
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.0386792653851709,
+        1.2092442976801134
+      ],
+      "median_ratio": 1.1239617815326421,
+      "mean_ratio": 1.1239617815326421,
+      "min_ratio": 1.0386792653851709,
+      "max_ratio": 1.2092442976801134,
+      "stddev_ratio": 0.12060769096905637,
+      "cv_ratio": 0.10730586479959743,
+      "positive_samples": 2
+    },
+    "json_body_hybrid": {
+      "label": "Hybrid compiled JSON body vs mixed runtime validated",
+      "base_scenario": "action_json_body_mixed_validated_params",
+      "candidate_scenario": "action_json_body_hybrid_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_mixed_validated_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 486720,
+          "candidate_iterations": 435478,
+          "ratio": 0.8947197567389875
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_hybrid_validated_params",
+            "action_json_body_mixed_validated_params"
+          ],
+          "base_iterations": 500231,
+          "candidate_iterations": 461199,
+          "ratio": 0.921972048913402
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.8947197567389875,
+        0.921972048913402
+      ],
+      "median_ratio": 0.9083459028261948,
+      "mean_ratio": 0.9083459028261948,
+      "min_ratio": 0.8947197567389875,
+      "max_ratio": 0.921972048913402,
+      "stddev_ratio": 0.01927028059940557,
+      "cv_ratio": 0.021214694247476334,
+      "positive_samples": 0
+    },
+    "json_body_hybrid_ensure_valid": {
+      "label": "Hybrid JSON body ensure_valid! vs compiled validate!",
+      "base_scenario": "action_json_body_hybrid_validated_params",
+      "candidate_scenario": "action_json_body_hybrid_ensure_valid_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_hybrid_validated_params",
+            "action_json_body_hybrid_ensure_valid_params"
+          ],
+          "base_iterations": 380899,
+          "candidate_iterations": 431721,
+          "ratio": 1.133426446380799
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_hybrid_ensure_valid_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 427165,
+          "candidate_iterations": 516602,
+          "ratio": 1.2093734271300318
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        1.133426446380799,
+        1.2093734271300318
+      ],
+      "median_ratio": 1.1713999367554155,
+      "mean_ratio": 1.1713999367554155,
+      "min_ratio": 1.133426446380799,
+      "max_ratio": 1.2093734271300318,
+      "stddev_ratio": 0.05370262509842669,
+      "cv_ratio": 0.045844824993907796,
+      "positive_samples": 2
+    },
+    "json_body_hybrid_one_pass_floor": {
+      "label": "Benchmark-only one-pass hybrid JSON body validation floor vs compiled validate!",
+      "base_scenario": "action_json_body_hybrid_validated_params",
+      "candidate_scenario": "action_json_body_hybrid_one_pass_validated_params",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_body_hybrid_validated_params",
+            "action_json_body_hybrid_one_pass_validated_params"
+          ],
+          "base_iterations": 483777,
+          "candidate_iterations": 441836,
+          "ratio": 0.9133050971832063
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_body_hybrid_one_pass_validated_params",
+            "action_json_body_hybrid_validated_params"
+          ],
+          "base_iterations": 429154,
+          "candidate_iterations": 528761,
+          "ratio": 1.2321008309371462
+        }
+      ],
+      "sample_count": 2,
+      "ratios": [
+        0.9133050971832063,
+        1.2321008309371462
+      ],
+      "median_ratio": 1.0727029640601762,
+      "mean_ratio": 1.0727029640601762,
+      "min_ratio": 0.9133050971832063,
+      "max_ratio": 1.2321008309371462,
+      "stddev_ratio": 0.22542262515075204,
+      "cv_ratio": 0.21014449731501472,
+      "positive_samples": 1
+    }
+  },
+  "lab": {
+    "samples": [
+      {
+        "repetition": 1,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-18778-11dzpom/framework_validation_truth_lab_run_1.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      },
+      {
+        "repetition": 2,
+        "output_path": "/var/folders/81/8xr46ykx0p350l1g_v0nk7hr0000gn/T/amber-framework-validation-truth-20260423-18778-11dzpom/framework_validation_truth_lab_run_2.json",
+        "validation_definitions": [
+          {
+            "key": "query_compiled_simple",
+            "label": "Simple compiled query params",
+            "scenario_key": "amber_action_query_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_hybrid",
+            "label": "Hybrid compiled query params",
+            "scenario_key": "amber_action_query_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          },
+          {
+            "key": "query_compiled_predicate_only",
+            "label": "Predicate-only compiled query params",
+            "total_rule_count": 1,
+            "direct_rule_count": 0,
+            "fallback_rule_count": 1,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_simple",
+            "label": "Simple compiled JSON body params",
+            "scenario_key": "amber_action_json_body_compiled_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 3,
+            "fallback_rule_count": 0,
+            "hybrid": false,
+            "metadata_available": true
+          },
+          {
+            "key": "json_body_compiled_hybrid",
+            "label": "Hybrid compiled JSON body params",
+            "scenario_key": "amber_action_json_body_hybrid_validated_params",
+            "total_rule_count": 3,
+            "direct_rule_count": 2,
+            "fallback_rule_count": 1,
+            "hybrid": true,
+            "metadata_available": true
+          }
+        ]
+      }
+    ],
+    "comparisons": {
+      "query_simple": {
+        "label": "Simple compiled query vs runtime validated",
+        "comparison_key": "query_action_compiled_vs_validated",
+        "sample_count": 2,
+        "ratios": [
+          1.0646452590032898,
+          1.088408642602771
+        ],
+        "median_ratio": 1.0765269508030304,
+        "mean_ratio": 1.0765269508030304,
+        "min_ratio": 1.0646452590032898,
+        "max_ratio": 1.088408642602771,
+        "stddev_ratio": 0.016803249687130394,
+        "cv_ratio": 0.015608758958237028,
+        "positive_samples": 2
+      },
+      "query_simple_ensure_valid": {
+        "label": "Simple query ensure_valid! vs compiled validate!",
+        "comparison_key": "query_action_ensure_valid_vs_compiled",
+        "sample_count": 2,
+        "ratios": [
+          0.9655277271590299,
+          1.0045269324767596
+        ],
+        "median_ratio": 0.9850273298178948,
+        "mean_ratio": 0.9850273298178948,
+        "min_ratio": 0.9655277271590299,
+        "max_ratio": 1.0045269324767596,
+        "stddev_ratio": 0.027576602541053145,
+        "cv_ratio": 0.02799577403212896,
+        "positive_samples": 1
+      },
+      "query_simple_one_pass_floor": {
+        "label": "Benchmark-only one-pass query validation floor vs compiled validate!",
+        "comparison_key": "query_action_one_pass_vs_compiled",
+        "sample_count": 2,
+        "ratios": [
+          0.9876022647365637,
+          1.0183002986568825
+        ],
+        "median_ratio": 1.0029512816967232,
+        "mean_ratio": 1.0029512816967232,
+        "min_ratio": 0.9876022647365637,
+        "max_ratio": 1.0183002986568825,
+        "stddev_ratio": 0.02170678795415214,
+        "cv_ratio": 0.02164291361932367,
+        "positive_samples": 1
+      },
+      "query_hybrid": {
+        "label": "Hybrid compiled query vs mixed runtime validated",
+        "comparison_key": "query_action_hybrid_vs_mixed",
+        "sample_count": 2,
+        "ratios": [
+          1.131764254498454,
+          1.1162107429528028
+        ],
+        "median_ratio": 1.1239874987256284,
+        "mean_ratio": 1.1239874987256284,
+        "min_ratio": 1.1162107429528028,
+        "max_ratio": 1.131764254498454,
+        "stddev_ratio": 0.01099799348519331,
+        "cv_ratio": 0.009784800540631263,
+        "positive_samples": 2
+      },
+      "query_hybrid_ensure_valid": {
+        "label": "Hybrid query ensure_valid! vs compiled validate!",
+        "comparison_key": "query_action_hybrid_ensure_valid_vs_hybrid",
+        "sample_count": 2,
+        "ratios": [
+          0.9748555710384406,
+          1.0123181728925341
+        ],
+        "median_ratio": 0.9935868719654873,
+        "mean_ratio": 0.9935868719654873,
+        "min_ratio": 0.9748555710384406,
+        "max_ratio": 1.0123181728925341,
+        "stddev_ratio": 0.026490059811921284,
+        "cv_ratio": 0.02666104047804028,
+        "positive_samples": 1
+      },
+      "query_hybrid_one_pass_floor": {
+        "label": "Benchmark-only one-pass hybrid query validation floor vs compiled validate!",
+        "comparison_key": "query_action_hybrid_one_pass_vs_hybrid",
+        "sample_count": 2,
+        "ratios": [
+          0.969185681714918,
+          1.0383784210410563
+        ],
+        "median_ratio": 1.0037820513779872,
+        "mean_ratio": 1.0037820513779872,
+        "min_ratio": 0.969185681714918,
+        "max_ratio": 1.0383784210410563,
+        "stddev_ratio": 0.04892665518638545,
+        "cv_ratio": 0.048742309268450426,
+        "positive_samples": 1
+      },
+      "json_body_simple": {
+        "label": "Simple compiled JSON body vs runtime validated",
+        "comparison_key": "json_body_action_compiled_vs_validated",
+        "sample_count": 2,
+        "ratios": [
+          1.0855969656201854,
+          1.086194444737062
+        ],
+        "median_ratio": 1.0858957051786238,
+        "mean_ratio": 1.0858957051786238,
+        "min_ratio": 1.0855969656201854,
+        "max_ratio": 1.086194444737062,
+        "stddev_ratio": 0.0004224815351607766,
+        "cv_ratio": 0.0003890627185888729,
+        "positive_samples": 2
+      },
+      "json_body_simple_ensure_valid": {
+        "label": "Simple JSON body ensure_valid! vs compiled validate!",
+        "comparison_key": "json_body_action_ensure_valid_vs_compiled",
+        "sample_count": 2,
+        "ratios": [
+          0.9971490603288613,
+          0.9370112222337115
+        ],
+        "median_ratio": 0.9670801412812864,
+        "mean_ratio": 0.9670801412812864,
+        "min_ratio": 0.9370112222337115,
+        "max_ratio": 0.9971490603288613,
+        "stddev_ratio": 0.04252387312297914,
+        "cv_ratio": 0.04397140558241551,
+        "positive_samples": 0
+      },
+      "json_body_simple_one_pass_floor": {
+        "label": "Benchmark-only one-pass JSON body validation floor vs compiled validate!",
+        "comparison_key": "json_body_action_one_pass_vs_compiled",
+        "sample_count": 2,
+        "ratios": [
+          0.9723605888685456,
+          0.9333438715630185
+        ],
+        "median_ratio": 0.952852230215782,
+        "mean_ratio": 0.952852230215782,
+        "min_ratio": 0.9333438715630185,
+        "max_ratio": 0.9723605888685456,
+        "stddev_ratio": 0.02758898538637676,
+        "cv_ratio": 0.028954106955418453,
+        "positive_samples": 0
+      },
+      "json_body_hybrid": {
+        "label": "Hybrid compiled JSON body vs mixed runtime validated",
+        "comparison_key": "json_body_action_hybrid_vs_mixed",
+        "sample_count": 2,
+        "ratios": [
+          1.1242242711281563,
+          1.1133682775573852
+        ],
+        "median_ratio": 1.1187962743427708,
+        "mean_ratio": 1.1187962743427708,
+        "min_ratio": 1.1133682775573852,
+        "max_ratio": 1.1242242711281563,
+        "stddev_ratio": 0.007676346670409772,
+        "cv_ratio": 0.006861255124324747,
+        "positive_samples": 2
+      },
+      "json_body_hybrid_ensure_valid": {
+        "label": "Hybrid JSON body ensure_valid! vs compiled validate!",
+        "comparison_key": "json_body_action_hybrid_ensure_valid_vs_hybrid",
+        "sample_count": 2,
+        "ratios": [
+          0.9716999092600955,
+          0.9904742696032135
+        ],
+        "median_ratio": 0.9810870894316546,
+        "mean_ratio": 0.9810870894316546,
+        "min_ratio": 0.9716999092600955,
+        "max_ratio": 0.9904742696032135,
+        "stddev_ratio": 0.013275477511058512,
+        "cv_ratio": 0.013531395585634522,
+        "positive_samples": 0
+      },
+      "json_body_hybrid_one_pass_floor": {
+        "label": "Benchmark-only one-pass hybrid JSON body validation floor vs compiled validate!",
+        "comparison_key": "json_body_action_hybrid_one_pass_vs_hybrid",
+        "sample_count": 2,
+        "ratios": [
+          0.9862757961116011,
+          0.9858010152664642
+        ],
+        "median_ratio": 0.9860384056890327,
+        "mean_ratio": 0.9860384056890327,
+        "min_ratio": 0.9858010152664642,
+        "max_ratio": 0.9862757961116011,
+        "stddev_ratio": 0.0003357207551737519,
+        "cv_ratio": 0.0003404743194958557,
+        "positive_samples": 0
+      }
+    }
+  },
+  "verdict": {
+    "status": "reject",
+    "reason": "The repeated runs did not show a clean enough ensure_valid! win over compiled validate! to promote this path."
+  }
+}

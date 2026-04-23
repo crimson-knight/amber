@@ -43,11 +43,11 @@ module Amber::Validators
     required(:email)
   end
 
-  MULTI_FALLBACK_ROLE_FIELD       = "role"
-  MULTI_FALLBACK_TEAM_FIELD       = "team"
-  MULTI_FALLBACK_ROLE_MESSAGE     = "Role must be admin"
-  MULTI_FALLBACK_TEAM_MESSAGE     = "Team must be ops"
-  MULTI_FALLBACK_CONTACT_MESSAGE  = "Contact must include amber.dev"
+  MULTI_FALLBACK_ROLE_FIELD      = "role"
+  MULTI_FALLBACK_TEAM_FIELD      = "team"
+  MULTI_FALLBACK_ROLE_MESSAGE    = "Role must be admin"
+  MULTI_FALLBACK_TEAM_MESSAGE    = "Team must be ops"
+  MULTI_FALLBACK_CONTACT_MESSAGE = "Contact must include amber.dev"
 
   Validators::Params.compile COMPILED_MULTI_FALLBACK_DEFINITION do
     required(:name)
@@ -123,6 +123,28 @@ module Amber::Validators
         compiled_result.keys.should eq(["name", HYBRID_FIELD_NAME, "age", "email"])
       end
 
+      it "can validate a compiled definition without materializing validated params" do
+        validator = Validators::Params.new(params_builder("name=elias&last_name=perez"))
+        result = validator.ensure_valid!(COMPILED_SIMPLE_DEFINITION)
+
+        result.raw_params["name"].should eq("elias")
+        result.raw_params["last_name"].should eq("perez")
+        result.to_h.empty?.should be_true
+        result.errors.empty?.should be_true
+      end
+
+      it "keeps normal compiled errors when validating without materialized params" do
+        validator = Validators::Params.new(params_builder("name=amber&nickname=user&age=17"))
+
+        expect_raises(Amber::Exceptions::Validator::ValidationFailed) do
+          validator.ensure_valid!(COMPILED_HYBRID_DEFINITION)
+        end
+
+        validator.errors.map(&.param).should eq(["nickname", "age", "email"])
+        validator.errors.map(&.message).should eq(["Nickname must be amber", HYBRID_AGE_MESSAGE, "Field email is required"])
+        validator.to_h.empty?.should be_true
+      end
+
       it "preserves ordering and params population across multiple opaque fallback rules" do
         compiled_validator = Validators::Params.new(params_builder("name=amber&role=user&team=sales&contact=support@example.com"))
         reusable_validator = Validators::Params.new(params_builder("name=amber&role=user&team=sales&contact=support@example.com"))
@@ -151,6 +173,16 @@ module Amber::Validators
 
         first.validation(definition).validate!.should eq({"name" => "elias"})
         second.validation(definition).validate!.should eq({"name" => "elias", "last_name" => "perez"})
+      end
+
+      it "can validate a reusable definition without materializing validated params" do
+        validator = Validators::Params.new(params_builder("name=amber&nickname=amber&age=21&email=amber@example.com"))
+
+        validator.ensure_valid!(HYBRID_REUSABLE_DEFINITION)
+
+        validator.raw_params["email"].should eq("amber@example.com")
+        validator.to_h.empty?.should be_true
+        validator.errors.empty?.should be_true
       end
 
       it "matches required blank-field behavior without a custom predicate" do

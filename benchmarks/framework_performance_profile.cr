@@ -97,6 +97,33 @@ module AmberFrameworkPerfProfile
       set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
     end
 
+    def compiled_ensure_valid_index
+      validator = legacy_params.ensure_valid!(AmberFrameworkPerfProfile::QUERY_VALIDATION)
+      current_params = validator.raw_params
+      AmberFrameworkPerfProfile.consume(
+        current_params["page"].bytesize +
+        current_params["sort"].bytesize +
+        current_params["filter"].bytesize
+      )
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+
+    def one_pass_validated_index
+      current_params = raw_params
+      page = current_params["page"]?
+      sort = current_params["sort"]?
+      filter = current_params["filter"]?
+      raise Amber::Exceptions::Validator::InvalidParam.new("page") unless page
+      raise Amber::Exceptions::Validator::InvalidParam.new("sort") unless sort
+      raise Amber::Exceptions::Validator::InvalidParam.new("filter") unless filter
+      raise Amber::Exceptions::Validator::InvalidParam.new("page") if page.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("sort") if sort.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("filter") if filter.blank?
+
+      AmberFrameworkPerfProfile.consume(page.bytesize + sort.bytesize + filter.bytesize)
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+
     def mixed_validated_index
       validated_params = params.validation do
         required(:page)
@@ -118,6 +145,33 @@ module AmberFrameworkPerfProfile
         validated_params["sort"].not_nil!.bytesize +
         validated_params["filter"].not_nil!.bytesize
       )
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+
+    def hybrid_ensure_valid_index
+      validator = legacy_params.ensure_valid!(AmberFrameworkPerfProfile::QUERY_HYBRID_VALIDATION)
+      current_params = validator.raw_params
+      AmberFrameworkPerfProfile.consume(
+        current_params["page"].bytesize +
+        current_params["sort"].bytesize +
+        current_params["filter"].bytesize
+      )
+      set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
+    end
+
+    def hybrid_one_pass_validated_index
+      current_params = raw_params
+      page = current_params["page"]?
+      sort = current_params["sort"]?
+      filter = current_params["filter"]?
+      raise Amber::Exceptions::Validator::InvalidParam.new("page") unless page
+      raise Amber::Exceptions::Validator::InvalidParam.new("sort") unless sort
+      raise Amber::Exceptions::Validator::InvalidParam.new("filter") unless filter
+      raise Amber::Exceptions::Validator::InvalidParam.new("page") if page.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("sort") if sort.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("filter") unless filter == "active"
+
+      AmberFrameworkPerfProfile.consume(page.bytesize + sort.bytesize + filter.bytesize)
       set_response(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE, 200, AmberFrameworkPerfProfile::CONTENT_TEXT)
     end
 
@@ -179,6 +233,33 @@ module AmberFrameworkPerfProfile
       set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
     end
 
+    def compiled_ensure_valid_create
+      validator = legacy_params.ensure_valid!(AmberFrameworkPerfProfile::JSON_BODY_VALIDATION)
+      current_params = validator.raw_params
+      AmberFrameworkPerfProfile.consume(
+        current_params["id"].bytesize +
+        current_params["name"].bytesize +
+        current_params["active"].bytesize
+      )
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
+    def one_pass_validated_create
+      current_params = raw_params
+      id = current_params["id"]?
+      name = current_params["name"]?
+      active = current_params["active"]?
+      raise Amber::Exceptions::Validator::InvalidParam.new("id") unless id
+      raise Amber::Exceptions::Validator::InvalidParam.new("name") unless name
+      raise Amber::Exceptions::Validator::InvalidParam.new("active") unless active
+      raise Amber::Exceptions::Validator::InvalidParam.new("id") if id.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("name") if name.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("active") if active.blank?
+
+      AmberFrameworkPerfProfile.consume(id.bytesize + name.bytesize + active.bytesize)
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
     def mixed_validated_create
       validated_params = params.validation do
         required(:id)
@@ -200,6 +281,33 @@ module AmberFrameworkPerfProfile
         validated_params["name"].not_nil!.bytesize +
         validated_params["active"].not_nil!.bytesize
       )
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
+    def hybrid_ensure_valid_create
+      validator = legacy_params.ensure_valid!(AmberFrameworkPerfProfile::JSON_BODY_HYBRID_VALIDATION)
+      current_params = validator.raw_params
+      AmberFrameworkPerfProfile.consume(
+        current_params["id"].bytesize +
+        current_params["name"].bytesize +
+        current_params["active"].bytesize
+      )
+      set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
+    end
+
+    def hybrid_one_pass_validated_create
+      current_params = raw_params
+      id = current_params["id"]?
+      name = current_params["name"]?
+      active = current_params["active"]?
+      raise Amber::Exceptions::Validator::InvalidParam.new("id") unless id
+      raise Amber::Exceptions::Validator::InvalidParam.new("name") unless name
+      raise Amber::Exceptions::Validator::InvalidParam.new("active") unless active
+      raise Amber::Exceptions::Validator::InvalidParam.new("id") if id.blank?
+      raise Amber::Exceptions::Validator::InvalidParam.new("name") unless name == "amber"
+      raise Amber::Exceptions::Validator::InvalidParam.new("active") if active.blank?
+
+      AmberFrameworkPerfProfile.consume(id.bytesize + name.bytesize + active.bytesize)
       set_response(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_JSON)
     end
   end
@@ -255,6 +363,18 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_query_compiled_ensure_valid_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).compiled_ensure_valid_index
+    context.bench_finalize_response!
+  end
+
+  def action_query_one_pass_validated_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).one_pass_validated_index
+    context.bench_finalize_response!
+  end
+
   def action_query_mixed_validated_params
     context = build_context("GET", QUERY_RESOURCE)
     QueryParamsController.new(context).mixed_validated_index
@@ -264,6 +384,18 @@ module AmberFrameworkPerfProfile
   def action_query_hybrid_validated_params
     context = build_context("GET", QUERY_RESOURCE)
     QueryParamsController.new(context).hybrid_validated_index
+    context.bench_finalize_response!
+  end
+
+  def action_query_hybrid_ensure_valid_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).hybrid_ensure_valid_index
+    context.bench_finalize_response!
+  end
+
+  def action_query_hybrid_one_pass_validated_params
+    context = build_context("GET", QUERY_RESOURCE)
+    QueryParamsController.new(context).hybrid_one_pass_validated_index
     context.bench_finalize_response!
   end
 
@@ -319,6 +451,18 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_json_body_compiled_ensure_valid_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).compiled_ensure_valid_create
+    context.bench_finalize_response!
+  end
+
+  def action_json_body_one_pass_validated_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).one_pass_validated_create
+    context.bench_finalize_response!
+  end
+
   def action_json_body_mixed_validated_params
     context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
     JsonBodyController.new(context).mixed_validated_create
@@ -328,6 +472,18 @@ module AmberFrameworkPerfProfile
   def action_json_body_hybrid_validated_params
     context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
     JsonBodyController.new(context).hybrid_validated_create
+    context.bench_finalize_response!
+  end
+
+  def action_json_body_hybrid_ensure_valid_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).hybrid_ensure_valid_create
+    context.bench_finalize_response!
+  end
+
+  def action_json_body_hybrid_one_pass_validated_params
+    context = build_context("POST", JSON_BODY_RESOURCE, JSON_HEADERS, JSON_BODY_PAYLOAD)
+    JsonBodyController.new(context).hybrid_one_pass_validated_create
     context.bench_finalize_response!
   end
 
@@ -344,7 +500,7 @@ duration_seconds = 20.0
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_profile.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, dispatch_json, params_lookup_query, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
+  parser.on("--scenario=NAME", "Scenario: action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_compiled_ensure_valid_params, action_query_one_pass_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_hybrid_ensure_valid_params, action_query_hybrid_one_pass_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, dispatch_json, params_lookup_query, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_compiled_ensure_valid_params, action_json_body_one_pass_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, action_json_body_hybrid_ensure_valid_params, action_json_body_hybrid_one_pass_validated_params, params_lookup_json") do |value|
     scenario = value
   end
 
@@ -365,10 +521,18 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.action_query_validated_params }
                 when "action_query_compiled_validated_params"
                   -> { AmberFrameworkPerfProfile.action_query_compiled_validated_params }
+                when "action_query_compiled_ensure_valid_params"
+                  -> { AmberFrameworkPerfProfile.action_query_compiled_ensure_valid_params }
+                when "action_query_one_pass_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_query_one_pass_validated_params }
                 when "action_query_mixed_validated_params"
                   -> { AmberFrameworkPerfProfile.action_query_mixed_validated_params }
                 when "action_query_hybrid_validated_params"
                   -> { AmberFrameworkPerfProfile.action_query_hybrid_validated_params }
+                when "action_query_hybrid_ensure_valid_params"
+                  -> { AmberFrameworkPerfProfile.action_query_hybrid_ensure_valid_params }
+                when "action_query_hybrid_one_pass_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_query_hybrid_one_pass_validated_params }
                 when "action_query_predicate_only_validated_params"
                   -> { AmberFrameworkPerfProfile.action_query_predicate_only_validated_params }
                 when "action_query_predicate_only_compiled_validated_params"
@@ -387,10 +551,18 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.action_json_body_validated_params }
                 when "action_json_body_compiled_validated_params"
                   -> { AmberFrameworkPerfProfile.action_json_body_compiled_validated_params }
+                when "action_json_body_compiled_ensure_valid_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_compiled_ensure_valid_params }
+                when "action_json_body_one_pass_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_one_pass_validated_params }
                 when "action_json_body_mixed_validated_params"
                   -> { AmberFrameworkPerfProfile.action_json_body_mixed_validated_params }
                 when "action_json_body_hybrid_validated_params"
                   -> { AmberFrameworkPerfProfile.action_json_body_hybrid_validated_params }
+                when "action_json_body_hybrid_ensure_valid_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_hybrid_ensure_valid_params }
+                when "action_json_body_hybrid_one_pass_validated_params"
+                  -> { AmberFrameworkPerfProfile.action_json_body_hybrid_one_pass_validated_params }
                 when "params_lookup_json"
                   -> { AmberFrameworkPerfProfile.params_lookup_json }
                 else

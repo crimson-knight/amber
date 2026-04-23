@@ -13,6 +13,12 @@ module Amber::Validators
 
   abstract class ReusableDefinition
     abstract def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error))
+
+    def apply(raw_params : Amber::Router::Params, current_errors : Array(Error))
+      scratch_params = {} of String => String?
+      apply(raw_params, scratch_params, current_errors)
+    end
+
     abstract def total_rule_count : Int32
     abstract def direct_rule_count : Int32
     abstract def fallback_rule_count : Int32
@@ -31,6 +37,12 @@ module Amber::Validators
     def apply(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error))
       @rules.each do |rule|
         apply_rule(raw_params, rule, current_params, current_errors)
+      end
+    end
+
+    def apply(raw_params : Amber::Router::Params, current_errors : Array(Error))
+      @rules.each do |rule|
+        apply_rule(raw_params, rule, current_errors)
       end
     end
 
@@ -58,6 +70,21 @@ module Amber::Validators
       when .optional?
         return unless value
         current_params[rule.field] = value
+        return if value.blank? && rule.allow_blank
+        return append_predicate_error(rule, value, current_errors) unless rule_valid?(rule, value)
+      end
+    end
+
+    private def apply_rule(raw_params : Amber::Router::Params, rule : CompiledRule, current_errors : Array(Error))
+      value = raw_params[rule.field]?
+
+      case rule.kind
+      when .required?
+        return append_missing_error(rule, current_errors) unless value
+        return append_blank_error(rule, value, current_errors) if value.blank? && !rule.allow_blank
+        return append_predicate_error(rule, value, current_errors) unless rule_valid?(rule, value)
+      when .optional?
+        return unless value
         return if value.blank? && rule.allow_blank
         return append_predicate_error(rule, value, current_errors) unless rule_valid?(rule, value)
       end
@@ -100,12 +127,36 @@ module Amber::Validators
     end
 
     @[AlwaysInline]
+    protected def apply_required_rule(raw_params : Amber::Router::Params, current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool)
+      if value = raw_params[field]?
+        if value.blank? && !allow_blank
+          current_errors << Error.new(field, value, rule_error_message(field, msg))
+        end
+      else
+        current_errors << Error.new(field, nil, rule_error_message(field, msg))
+      end
+    end
+
+    @[AlwaysInline]
     protected def apply_required_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
       if value = raw_params[field]?
         if value.blank? && !allow_blank
           current_errors << Error.new(field, value, rule_error_message(field, msg))
         else
           current_params[field] = value
+          current_errors << Error.new(field, value, rule_error_message(field, msg)) unless yield value
+        end
+      else
+        current_errors << Error.new(field, nil, rule_error_message(field, msg))
+      end
+    end
+
+    @[AlwaysInline]
+    protected def apply_required_rule(raw_params : Amber::Router::Params, current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
+      if value = raw_params[field]?
+        if value.blank? && !allow_blank
+          current_errors << Error.new(field, value, rule_error_message(field, msg))
+        else
           current_errors << Error.new(field, value, rule_error_message(field, msg)) unless yield value
         end
       else
@@ -121,9 +172,21 @@ module Amber::Validators
     end
 
     @[AlwaysInline]
+    protected def apply_optional_rule(raw_params : Amber::Router::Params, _current_errors : Array(Error), field : String, _msg : String?, _allow_blank : Bool)
+    end
+
+    @[AlwaysInline]
     protected def apply_optional_rule(raw_params : Amber::Router::Params, current_params : Hash(String, String?), current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
       if value = raw_params[field]?
         current_params[field] = value
+        return if value.blank? && allow_blank
+        current_errors << Error.new(field, value, rule_error_message(field, msg)) unless yield value
+      end
+    end
+
+    @[AlwaysInline]
+    protected def apply_optional_rule(raw_params : Amber::Router::Params, current_errors : Array(Error), field : String, msg : String?, allow_blank : Bool, &predicate : String -> Bool)
+      if value = raw_params[field]?
         return if value.blank? && allow_blank
         current_errors << Error.new(field, value, rule_error_message(field, msg)) unless yield value
       end
@@ -503,6 +566,87 @@ module Amber::Validators
             {% end %}
           {% end %}
         end
+
+        @[AlwaysInline]
+        def apply(raw_params : Amber::Router::Params, current_errors : Array(Amber::Validators::Error))
+          {% for expression, index in expressions %}
+            {% unless expression.is_a?(Call) %}
+              {% raise "Params.compile only supports required/optional rule calls" %}
+            {% end %}
+            {% rule_name = expression.name.stringify %}
+            {% unless rule_name == "required" || rule_name == "optional" %}
+              {% raise "Params.compile only supports required/optional rules" %}
+            {% end %}
+            {% direct_rule = true %}
+            {% field_name = nil %}
+            {% allow_blank = rule_name == "required" ? false : true %}
+            {% message = nil %}
+
+            {% if expression.block && expression.block.args.size != 1 %}
+              {% direct_rule = false %}
+            {% end %}
+
+            {% if expression.args.size > 0 %}
+              {% field_arg = expression.args[0] %}
+              {% if field_arg.is_a?(SymbolLiteral) %}
+                {% field_name = field_arg.stringify[1..-1] %}
+              {% elsif field_arg.is_a?(StringLiteral) %}
+                {% field_name = field_arg.stringify[1..-2] %}
+              {% else %}
+                {% direct_rule = false %}
+              {% end %}
+            {% else %}
+              {% direct_rule = false %}
+            {% end %}
+
+            {% if expression.args.size >= 2 %}
+              {% second_arg = expression.args[1] %}
+              {% if second_arg.is_a?(StringLiteral) %}
+                {% message = second_arg.stringify[1..-2] %}
+              {% elsif second_arg.is_a?(BoolLiteral) %}
+                {% allow_blank = second_arg.stringify == "true" %}
+              {% elsif second_arg.is_a?(NilLiteral) %}
+              {% else %}
+                {% direct_rule = false %}
+              {% end %}
+            {% end %}
+            {% if expression.args.size >= 3 %}
+              {% third_arg = expression.args[2] %}
+              {% if third_arg.is_a?(BoolLiteral) %}
+                {% allow_blank = third_arg.stringify == "true" %}
+              {% else %}
+                {% direct_rule = false %}
+              {% end %}
+            {% end %}
+            {% if expression.args.size > 3 %}
+              {% direct_rule = false %}
+            {% end %}
+            {% unless expression.named_args.is_a?(Nop) %}
+              {% for named_arg in expression.named_args %}
+                {% if named_arg.name.stringify == "allow_blank" && named_arg.value.is_a?(BoolLiteral) %}
+                  {% allow_blank = named_arg.value.stringify == "true" %}
+                {% else %}
+                  {% direct_rule = false %}
+                {% end %}
+              {% end %}
+            {% end %}
+
+            {% if direct_rule %}
+              {% if rule_name == "required" %}
+                apply_required_rule(raw_params, current_errors, {{field_name}}, {% if message %}{{message}}{% else %}nil{% end %}, {{allow_blank}}){% if expression.block %} do |{{expression.block.args.splat}}|
+                  {{expression.block.body}}
+                end{% end %}
+              {% else %}
+                apply_optional_rule(raw_params, current_errors, {{field_name}}, {% if message %}{{message}}{% else %}nil{% end %}, {{allow_blank}}){% if expression.block %} do |{{expression.block.args.splat}}|
+                  {{expression.block.body}}
+                end{% end %}
+              {% end %}
+            {% else %}
+              {% fallback_name = "FALLBACK_DEFINITION_#{index}".id %}
+              {{fallback_name}}.apply(raw_params, current_errors)
+            {% end %}
+          {% end %}
+        end
       end
 
       {{name.id}} = {{validator_name}}.new
@@ -604,6 +748,14 @@ module Amber::Validators
       raise Amber::Exceptions::Validator::ValidationFailed.new errors
     end
 
+    # Validates against a reusable definition without materializing the
+    # validated params Hash. Hot paths can read from raw_params after this
+    # succeeds while preserving normal validation errors on failure.
+    def ensure_valid!(definition : ReusableDefinition)
+      return self if valid?(definition)
+      raise Amber::Exceptions::Validator::ValidationFailed.new errors
+    end
+
     # Returns True or false whether the validation passed
     #
     # ```
@@ -635,6 +787,17 @@ module Amber::Validators
           current_params[rule.field] = rule.value if rule.present
         end
       end
+
+      current_errors.empty?
+    end
+
+    def valid?(definition : ReusableDefinition)
+      current_errors = errors
+      current_params = @params
+      current_errors.clear
+      current_params.try &.clear
+
+      definition.apply(raw_params, current_errors)
 
       current_errors.empty?
     end
