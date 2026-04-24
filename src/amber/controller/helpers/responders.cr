@@ -76,7 +76,7 @@ module Amber::Controller::Helpers
         if @requested_responses.size != 1 || @requested_responses.includes?("*/*")
           @requested_responses << available_response_keys.first
         end
-        
+
         result = @requested_responses.find do |resp|
           available_response_keys.find { |r| r.includes?(resp) }
         end
@@ -160,7 +160,131 @@ module Amber::Controller::Helpers
       extension_request_type || accepts_request_type || [] of String
     end
 
-    protected def respond_with(status_code = 200, &block)
+    private def selected_response_type(requested_responses, available_response_types)
+      first_response_type = nil
+
+      available_response_types.each do |response_type|
+        first_response_type ||= response_type
+      end
+
+      raise "You must define at least one response_type." unless first_response_type
+
+      return first_response_type if requested_responses.empty?
+
+      requested_responses.each do |requested_response|
+        next if requested_response == "*/*"
+
+        available_response_types.each do |available_response_type|
+          return available_response_type if available_response_type.includes?(requested_response)
+        end
+      end
+
+      if requested_responses.size != 1 || requested_responses.includes?("*/*")
+        first_response_type
+      end
+    end
+
+    private def resolve_response_body(value)
+      case value
+      when Proc
+        value.call
+      else
+        value
+      end
+    end
+
+    macro respond_with(*args, **named_args, &block)
+      {% unless block.is_a?(Nop) %}
+      {% response_methods = %w(html xml js json text) %}
+      {% expressions = block.body.is_a?(Expressions) ? block.body.expressions : [block.body] %}
+      {% supported = true %}
+      {% response_count = 0 %}
+      {% status_code = args.size > 0 ? args[0] : 200 %}
+
+      {% for expression in expressions %}
+        {% if expression.is_a?(Call) && response_methods.includes?(expression.name.stringify) %}
+          {% response_count += 1 %}
+        {% else %}
+          {% supported = false %}
+        {% end %}
+      {% end %}
+
+      {% if supported && response_count > 0 %}
+        __amber_requested_responses = requested_responses
+        __amber_selected_response_type = selected_response_type(
+          __amber_requested_responses,
+          {
+            {% for expression in expressions %}
+              {% if expression.is_a?(Call) && response_methods.includes?(expression.name.stringify) %}
+                Content::TYPE[:{{expression.name.id}}],
+              {% end %}
+            {% end %}
+          }
+        )
+        __amber_response_body = nil
+
+        if __amber_selected_response_type
+          case __amber_selected_response_type
+          {% for response_method in response_methods %}
+            when Content::TYPE[:{{response_method.id}}]
+              {% for expression in expressions %}
+                {% if expression.is_a?(Call) && expression.name.stringify == response_method %}
+                  __amber_response_body = begin
+                    {% if expression.block %}
+                      {{expression.block.body}}
+                    {% elsif expression.name.stringify == "json" && expression.named_args.is_a?(ArrayLiteral) %}
+                      {
+                        {% for named_arg in expression.named_args %}
+                          {{named_arg.name.id}}: {{named_arg.value}},
+                        {% end %}
+                      }.to_json
+                    {% elsif expression.args.size == 1 %}
+                      {{expression.args[0]}}
+                    {% else %}
+                      raise "Unsupported respond_with #{ {{expression.name.stringify}} } response shape."
+                    {% end %}
+                  end
+                {% end %}
+              {% end %}
+          {% end %}
+          end
+        end
+
+        if __amber_response_body
+          __amber_resolved_body = resolve_response_body(__amber_response_body)
+          set_response(body: __amber_resolved_body.to_s, status_code: {{ status_code }}, content_type: __amber_selected_response_type.not_nil!)
+        else
+          set_response(body: "Response Not Acceptable.", status_code: 406, content_type: Content::TYPE[:text])
+        end
+      {% else %}
+        respond_with_runtime({{ status_code }}) do
+          {{block.body}}
+        end
+      {% end %}
+      {% else %}
+        {% response_data = args.size > 0 ? args[0] : nil %}
+        {% response_status = named_args[:status] || (args.size > 1 ? args[1] : 200) %}
+
+        __amber_schema_response_data = {{ response_data }}
+        __amber_schema_response_body = case __amber_schema_response_data
+                                      when NamedTuple
+                                        __amber_schema_response_data.to_h.transform_values { |value| JSON::Any.new(value) }.to_json
+                                      when Hash
+                                        __amber_schema_response_data.to_json
+                                      when Nil
+                                        "{}"
+                                      else
+                                        raise "respond_with only accepts Hash(String, JSON::Any), NamedTuple, or Nil"
+                                      end
+
+        response.status_code = {{ response_status }}
+        response.content_type = "application/json"
+        response.print __amber_schema_response_body
+        response.close
+      {% end %}
+    end
+
+    protected def respond_with_runtime(status_code = 200, &block)
       content = with Content.new(requested_responses) yield
       if content.body
         set_response(body: content.body.to_s, status_code: status_code, content_type: content.type)

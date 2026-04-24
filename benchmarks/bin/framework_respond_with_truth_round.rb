@@ -40,6 +40,12 @@ RESPONDER_PAIRS = [
     candidate: "action_multi_respond_with_json_accept",
   },
   {
+    key: "multi_json_macro_vs_runtime",
+    label: "multi-format macro respond_with JSON Accept vs runtime responder",
+    base: "action_multi_respond_with_json_accept_runtime",
+    candidate: "action_multi_respond_with_json_accept",
+  },
+  {
     key: "multi_json_wildcard_vs_accept",
     label: "multi-format respond_with JSON wildcard Accept vs JSON Accept",
     base: "action_multi_respond_with_json_accept",
@@ -56,6 +62,18 @@ RESPONDER_PAIRS = [
     label: "schema respond_with NamedTuple JSON vs direct JSON",
     base: "action_json_direct_no_accept",
     candidate: "action_schema_named_tuple_respond_with",
+  },
+  {
+    key: "heavy_json_macro_vs_runtime",
+    label: "lazy macro JSON response skips expensive HTML branch",
+    base: "action_heavy_respond_with_json_accept_runtime",
+    candidate: "action_heavy_respond_with_json_accept",
+  },
+  {
+    key: "heavy_html_macro_vs_runtime",
+    label: "lazy macro HTML response when expensive HTML branch is selected",
+    base: "action_heavy_respond_with_html_accept_runtime",
+    candidate: "action_heavy_respond_with_html_accept",
   },
 ].freeze
 
