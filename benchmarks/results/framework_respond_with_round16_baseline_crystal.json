@@ -1,0 +1,413 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-04-24T11:27:49Z",
+    "compiler": "crystal",
+    "profile_duration_seconds": 1.5,
+    "profile_warmup_duration_seconds": 0.35,
+    "profile_repetitions": 3,
+    "branch": "experiment/framework-performance-respond-with-round16",
+    "commit": "e7c8e8053b5fe741d7fd82eb277e543471fab7c8"
+  },
+  "profile_pairs": {
+    "single_json_accept_vs_direct": {
+      "label": "single-format respond_with JSON with Accept vs direct JSON",
+      "base_scenario": "action_json_direct",
+      "candidate_scenario": "action_json_respond_with",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 475203,
+          "candidate_iterations": 429325,
+          "ratio": 0.9034559967003575
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_respond_with",
+            "action_json_direct"
+          ],
+          "base_iterations": 471134,
+          "candidate_iterations": 364149,
+          "ratio": 0.7729202307623734
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 533498,
+          "candidate_iterations": 370272,
+          "ratio": 0.6940457133859921
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        0.9034559967003575,
+        0.7729202307623734,
+        0.6940457133859921
+      ],
+      "median_ratio": 0.7729202307623734,
+      "mean_ratio": 0.7901406469495743,
+      "min_ratio": 0.6940457133859921,
+      "max_ratio": 0.9034559967003575,
+      "stddev_ratio": 0.10576187280724564,
+      "cv_ratio": 0.13385195814890816,
+      "positive_samples": 0
+    },
+    "single_json_no_accept_vs_direct": {
+      "label": "single-format respond_with JSON without Accept vs direct JSON",
+      "base_scenario": "action_json_direct_no_accept",
+      "candidate_scenario": "action_json_respond_with_no_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_json_respond_with_no_accept"
+          ],
+          "base_iterations": 544525,
+          "candidate_iterations": 454089,
+          "ratio": 0.8339176346356917
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_respond_with_no_accept",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 531392,
+          "candidate_iterations": 380394,
+          "ratio": 0.7158444237022763
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_json_respond_with_no_accept"
+          ],
+          "base_iterations": 452247,
+          "candidate_iterations": 469981,
+          "ratio": 1.0392130848850296
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        0.8339176346356917,
+        0.7158444237022763,
+        1.0392130848850296
+      ],
+      "median_ratio": 0.8339176346356917,
+      "mean_ratio": 0.8629917144076659,
+      "min_ratio": 0.7158444237022763,
+      "max_ratio": 1.0392130848850296,
+      "stddev_ratio": 0.1636331242283234,
+      "cv_ratio": 0.18961146613167282,
+      "positive_samples": 1
+    },
+    "multi_html_default_vs_direct": {
+      "label": "multi-format respond_with HTML default vs direct HTML",
+      "base_scenario": "action_html_direct",
+      "candidate_scenario": "action_multi_respond_with_html_default",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_html_direct",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 450515,
+          "candidate_iterations": 364688,
+          "ratio": 0.809491359888128
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_html_direct"
+          ],
+          "base_iterations": 429193,
+          "candidate_iterations": 434230,
+          "ratio": 1.0117359789185751
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_html_direct",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 399731,
+          "candidate_iterations": 352488,
+          "ratio": 0.8818130192554493
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        0.809491359888128,
+        1.0117359789185751,
+        0.8818130192554493
+      ],
+      "median_ratio": 0.8818130192554493,
+      "mean_ratio": 0.9010134526873842,
+      "min_ratio": 0.809491359888128,
+      "max_ratio": 1.0117359789185751,
+      "stddev_ratio": 0.10248031013162136,
+      "cv_ratio": 0.11373893455859194,
+      "positive_samples": 1
+    },
+    "multi_html_accept_vs_default": {
+      "label": "multi-format respond_with HTML Accept vs default negotiation",
+      "base_scenario": "action_multi_respond_with_html_default",
+      "candidate_scenario": "action_multi_respond_with_html_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_multi_respond_with_html_accept"
+          ],
+          "base_iterations": 347700,
+          "candidate_iterations": 390354,
+          "ratio": 1.12267471958585
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_html_accept",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 365388,
+          "candidate_iterations": 358074,
+          "ratio": 0.979982922263457
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_multi_respond_with_html_accept"
+          ],
+          "base_iterations": 372160,
+          "candidate_iterations": 367464,
+          "ratio": 0.9873817712811694
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        1.12267471958585,
+        0.979982922263457,
+        0.9873817712811694
+      ],
+      "median_ratio": 0.9873817712811694,
+      "mean_ratio": 1.030013137710159,
+      "min_ratio": 0.979982922263457,
+      "max_ratio": 1.12267471958585,
+      "stddev_ratio": 0.08033251090608205,
+      "cv_ratio": 0.07799173424590557,
+      "positive_samples": 1
+    },
+    "multi_json_accept_vs_direct": {
+      "label": "multi-format respond_with JSON Accept vs direct JSON",
+      "base_scenario": "action_json_direct",
+      "candidate_scenario": "action_multi_respond_with_json_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 447417,
+          "candidate_iterations": 392707,
+          "ratio": 0.8777203369563517
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_json_direct"
+          ],
+          "base_iterations": 483316,
+          "candidate_iterations": 351038,
+          "ratio": 0.7263115642767879
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 482793,
+          "candidate_iterations": 362011,
+          "ratio": 0.74982653021067
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        0.8777203369563517,
+        0.7263115642767879,
+        0.74982653021067
+      ],
+      "median_ratio": 0.74982653021067,
+      "mean_ratio": 0.7846194771479365,
+      "min_ratio": 0.7263115642767879,
+      "max_ratio": 0.8777203369563517,
+      "stddev_ratio": 0.08148046378437923,
+      "cv_ratio": 0.10384710825756936,
+      "positive_samples": 0
+    },
+    "multi_json_wildcard_vs_accept": {
+      "label": "multi-format respond_with JSON wildcard Accept vs JSON Accept",
+      "base_scenario": "action_multi_respond_with_json_accept",
+      "candidate_scenario": "action_multi_respond_with_json_wildcard",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_wildcard"
+          ],
+          "base_iterations": 363761,
+          "candidate_iterations": 409508,
+          "ratio": 1.1257611453674252
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_json_wildcard",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 358681,
+          "candidate_iterations": 325575,
+          "ratio": 0.9077007145625221
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_wildcard"
+          ],
+          "base_iterations": 445274,
+          "candidate_iterations": 313243,
+          "ratio": 0.7034836976782834
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        1.1257611453674252,
+        0.9077007145625221,
+        0.7034836976782834
+      ],
+      "median_ratio": 0.9077007145625221,
+      "mean_ratio": 0.9123151858694102,
+      "min_ratio": 0.7034836976782834,
+      "max_ratio": 1.1257611453674252,
+      "stddev_ratio": 0.21117653921729926,
+      "cv_ratio": 0.23147322601678944,
+      "positive_samples": 1
+    },
+    "multi_path_json_vs_accept": {
+      "label": "multi-format respond_with .json extension vs JSON Accept",
+      "base_scenario": "action_multi_respond_with_json_accept",
+      "candidate_scenario": "action_multi_respond_with_path_json",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_path_json"
+          ],
+          "base_iterations": 362169,
+          "candidate_iterations": 384497,
+          "ratio": 1.0616507762950447
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_path_json",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 400812,
+          "candidate_iterations": 332636,
+          "ratio": 0.8299052922567188
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_path_json"
+          ],
+          "base_iterations": 440238,
+          "candidate_iterations": 354766,
+          "ratio": 0.8058504717902589
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        1.0616507762950447,
+        0.8299052922567188,
+        0.8058504717902589
+      ],
+      "median_ratio": 0.8299052922567188,
+      "mean_ratio": 0.8991355134473409,
+      "min_ratio": 0.8058504717902589,
+      "max_ratio": 1.0616507762950447,
+      "stddev_ratio": 0.1412553241147466,
+      "cv_ratio": 0.15710126227042795,
+      "positive_samples": 1
+    },
+    "schema_named_tuple_vs_direct": {
+      "label": "schema respond_with NamedTuple JSON vs direct JSON",
+      "base_scenario": "action_json_direct_no_accept",
+      "candidate_scenario": "action_schema_named_tuple_respond_with",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_schema_named_tuple_respond_with"
+          ],
+          "base_iterations": 346794,
+          "candidate_iterations": 325371,
+          "ratio": 0.9382255748369349
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_schema_named_tuple_respond_with",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 542226,
+          "candidate_iterations": 354341,
+          "ratio": 0.6534931928752955
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_schema_named_tuple_respond_with"
+          ],
+          "base_iterations": 402860,
+          "candidate_iterations": 328464,
+          "ratio": 0.8153303877277466
+        }
+      ],
+      "sample_count": 3,
+      "ratios": [
+        0.9382255748369349,
+        0.6534931928752955,
+        0.8153303877277466
+      ],
+      "median_ratio": 0.8153303877277466,
+      "mean_ratio": 0.8023497184799924,
+      "min_ratio": 0.6534931928752955,
+      "max_ratio": 0.9382255748369349,
+      "stddev_ratio": 0.14280933325583775,
+      "cv_ratio": 0.17798888684896932,
+      "positive_samples": 0
+    }
+  }
+}
