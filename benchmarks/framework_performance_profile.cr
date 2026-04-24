@@ -4,20 +4,31 @@ require "../src/amber"
 module AmberFrameworkPerfProfile
   extend self
 
-  CONTENT_JSON = Amber::Controller::Helpers::Responders::Content::TYPE[:json]
-  CONTENT_TEXT = Amber::Controller::Helpers::Responders::Content::TYPE[:text]
-  JSON_ACCEPT  = HTTP::Headers{"Accept" => "application/json"}
-  JSON_HEADERS = HTTP::Headers{
+  CONTENT_JSON         = Amber::Controller::Helpers::Responders::Content::TYPE[:json]
+  CONTENT_HTML         = Amber::Controller::Helpers::Responders::Content::TYPE[:html]
+  CONTENT_TEXT         = Amber::Controller::Helpers::Responders::Content::TYPE[:text]
+  JSON_ACCEPT          = HTTP::Headers{"Accept" => "application/json"}
+  HTML_ACCEPT          = HTTP::Headers{"Accept" => "text/html"}
+  JSON_WILDCARD_ACCEPT = HTTP::Headers{"Accept" => "application/json,*/*"}
+  JSON_HEADERS         = HTTP::Headers{
     "Accept"       => "application/json",
     "Content-Type" => "application/json",
   }
 
   PLAIN_TEXT_RESPONSE = "ok"
+  HTML_RESPONSE_BODY  = "<html><body><h1>Amber</h1></body></html>"
+  XML_RESPONSE_BODY   = "<xml><body><h1>Amber</h1></body></xml>"
+  JS_RESPONSE_BODY    = "console.log('amber')"
   JSON_RESPONSE_BODY  = {
     "status"    => "ok",
     "framework" => "amber",
     "version"   => "2",
   }.to_json
+  JSON_RESPONSE_NAMED_TUPLE = {
+    status:    "ok",
+    framework: "amber",
+    version:   "2",
+  }
   QUERY_RESOURCE            = "/bench/query?page=10&sort=asc&filter=active"
   JSON_BODY_RESOURCE        = "/bench/json-body"
   JSON_BODY_PAYLOAD         = %({"id":42,"name":"amber","active":true})
@@ -161,6 +172,30 @@ module AmberFrameworkPerfProfile
     end
   end
 
+  class HtmlController < Amber::Controller::Base
+    def direct
+      set_response(AmberFrameworkPerfProfile::HTML_RESPONSE_BODY, 200, AmberFrameworkPerfProfile::CONTENT_HTML)
+    end
+  end
+
+  class MultiFormatController < Amber::Controller::Base
+    def negotiated
+      respond_with do
+        html(AmberFrameworkPerfProfile::HTML_RESPONSE_BODY)
+        json(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY)
+        xml(AmberFrameworkPerfProfile::XML_RESPONSE_BODY)
+        text(AmberFrameworkPerfProfile::PLAIN_TEXT_RESPONSE)
+        js(AmberFrameworkPerfProfile::JS_RESPONSE_BODY)
+      end
+    end
+  end
+
+  class SchemaJsonController < Amber::Controller::Base
+    def named_tuple
+      respond_with(AmberFrameworkPerfProfile::JSON_RESPONSE_NAMED_TUPLE)
+    end
+  end
+
   class JsonBodyController < Amber::Controller::Base
     def raw_create
       AmberFrameworkPerfProfile.consume(raw_params["id"].bytesize + raw_params["name"].bytesize + raw_params["active"].bytesize)
@@ -276,6 +311,18 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_json_direct_no_accept
+    context = build_context("GET", "/bench/json")
+    JsonController.new(context).direct
+    context.bench_finalize_response!
+  end
+
+  def action_html_direct
+    context = build_context("GET", "/bench/multi")
+    HtmlController.new(context).direct
+    context.bench_finalize_response!
+  end
+
   def action_query_params
     context = build_context("GET", QUERY_RESOURCE)
     QueryParamsController.new(context).index
@@ -327,6 +374,48 @@ module AmberFrameworkPerfProfile
   def action_json_respond_with
     context = build_context("GET", "/bench/json", JSON_ACCEPT)
     JsonController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_json_respond_with_no_accept
+    context = build_context("GET", "/bench/json")
+    JsonController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_html_default
+    context = build_context("GET", "/bench/multi")
+    MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_html_accept
+    context = build_context("GET", "/bench/multi", HTML_ACCEPT)
+    MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_json_accept
+    context = build_context("GET", "/bench/multi", JSON_ACCEPT)
+    MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_json_wildcard
+    context = build_context("GET", "/bench/multi", JSON_WILDCARD_ACCEPT)
+    MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_path_json
+    context = build_context("GET", "/bench/multi.json")
+    MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_schema_named_tuple_respond_with
+    context = build_context("GET", "/bench/schema-json")
+    SchemaJsonController.new(context).named_tuple
     context.bench_finalize_response!
   end
 
@@ -405,7 +494,7 @@ duration_seconds = 20.0
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_profile.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: raw_plaintext, action_plaintext, raw_json, action_json_direct, action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, dispatch_json, raw_query_lookup, params_lookup_query, dispatch_route_query_params, raw_json_body_parse, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
+  parser.on("--scenario=NAME", "Scenario: raw_plaintext, action_plaintext, raw_json, action_json_direct, action_json_direct_no_accept, action_html_direct, action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, action_json_respond_with_no_accept, action_multi_respond_with_html_default, action_multi_respond_with_html_accept, action_multi_respond_with_json_accept, action_multi_respond_with_json_wildcard, action_multi_respond_with_path_json, action_schema_named_tuple_respond_with, dispatch_json, raw_query_lookup, params_lookup_query, dispatch_route_query_params, raw_json_body_parse, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
     scenario = value
   end
 
@@ -426,6 +515,10 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.raw_json }
                 when "action_json_direct"
                   -> { AmberFrameworkPerfProfile.action_json_direct }
+                when "action_json_direct_no_accept"
+                  -> { AmberFrameworkPerfProfile.action_json_direct_no_accept }
+                when "action_html_direct"
+                  -> { AmberFrameworkPerfProfile.action_html_direct }
                 when "action_query_params"
                   -> { AmberFrameworkPerfProfile.action_query_params }
                 when "action_query_raw_params"
@@ -444,6 +537,20 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.action_query_predicate_only_compiled_validated_params }
                 when "action_json_respond_with"
                   -> { AmberFrameworkPerfProfile.action_json_respond_with }
+                when "action_json_respond_with_no_accept"
+                  -> { AmberFrameworkPerfProfile.action_json_respond_with_no_accept }
+                when "action_multi_respond_with_html_default"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_default }
+                when "action_multi_respond_with_html_accept"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_accept }
+                when "action_multi_respond_with_json_accept"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_json_accept }
+                when "action_multi_respond_with_json_wildcard"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_json_wildcard }
+                when "action_multi_respond_with_path_json"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_path_json }
+                when "action_schema_named_tuple_respond_with"
+                  -> { AmberFrameworkPerfProfile.action_schema_named_tuple_respond_with }
                 when "dispatch_json"
                   -> { AmberFrameworkPerfProfile.dispatch_json(pipeline) }
                 when "raw_query_lookup"
