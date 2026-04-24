@@ -1,0 +1,805 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-04-24T12:16:16Z",
+    "compiler": "crystal",
+    "profile_duration_seconds": 1.5,
+    "profile_warmup_duration_seconds": 0.4,
+    "profile_repetitions": 5,
+    "branch": "experiment/framework-performance-lazy-respond-with-round17",
+    "commit": "5d59651e51623af7173e5dd88708f9f9591ddba1"
+  },
+  "profile_pairs": {
+    "single_json_accept_vs_direct": {
+      "label": "single-format respond_with JSON with Accept vs direct JSON",
+      "base_scenario": "action_json_direct",
+      "candidate_scenario": "action_json_respond_with",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 478899,
+          "candidate_iterations": 459528,
+          "ratio": 0.9595509700375235
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_respond_with",
+            "action_json_direct"
+          ],
+          "base_iterations": 394130,
+          "candidate_iterations": 429887,
+          "ratio": 1.0907238728338366
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 461170,
+          "candidate_iterations": 327493,
+          "ratio": 0.7101350911811263
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_json_respond_with",
+            "action_json_direct"
+          ],
+          "base_iterations": 415948,
+          "candidate_iterations": 384820,
+          "ratio": 0.9251637223883755
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_direct",
+            "action_json_respond_with"
+          ],
+          "base_iterations": 485938,
+          "candidate_iterations": 403657,
+          "ratio": 0.8306759298511333
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.9595509700375235,
+        1.0907238728338366,
+        0.7101350911811263,
+        0.9251637223883755,
+        0.8306759298511333
+      ],
+      "median_ratio": 0.9251637223883755,
+      "mean_ratio": 0.9032499172583991,
+      "min_ratio": 0.7101350911811263,
+      "max_ratio": 1.0907238728338366,
+      "stddev_ratio": 0.14261559094069867,
+      "cv_ratio": 0.1578916180513744,
+      "positive_samples": 1
+    },
+    "single_json_no_accept_vs_direct": {
+      "label": "single-format respond_with JSON without Accept vs direct JSON",
+      "base_scenario": "action_json_direct_no_accept",
+      "candidate_scenario": "action_json_respond_with_no_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_json_respond_with_no_accept"
+          ],
+          "base_iterations": 498819,
+          "candidate_iterations": 383529,
+          "ratio": 0.768874080578326
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_json_respond_with_no_accept",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 510348,
+          "candidate_iterations": 356245,
+          "ratio": 0.6980432959470793
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_json_respond_with_no_accept"
+          ],
+          "base_iterations": 544963,
+          "candidate_iterations": 332262,
+          "ratio": 0.6096964381068073
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_json_respond_with_no_accept",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 542363,
+          "candidate_iterations": 420814,
+          "ratio": 0.7758899482449946
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_json_respond_with_no_accept"
+          ],
+          "base_iterations": 504299,
+          "candidate_iterations": 478459,
+          "ratio": 0.9487605567332079
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.768874080578326,
+        0.6980432959470793,
+        0.6096964381068073,
+        0.7758899482449946,
+        0.9487605567332079
+      ],
+      "median_ratio": 0.768874080578326,
+      "mean_ratio": 0.760252863922083,
+      "min_ratio": 0.6096964381068073,
+      "max_ratio": 0.9487605567332079,
+      "stddev_ratio": 0.1248912143964062,
+      "cv_ratio": 0.16427588809347266,
+      "positive_samples": 0
+    },
+    "multi_html_default_vs_direct": {
+      "label": "multi-format respond_with HTML default vs direct HTML",
+      "base_scenario": "action_html_direct",
+      "candidate_scenario": "action_multi_respond_with_html_default",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_html_direct",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 552280,
+          "candidate_iterations": 418416,
+          "ratio": 0.7576157021800536
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_html_direct"
+          ],
+          "base_iterations": 488310,
+          "candidate_iterations": 390076,
+          "ratio": 0.7988286129712683
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_html_direct",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 434604,
+          "candidate_iterations": 485554,
+          "ratio": 1.117233159381874
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_html_direct"
+          ],
+          "base_iterations": 551644,
+          "candidate_iterations": 494133,
+          "ratio": 0.895746169631139
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_html_direct",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 451027,
+          "candidate_iterations": 496156,
+          "ratio": 1.1000583113649516
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.7576157021800536,
+        0.7988286129712683,
+        1.117233159381874,
+        0.895746169631139,
+        1.1000583113649516
+      ],
+      "median_ratio": 0.895746169631139,
+      "mean_ratio": 0.9338963911058572,
+      "min_ratio": 0.7576157021800536,
+      "max_ratio": 1.117233159381874,
+      "stddev_ratio": 0.16732885265475295,
+      "cv_ratio": 0.17917282286165961,
+      "positive_samples": 2
+    },
+    "multi_html_accept_vs_default": {
+      "label": "multi-format respond_with HTML Accept vs default negotiation",
+      "base_scenario": "action_multi_respond_with_html_default",
+      "candidate_scenario": "action_multi_respond_with_html_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_multi_respond_with_html_accept"
+          ],
+          "base_iterations": 534083,
+          "candidate_iterations": 443361,
+          "ratio": 0.8301350164674779
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_html_accept",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 408310,
+          "candidate_iterations": 407244,
+          "ratio": 0.9973892385687345
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_multi_respond_with_html_accept"
+          ],
+          "base_iterations": 419402,
+          "candidate_iterations": 497599,
+          "ratio": 1.1864488009117744
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_html_accept",
+            "action_multi_respond_with_html_default"
+          ],
+          "base_iterations": 499462,
+          "candidate_iterations": 425818,
+          "ratio": 0.8525533474018043
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_multi_respond_with_html_default",
+            "action_multi_respond_with_html_accept"
+          ],
+          "base_iterations": 389938,
+          "candidate_iterations": 466690,
+          "ratio": 1.1968312911283332
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.8301350164674779,
+        0.9973892385687345,
+        1.1864488009117744,
+        0.8525533474018043,
+        1.1968312911283332
+      ],
+      "median_ratio": 0.9973892385687345,
+      "mean_ratio": 1.012671538895625,
+      "min_ratio": 0.8301350164674779,
+      "max_ratio": 1.1968312911283332,
+      "stddev_ratio": 0.17557357226169923,
+      "cv_ratio": 0.1733766236317573,
+      "positive_samples": 2
+    },
+    "multi_json_accept_vs_direct": {
+      "label": "multi-format respond_with JSON Accept vs direct JSON",
+      "base_scenario": "action_json_direct",
+      "candidate_scenario": "action_multi_respond_with_json_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 484946,
+          "candidate_iterations": 525373,
+          "ratio": 1.0833639209314028
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_json_direct"
+          ],
+          "base_iterations": 376985,
+          "candidate_iterations": 446339,
+          "ratio": 1.1839701844900992
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 479510,
+          "candidate_iterations": 471055,
+          "ratio": 0.9823674167379199
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_json_direct"
+          ],
+          "base_iterations": 448912,
+          "candidate_iterations": 388658,
+          "ratio": 0.865777702534127
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_direct",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 479340,
+          "candidate_iterations": 387256,
+          "ratio": 0.8078941878416156
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.0833639209314028,
+        1.1839701844900992,
+        0.9823674167379199,
+        0.865777702534127,
+        0.8078941878416156
+      ],
+      "median_ratio": 0.9823674167379199,
+      "mean_ratio": 0.9846746825070329,
+      "min_ratio": 0.8078941878416156,
+      "max_ratio": 1.1839701844900992,
+      "stddev_ratio": 0.15398978984629227,
+      "cv_ratio": 0.15638646202848058,
+      "positive_samples": 2
+    },
+    "multi_json_macro_vs_runtime": {
+      "label": "multi-format macro respond_with JSON Accept vs runtime responder",
+      "base_scenario": "action_multi_respond_with_json_accept_runtime",
+      "candidate_scenario": "action_multi_respond_with_json_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_json_accept_runtime",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 359544,
+          "candidate_iterations": 457509,
+          "ratio": 1.2724701288298512
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_accept_runtime"
+          ],
+          "base_iterations": 439925,
+          "candidate_iterations": 483026,
+          "ratio": 1.097973518213332
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_json_accept_runtime",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 332212,
+          "candidate_iterations": 406621,
+          "ratio": 1.2239804703020962
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_accept_runtime"
+          ],
+          "base_iterations": 390407,
+          "candidate_iterations": 429322,
+          "ratio": 1.0996780283140415
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_multi_respond_with_json_accept_runtime",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 352229,
+          "candidate_iterations": 418663,
+          "ratio": 1.1886102507175729
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.2724701288298512,
+        1.097973518213332,
+        1.2239804703020962,
+        1.0996780283140415,
+        1.1886102507175729
+      ],
+      "median_ratio": 1.1886102507175729,
+      "mean_ratio": 1.1765424792753787,
+      "min_ratio": 1.097973518213332,
+      "max_ratio": 1.2724701288298512,
+      "stddev_ratio": 0.07694045345790942,
+      "cv_ratio": 0.06539538929805265,
+      "positive_samples": 5
+    },
+    "multi_json_wildcard_vs_accept": {
+      "label": "multi-format respond_with JSON wildcard Accept vs JSON Accept",
+      "base_scenario": "action_multi_respond_with_json_accept",
+      "candidate_scenario": "action_multi_respond_with_json_wildcard",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_wildcard"
+          ],
+          "base_iterations": 524347,
+          "candidate_iterations": 399098,
+          "ratio": 0.761133371603156
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_json_wildcard",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 436120,
+          "candidate_iterations": 431996,
+          "ratio": 0.990543887003577
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_wildcard"
+          ],
+          "base_iterations": 477279,
+          "candidate_iterations": 342903,
+          "ratio": 0.7184539860333264
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_json_wildcard",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 385118,
+          "candidate_iterations": 353209,
+          "ratio": 0.9171448750772491
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_json_wildcard"
+          ],
+          "base_iterations": 401043,
+          "candidate_iterations": 356913,
+          "ratio": 0.8899619242824336
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        0.761133371603156,
+        0.990543887003577,
+        0.7184539860333264,
+        0.9171448750772491,
+        0.8899619242824336
+      ],
+      "median_ratio": 0.8899619242824336,
+      "mean_ratio": 0.8554476087999484,
+      "min_ratio": 0.7184539860333264,
+      "max_ratio": 0.990543887003577,
+      "stddev_ratio": 0.11281757735446771,
+      "cv_ratio": 0.13188134047476283,
+      "positive_samples": 0
+    },
+    "multi_path_json_vs_accept": {
+      "label": "multi-format respond_with .json extension vs JSON Accept",
+      "base_scenario": "action_multi_respond_with_json_accept",
+      "candidate_scenario": "action_multi_respond_with_path_json",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_path_json"
+          ],
+          "base_iterations": 404204,
+          "candidate_iterations": 428681,
+          "ratio": 1.0605560558529852
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_multi_respond_with_path_json",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 409909,
+          "candidate_iterations": 503602,
+          "ratio": 1.228570243639442
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_path_json"
+          ],
+          "base_iterations": 427353,
+          "candidate_iterations": 508070,
+          "ratio": 1.1888766429626094
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_multi_respond_with_path_json",
+            "action_multi_respond_with_json_accept"
+          ],
+          "base_iterations": 432440,
+          "candidate_iterations": 387505,
+          "ratio": 0.8960896309314587
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_multi_respond_with_json_accept",
+            "action_multi_respond_with_path_json"
+          ],
+          "base_iterations": 405547,
+          "candidate_iterations": 431865,
+          "ratio": 1.0648950676493723
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.0605560558529852,
+        1.228570243639442,
+        1.1888766429626094,
+        0.8960896309314587,
+        1.0648950676493723
+      ],
+      "median_ratio": 1.0648950676493723,
+      "mean_ratio": 1.0877975282071735,
+      "min_ratio": 0.8960896309314587,
+      "max_ratio": 1.228570243639442,
+      "stddev_ratio": 0.13043435441192122,
+      "cv_ratio": 0.11990683103214379,
+      "positive_samples": 4
+    },
+    "schema_named_tuple_vs_direct": {
+      "label": "schema respond_with NamedTuple JSON vs direct JSON",
+      "base_scenario": "action_json_direct_no_accept",
+      "candidate_scenario": "action_schema_named_tuple_respond_with",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_schema_named_tuple_respond_with"
+          ],
+          "base_iterations": 369085,
+          "candidate_iterations": 403248,
+          "ratio": 1.0925613341100289
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_schema_named_tuple_respond_with",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 397660,
+          "candidate_iterations": 324265,
+          "ratio": 0.8154327817733742
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_schema_named_tuple_respond_with"
+          ],
+          "base_iterations": 430025,
+          "candidate_iterations": 330929,
+          "ratio": 0.7695575838614034
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_schema_named_tuple_respond_with",
+            "action_json_direct_no_accept"
+          ],
+          "base_iterations": 495042,
+          "candidate_iterations": 326254,
+          "ratio": 0.6590430710929578
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_json_direct_no_accept",
+            "action_schema_named_tuple_respond_with"
+          ],
+          "base_iterations": 503102,
+          "candidate_iterations": 288769,
+          "ratio": 0.573977046404109
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.0925613341100289,
+        0.8154327817733742,
+        0.7695575838614034,
+        0.6590430710929578,
+        0.573977046404109
+      ],
+      "median_ratio": 0.7695575838614034,
+      "mean_ratio": 0.7821143634483747,
+      "min_ratio": 0.573977046404109,
+      "max_ratio": 1.0925613341100289,
+      "stddev_ratio": 0.19755555994117902,
+      "cv_ratio": 0.25259165305461,
+      "positive_samples": 1
+    },
+    "heavy_json_macro_vs_runtime": {
+      "label": "lazy macro JSON response skips expensive HTML branch",
+      "base_scenario": "action_heavy_respond_with_json_accept_runtime",
+      "candidate_scenario": "action_heavy_respond_with_json_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_heavy_respond_with_json_accept_runtime",
+            "action_heavy_respond_with_json_accept"
+          ],
+          "base_iterations": 299118,
+          "candidate_iterations": 350614,
+          "ratio": 1.1721594822110337
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_heavy_respond_with_json_accept",
+            "action_heavy_respond_with_json_accept_runtime"
+          ],
+          "base_iterations": 262590,
+          "candidate_iterations": 449002,
+          "ratio": 1.7098975589321757
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_heavy_respond_with_json_accept_runtime",
+            "action_heavy_respond_with_json_accept"
+          ],
+          "base_iterations": 263814,
+          "candidate_iterations": 458122,
+          "ratio": 1.7365340732485766
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_heavy_respond_with_json_accept",
+            "action_heavy_respond_with_json_accept_runtime"
+          ],
+          "base_iterations": 320776,
+          "candidate_iterations": 393417,
+          "ratio": 1.2264539741127765
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_heavy_respond_with_json_accept_runtime",
+            "action_heavy_respond_with_json_accept"
+          ],
+          "base_iterations": 273843,
+          "candidate_iterations": 407364,
+          "ratio": 1.487582300807397
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.1721594822110337,
+        1.7098975589321757,
+        1.7365340732485766,
+        1.2264539741127765,
+        1.487582300807397
+      ],
+      "median_ratio": 1.487582300807397,
+      "mean_ratio": 1.4665254778623917,
+      "min_ratio": 1.1721594822110337,
+      "max_ratio": 1.7365340732485766,
+      "stddev_ratio": 0.2630891804729017,
+      "cv_ratio": 0.1793962562835121,
+      "positive_samples": 5
+    },
+    "heavy_html_macro_vs_runtime": {
+      "label": "lazy macro HTML response when expensive HTML branch is selected",
+      "base_scenario": "action_heavy_respond_with_html_accept_runtime",
+      "candidate_scenario": "action_heavy_respond_with_html_accept",
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "action_heavy_respond_with_html_accept_runtime",
+            "action_heavy_respond_with_html_accept"
+          ],
+          "base_iterations": 292384,
+          "candidate_iterations": 334339,
+          "ratio": 1.1434928039838022
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "action_heavy_respond_with_html_accept",
+            "action_heavy_respond_with_html_accept_runtime"
+          ],
+          "base_iterations": 267874,
+          "candidate_iterations": 262614,
+          "ratio": 0.9803639024317403
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "action_heavy_respond_with_html_accept_runtime",
+            "action_heavy_respond_with_html_accept"
+          ],
+          "base_iterations": 268639,
+          "candidate_iterations": 272753,
+          "ratio": 1.015314232110751
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "action_heavy_respond_with_html_accept",
+            "action_heavy_respond_with_html_accept_runtime"
+          ],
+          "base_iterations": 274511,
+          "candidate_iterations": 265655,
+          "ratio": 0.9677389977086528
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "action_heavy_respond_with_html_accept_runtime",
+            "action_heavy_respond_with_html_accept"
+          ],
+          "base_iterations": 256423,
+          "candidate_iterations": 259816,
+          "ratio": 1.0132320423674943
+        }
+      ],
+      "sample_count": 5,
+      "ratios": [
+        1.1434928039838022,
+        0.9803639024317403,
+        1.015314232110751,
+        0.9677389977086528,
+        1.0132320423674943
+      ],
+      "median_ratio": 1.0132320423674943,
+      "mean_ratio": 1.024028395720488,
+      "min_ratio": 0.9677389977086528,
+      "max_ratio": 1.1434928039838022,
+      "stddev_ratio": 0.06989157144738851,
+      "cv_ratio": 0.06825159511149498,
+      "positive_samples": 3
+    }
+  }
+}

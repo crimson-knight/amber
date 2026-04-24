@@ -528,6 +528,51 @@ Useful takeaway:
 - the next validation step should be an HTTP pressure benchmark with real view
   rendering, not another tiny branch-shaving responder change
 
+### Round 17
+
+- branch base: `experiment/framework-performance-lazy-respond-with-round17`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND17.md`
+
+Kept:
+
+- selective compiled/lazy block-style `respond_with`
+- old runtime responder as fallback for cheap or unsupported shapes
+- schema/no-block `respond_with(data)` delegated back to the schema helper
+- macro-vs-runtime benchmark pairs for single, multi-format, and heavy response
+  branches
+
+Rejected:
+
+- broad macro replacement for every block-style `respond_with`
+- generated single-response path for cheap responders
+- macro-expanded schema/no-block response writing
+
+Final targeted `crystal` read:
+
+- single JSON with `Accept`: `1.0177x` median vs runtime
+- single JSON without `Accept`: noisy `0.8026x` median vs runtime in the saved
+  run; follow-up spot check was `1.0067x`
+- multi HTML default: `1.0094x` median vs runtime
+- multi HTML with `Accept`: `0.9502x` median vs runtime
+- multi JSON with `Accept`: `1.0371x` median vs runtime
+- heavy HTML branch skipped by JSON: `1.6735x` median vs runtime, `5/5`
+  positive samples
+- heavy HTML branch selected: `1.0720x` median vs runtime
+
+Compatibility checks:
+
+- stock `crystal` responder/schema specs: pass
+- `acrystal` responder/schema specs: pass
+- stock `crystal` profile build: pass
+- `acrystal` profile build: pass
+
+Useful takeaway:
+
+- the stack is still gaining when we remove entire work categories
+- not every micro-optimization stacks; cheap responder rewrites are mostly noise
+- the optimization pattern to keep using is "select first, then evaluate only
+  the selected body"
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:
