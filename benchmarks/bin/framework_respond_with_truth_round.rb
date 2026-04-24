@@ -16,9 +16,21 @@ RESPONDER_PAIRS = [
     candidate: "action_json_respond_with",
   },
   {
+    key: "single_json_macro_vs_runtime",
+    label: "single-format macro respond_with JSON with Accept vs runtime responder",
+    base: "action_json_respond_with_runtime",
+    candidate: "action_json_respond_with",
+  },
+  {
     key: "single_json_no_accept_vs_direct",
     label: "single-format respond_with JSON without Accept vs direct JSON",
     base: "action_json_direct_no_accept",
+    candidate: "action_json_respond_with_no_accept",
+  },
+  {
+    key: "single_json_no_accept_macro_vs_runtime",
+    label: "single-format macro respond_with JSON without Accept vs runtime responder",
+    base: "action_json_respond_with_no_accept_runtime",
     candidate: "action_json_respond_with_no_accept",
   },
   {
@@ -28,9 +40,21 @@ RESPONDER_PAIRS = [
     candidate: "action_multi_respond_with_html_default",
   },
   {
+    key: "multi_html_default_macro_vs_runtime",
+    label: "multi-format macro respond_with HTML default vs runtime responder",
+    base: "action_multi_respond_with_html_default_runtime",
+    candidate: "action_multi_respond_with_html_default",
+  },
+  {
     key: "multi_html_accept_vs_default",
     label: "multi-format respond_with HTML Accept vs default negotiation",
     base: "action_multi_respond_with_html_default",
+    candidate: "action_multi_respond_with_html_accept",
+  },
+  {
+    key: "multi_html_accept_macro_vs_runtime",
+    label: "multi-format macro respond_with HTML Accept vs runtime responder",
+    base: "action_multi_respond_with_html_accept_runtime",
     candidate: "action_multi_respond_with_html_accept",
   },
   {

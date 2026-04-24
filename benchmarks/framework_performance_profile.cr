@@ -171,6 +171,12 @@ module AmberFrameworkPerfProfile
         json(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY)
       end
     end
+
+    def negotiated_runtime
+      respond_with_runtime do
+        json(AmberFrameworkPerfProfile::JSON_RESPONSE_BODY)
+      end
+    end
   end
 
   class HtmlController < Amber::Controller::Base
@@ -411,9 +417,21 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_json_respond_with_runtime
+    context = build_context("GET", "/bench/json", JSON_ACCEPT)
+    JsonController.new(context).negotiated_runtime
+    context.bench_finalize_response!
+  end
+
   def action_json_respond_with_no_accept
     context = build_context("GET", "/bench/json")
     JsonController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_json_respond_with_no_accept_runtime
+    context = build_context("GET", "/bench/json")
+    JsonController.new(context).negotiated_runtime
     context.bench_finalize_response!
   end
 
@@ -423,9 +441,21 @@ module AmberFrameworkPerfProfile
     context.bench_finalize_response!
   end
 
+  def action_multi_respond_with_html_default_runtime
+    context = build_context("GET", "/bench/multi")
+    MultiFormatController.new(context).negotiated_runtime
+    context.bench_finalize_response!
+  end
+
   def action_multi_respond_with_html_accept
     context = build_context("GET", "/bench/multi", HTML_ACCEPT)
     MultiFormatController.new(context).negotiated
+    context.bench_finalize_response!
+  end
+
+  def action_multi_respond_with_html_accept_runtime
+    context = build_context("GET", "/bench/multi", HTML_ACCEPT)
+    MultiFormatController.new(context).negotiated_runtime
     context.bench_finalize_response!
   end
 
@@ -558,7 +588,7 @@ duration_seconds = 20.0
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/framework_performance_profile.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: raw_plaintext, action_plaintext, raw_json, action_json_direct, action_json_direct_no_accept, action_html_direct, action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, action_json_respond_with_no_accept, action_multi_respond_with_html_default, action_multi_respond_with_html_accept, action_multi_respond_with_json_accept, action_multi_respond_with_json_accept_runtime, action_multi_respond_with_json_wildcard, action_multi_respond_with_path_json, action_heavy_respond_with_json_accept, action_heavy_respond_with_json_accept_runtime, action_heavy_respond_with_html_accept, action_heavy_respond_with_html_accept_runtime, action_schema_named_tuple_respond_with, dispatch_json, raw_query_lookup, params_lookup_query, dispatch_route_query_params, raw_json_body_parse, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
+  parser.on("--scenario=NAME", "Scenario: raw_plaintext, action_plaintext, raw_json, action_json_direct, action_json_direct_no_accept, action_html_direct, action_query_params, action_query_raw_params, action_query_validated_params, action_query_compiled_validated_params, action_query_mixed_validated_params, action_query_hybrid_validated_params, action_query_predicate_only_validated_params, action_query_predicate_only_compiled_validated_params, action_json_respond_with, action_json_respond_with_runtime, action_json_respond_with_no_accept, action_json_respond_with_no_accept_runtime, action_multi_respond_with_html_default, action_multi_respond_with_html_default_runtime, action_multi_respond_with_html_accept, action_multi_respond_with_html_accept_runtime, action_multi_respond_with_json_accept, action_multi_respond_with_json_accept_runtime, action_multi_respond_with_json_wildcard, action_multi_respond_with_path_json, action_heavy_respond_with_json_accept, action_heavy_respond_with_json_accept_runtime, action_heavy_respond_with_html_accept, action_heavy_respond_with_html_accept_runtime, action_schema_named_tuple_respond_with, dispatch_json, raw_query_lookup, params_lookup_query, dispatch_route_query_params, raw_json_body_parse, dispatch_json_body, action_json_body_raw_params, action_json_body_validated_params, action_json_body_compiled_validated_params, action_json_body_mixed_validated_params, action_json_body_hybrid_validated_params, params_lookup_json") do |value|
     scenario = value
   end
 
@@ -601,12 +631,20 @@ scenario_proc = case scenario
                   -> { AmberFrameworkPerfProfile.action_query_predicate_only_compiled_validated_params }
                 when "action_json_respond_with"
                   -> { AmberFrameworkPerfProfile.action_json_respond_with }
+                when "action_json_respond_with_runtime"
+                  -> { AmberFrameworkPerfProfile.action_json_respond_with_runtime }
                 when "action_json_respond_with_no_accept"
                   -> { AmberFrameworkPerfProfile.action_json_respond_with_no_accept }
+                when "action_json_respond_with_no_accept_runtime"
+                  -> { AmberFrameworkPerfProfile.action_json_respond_with_no_accept_runtime }
                 when "action_multi_respond_with_html_default"
                   -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_default }
+                when "action_multi_respond_with_html_default_runtime"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_default_runtime }
                 when "action_multi_respond_with_html_accept"
                   -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_accept }
+                when "action_multi_respond_with_html_accept_runtime"
+                  -> { AmberFrameworkPerfProfile.action_multi_respond_with_html_accept_runtime }
                 when "action_multi_respond_with_json_accept"
                   -> { AmberFrameworkPerfProfile.action_multi_respond_with_json_accept }
                 when "action_multi_respond_with_json_accept_runtime"

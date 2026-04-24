@@ -199,17 +199,28 @@ module Amber::Controller::Helpers
       {% expressions = block.body.is_a?(Expressions) ? block.body.expressions : [block.body] %}
       {% supported = true %}
       {% response_count = 0 %}
+      {% lazy_candidate = false %}
       {% status_code = args.size > 0 ? args[0] : 200 %}
 
       {% for expression in expressions %}
         {% if expression.is_a?(Call) && response_methods.includes?(expression.name.stringify) %}
           {% response_count += 1 %}
+          {% if expression.args.size == 1 && expression.args[0].is_a?(Call) %}
+            {% lazy_candidate = true %}
+          {% end %}
+          {% if expression.named_args.is_a?(ArrayLiteral) %}
+            {% for named_arg in expression.named_args %}
+              {% if named_arg.value.is_a?(Call) %}
+                {% lazy_candidate = true %}
+              {% end %}
+            {% end %}
+          {% end %}
         {% else %}
           {% supported = false %}
         {% end %}
       {% end %}
 
-      {% if supported && response_count > 0 %}
+      {% if supported && response_count > 1 && lazy_candidate %}
         __amber_requested_responses = requested_responses
         __amber_selected_response_type = selected_response_type(
           __amber_requested_responses,
@@ -264,23 +275,21 @@ module Amber::Controller::Helpers
       {% else %}
         {% response_data = args.size > 0 ? args[0] : nil %}
         {% response_status = named_args[:status] || (args.size > 1 ? args[1] : 200) %}
+        {% schema_name = named_args[:schema_name] || (args.size > 2 ? args[2] : nil) %}
 
-        __amber_schema_response_data = {{ response_data }}
-        __amber_schema_response_body = case __amber_schema_response_data
-                                      when NamedTuple
-                                        __amber_schema_response_data.to_h.transform_values { |value| JSON::Any.new(value) }.to_json
-                                      when Hash
-                                        __amber_schema_response_data.to_json
-                                      when Nil
-                                        "{}"
-                                      else
-                                        raise "respond_with only accepts Hash(String, JSON::Any), NamedTuple, or Nil"
-                                      end
-
-        response.status_code = {{ response_status }}
-        response.content_type = "application/json"
-        response.print __amber_schema_response_body
-        response.close
+        respond_with_schema(
+          {% if response_data %}
+            {{ response_data }},
+          {% else %}
+            nil,
+          {% end %}
+          {{ response_status }},
+          {% if schema_name %}
+            {{ schema_name }}
+          {% else %}
+            nil
+          {% end %}
+        )
       {% end %}
     end
 
