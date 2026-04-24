@@ -492,6 +492,42 @@ Useful takeaway:
 - the next benchmark harness should add local HTTP pressure with `oha` before we
   spend another round on helper-level cleanup
 
+### Round 16
+
+- branch base: `experiment/framework-performance-respond-with-round16`
+- note: `benchmarks/FRAMEWORK_PERFORMANCE_ROUND16.md`
+
+Kept:
+
+- focused `respond_with` truth runner
+- expanded responder profile scenarios covering single-format JSON, multi-format
+  HTML/JSON negotiation, wildcard negotiation, extension negotiation, and
+  schema-style NamedTuple response writing
+
+Rejected:
+
+- cached response-key lookup
+- no-array multi-format lookup
+- extension-only lookup rewrite
+- common `Accept` fast path
+- fast selected-response storage
+
+Why:
+
+- each candidate produced at least one encouraging number
+- none improved the core HTML/view and JSON negotiation paths cleanly enough to
+  promote
+- default HTML and HTML `Accept` behavior are too important to risk on a noisy
+  local micro-win
+
+Useful takeaway:
+
+- `respond_with` still has real headroom
+- the next likely win is a lazy or compiled responder design that avoids
+  evaluating non-selected response formats
+- the next validation step should be an HTTP pressure benchmark with real view
+  rendering, not another tiny branch-shaving responder change
+
 ## Recording Rule Going Forward
 
 When a new round lands, append:

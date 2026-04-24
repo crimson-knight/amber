@@ -1,0 +1,423 @@
+{
+  "metadata": {
+    "duration_seconds": 1.5,
+    "repetitions": 5,
+    "base": "c4c997e",
+    "candidate": "common Accept fast path plus fast response store"
+  },
+  "scenarios": {
+    "action_json_respond_with": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 333505,
+          "candidate_iterations": 420163,
+          "ratio": 1.2598401823061123
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 490860,
+          "candidate_iterations": 341566,
+          "ratio": 0.6958521778103737
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 446781,
+          "candidate_iterations": 482234,
+          "ratio": 1.0793520762968882
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 457031,
+          "candidate_iterations": 388237,
+          "ratio": 0.8494762937306222
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 399456,
+          "candidate_iterations": 474439,
+          "ratio": 1.1877127893935753
+        }
+      ],
+      "median_ratio": 1.0793520762968882,
+      "mean_ratio": 1.0144467039075145,
+      "min_ratio": 0.6958521778103737,
+      "max_ratio": 1.2598401823061123,
+      "positive_samples": 3
+    },
+    "action_json_respond_with_no_accept": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 448339,
+          "candidate_iterations": 426869,
+          "ratio": 0.9521121294377692
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 360461,
+          "candidate_iterations": 394784,
+          "ratio": 1.0952197325092035
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 392490,
+          "candidate_iterations": 490632,
+          "ratio": 1.250049682794466
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 458990,
+          "candidate_iterations": 379544,
+          "ratio": 0.8269112616832611
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 427562,
+          "candidate_iterations": 404057,
+          "ratio": 0.945025516767159
+        }
+      ],
+      "median_ratio": 0.9521121294377692,
+      "mean_ratio": 1.0138636646383719,
+      "min_ratio": 0.8269112616832611,
+      "max_ratio": 1.250049682794466,
+      "positive_samples": 2
+    },
+    "action_multi_respond_with_html_default": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 460633,
+          "candidate_iterations": 484989,
+          "ratio": 1.0528750653991354
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 423420,
+          "candidate_iterations": 395937,
+          "ratio": 0.9350928156440413
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 467370,
+          "candidate_iterations": 421280,
+          "ratio": 0.9013843421700152
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 485969,
+          "candidate_iterations": 394025,
+          "ratio": 0.8108027466772572
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 360254,
+          "candidate_iterations": 484955,
+          "ratio": 1.346147440417039
+        }
+      ],
+      "median_ratio": 0.9350928156440413,
+      "mean_ratio": 1.0092604820614977,
+      "min_ratio": 0.8108027466772572,
+      "max_ratio": 1.346147440417039,
+      "positive_samples": 2
+    },
+    "action_multi_respond_with_html_accept": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 497461,
+          "candidate_iterations": 417499,
+          "ratio": 0.8392597610666966
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 482253,
+          "candidate_iterations": 325420,
+          "ratio": 0.674791032922553
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 508328,
+          "candidate_iterations": 483999,
+          "ratio": 0.9521391699847342
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 468745,
+          "candidate_iterations": 352880,
+          "ratio": 0.7528186967327651
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 368469,
+          "candidate_iterations": 468251,
+          "ratio": 1.2708016142470602
+        }
+      ],
+      "median_ratio": 0.8392597610666966,
+      "mean_ratio": 0.8979620549907619,
+      "min_ratio": 0.674791032922553,
+      "max_ratio": 1.2708016142470602,
+      "positive_samples": 1
+    },
+    "action_multi_respond_with_json_accept": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 315014,
+          "candidate_iterations": 386136,
+          "ratio": 1.2257740925800122
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 437581,
+          "candidate_iterations": 383414,
+          "ratio": 0.8762126326325869
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 452400,
+          "candidate_iterations": 420685,
+          "ratio": 0.9298961096374889
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 415454,
+          "candidate_iterations": 470410,
+          "ratio": 1.1322793859247955
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 460725,
+          "candidate_iterations": 418425,
+          "ratio": 0.9081881816701937
+        }
+      ],
+      "median_ratio": 0.9298961096374889,
+      "mean_ratio": 1.0144700804890154,
+      "min_ratio": 0.8762126326325869,
+      "max_ratio": 1.2257740925800122,
+      "positive_samples": 2
+    },
+    "action_multi_respond_with_json_wildcard": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 356075,
+          "candidate_iterations": 361228,
+          "ratio": 1.0144716702941796
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 345018,
+          "candidate_iterations": 390848,
+          "ratio": 1.1328336492588793
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 422809,
+          "candidate_iterations": 427410,
+          "ratio": 1.0108819821716188
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 408240,
+          "candidate_iterations": 318970,
+          "ratio": 0.7813296100333137
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 426548,
+          "candidate_iterations": 402672,
+          "ratio": 0.9440250569689695
+        }
+      ],
+      "median_ratio": 1.0108819821716188,
+      "mean_ratio": 0.9767083937453922,
+      "min_ratio": 0.7813296100333137,
+      "max_ratio": 1.1328336492588793,
+      "positive_samples": 3
+    },
+    "action_multi_respond_with_path_json": {
+      "runs": [
+        {
+          "repetition": 1,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 449816,
+          "candidate_iterations": 344018,
+          "ratio": 0.764797161506038
+        },
+        {
+          "repetition": 2,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 332147,
+          "candidate_iterations": 370109,
+          "ratio": 1.1142927679611738
+        },
+        {
+          "repetition": 3,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 495065,
+          "candidate_iterations": 468016,
+          "ratio": 0.9453627301465464
+        },
+        {
+          "repetition": 4,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "base_iterations": 415606,
+          "candidate_iterations": 378981,
+          "ratio": 0.9118756707073526
+        },
+        {
+          "repetition": 5,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base_iterations": 418967,
+          "candidate_iterations": 410388,
+          "ratio": 0.979523446954056
+        }
+      ],
+      "median_ratio": 0.9453627301465464,
+      "mean_ratio": 0.9431703554550334,
+      "min_ratio": 0.764797161506038,
+      "max_ratio": 1.1142927679611738,
+      "positive_samples": 1
+    }
+  }
+}
