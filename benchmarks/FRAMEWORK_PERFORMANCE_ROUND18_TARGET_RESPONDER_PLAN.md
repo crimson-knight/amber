@@ -240,35 +240,62 @@ Added a standalone precision-path probe:
 
 - `benchmarks/precision_route_slot_probe.cr`
 - `benchmarks/results/precision_route_slot_probe_round18.json`
+- `benchmarks/results/lazy_route_param_storage_round18_spotcheck.json`
 
-The probe compares the current Amber route tree matcher with a deliberately
-specialized route branch that scans the request path and writes param spans into
-a reusable bounded slot. This models a future generated-router path for known
-hot routes.
+The probe compares the current Amber route tree matcher with two precision
+ideas:
+
+- a compatibility-safe production candidate that stores the first routed param
+  without materializing a `Hash`
+- a deliberately specialized route branch that scans the request path and writes
+  param spans into a reusable bounded slot
+
+The bounded slot models a future generated-router path for known hot routes.
 
 Verified with release builds on both compilers:
 
 - `crystal build --release benchmarks/precision_route_slot_probe.cr`
 - `acrystal build --release benchmarks/precision_route_slot_probe.cr`
 
-Results with 1,000 routes and a dynamic route `/bench/users/:id/details`:
+Results after the lazy first-param storage candidate, with 1,000 routes and a
+dynamic route `/bench/users/:id/details`:
 
 | Compiler | Scenario | IPS | Bytes/iteration | Ratio |
 | --- | ---: | ---: | ---: | ---: |
-| `crystal` | current Amber match | `4.44M` | `432` | `1.00x` |
-| `crystal` | slot match, no param materialization | `59.24M` | `0` | `13.35x` |
-| `crystal` | slot param size, no string materialization | `59.17M` | `0` | `13.75x` |
-| `crystal` | slot param value, lazy string materialization | `51.31M` | `16` | `11.92x` |
-| `acrystal` | current Amber match | `4.43M` | `432` | `1.00x` |
-| `acrystal` | slot match, no param materialization | `59.17M` | `0` | `13.35x` |
-| `acrystal` | slot param size, no string materialization | `58.96M` | `0` | `13.78x` |
-| `acrystal` | slot param value, lazy string materialization | `51.11M` | `16` | `11.95x` |
+| `crystal` | current Amber match | `5.46M` | `272` | `1.00x` |
+| `crystal` | current Amber direct param lookup | `5.37M` | `272` | `1.00x` |
+| `crystal` | current Amber full params hash | `4.20M` | `448` | watch |
+| `crystal` | slot match, no param materialization | `59.35M` | `0` | `10.87x` |
+| `crystal` | slot param size, no string materialization | `54.45M` | `0` | `10.14x` |
+| `crystal` | slot param value, lazy string materialization | `51.22M` | `16` | `9.54x` |
+| `acrystal` | current Amber match | `5.48M` | `272` | `1.00x` |
+| `acrystal` | current Amber direct param lookup | `5.47M` | `272` | `1.00x` |
+| `acrystal` | current Amber full params hash | `4.26M` | `448` | watch |
+| `acrystal` | slot match, no param materialization | `58.95M` | `0` | `10.76x` |
+| `acrystal` | slot param size, no string materialization | `59.36M` | `0` | `10.86x` |
+| `acrystal` | slot param value, lazy string materialization | `51.89M` | `16` | `9.49x` |
 
 This does not mean the production router gets a free 13x win. It means the
-precision direction is real: the current matcher pays about 432 allocated bytes
-per dynamic match in this probe, while a bounded slot can match and inspect a
-param without allocating at all.
+precision direction is real. The first production candidate cuts the current
+dynamic route match from about 432 allocated bytes to about 272 bytes when the
+full params hash is not forced. A bounded generated slot can still match and
+inspect a param without allocating at all.
 
-Actionable next step: prototype a generated precision route path behind an
+Actionable next step: keep the lazy first-param storage if broader benchmarks do
+not show regressions, then prototype a generated precision route path behind an
 opt-in compile flag, probably for explicitly marked hot routes first. The
 compatibility path remains the existing router.
+
+Framework harness spot-check against the checkpoint before lazy first-param
+storage:
+
+| Scenario | Before median | Current median | Ratio |
+| --- | ---: | ---: | ---: |
+| route + query dispatch | `451,562` | `556,280` | `1.2319x` |
+| query params lookup | `2,800,128` | `2,834,285` | `1.0122x` |
+| query params action | `599,479` | `618,643` | `1.0320x` |
+
+This is a keeper candidate, pending the full framework truth round. The full
+`result.params` materialization path is now slightly heavier, so the production
+path should prefer direct routed-param lookup and only materialize the full Hash
+when user code explicitly asks for it.

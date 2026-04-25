@@ -3,16 +3,28 @@ module Amber::Router
     include Comparable(RoutedResult)
 
     @params : Hash(String, String)?
+    @param_key : String?
+    @param_value : String?
 
     def initialize(@terminal_segment : TerminalSegment(T)?)
     end
 
     def params : Hash(String, String)
-      @params ||= {} of String => String
+      @params ||= begin
+        params = {} of String => String
+        if key = @param_key
+          params[key] = @param_value.not_nil!
+        end
+        params
+      end
     end
 
     def []?(key : String) : String?
-      @params.try &.[key]?
+      if params = @params
+        params[key]?
+      elsif @param_key == key
+        @param_value
+      end
     end
 
     def [](key : String) : String
@@ -20,7 +32,21 @@ module Amber::Router
     end
 
     def []=(key : String, value : String) : String
-      params[key] = value
+      if params = @params
+        params[key] = value
+      elsif stored_key = @param_key
+        if stored_key == key
+          @param_value = value
+        else
+          materialized_params = self.params
+          materialized_params[key] = value
+        end
+      else
+        @param_key = key
+        @param_value = value
+      end
+
+      value
     end
 
     def terminal_segment

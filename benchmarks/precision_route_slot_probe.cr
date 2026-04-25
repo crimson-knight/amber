@@ -150,6 +150,11 @@ module AmberPrecisionRouteSlotProbe
                      result = router.find_experimental_best(TARGET_PATH)
                      consume(result.params["id"].bytesize)
                    end
+                 when "amber_best_param_lookup"
+                   run_for(duration_seconds) do
+                     result = router.find_experimental_best(TARGET_PATH)
+                     consume(result["id"]?.not_nil!.bytesize)
+                   end
                  when "slot_match"
                    run_for(duration_seconds) do
                      matcher.match(TARGET_PATH, slot)
@@ -190,7 +195,7 @@ route_count = 1_000
 OptionParser.parse do |parser|
   parser.banner = "Usage: crystal run benchmarks/precision_route_slot_probe.cr -- [options]"
 
-  parser.on("--scenario=NAME", "Scenario: amber_best, amber_best_param, slot_match, slot_param_size, slot_param_value") do |value|
+  parser.on("--scenario=NAME", "Scenario: amber_best, amber_best_param, amber_best_param_lookup, slot_match, slot_param_size, slot_param_value") do |value|
     scenario = value
   end
 

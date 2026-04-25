@@ -1,0 +1,36 @@
+{
+  "date": "2026-04-25",
+  "branch": "experiment/framework-performance-target-aware-respond-with-round18",
+  "candidate_commit": "pending at measurement time",
+  "base_commit": "4dca879",
+  "compiler": "Crystal 1.20.0 (2026-04-16)",
+  "duration_seconds": 2.0,
+  "notes": [
+    "Spot-check compares the checkpoint immediately before lazy first-param storage against the current worktree.",
+    "Runs were alternated before/current to reduce ordering bias.",
+    "This is not a full truth-round replacement; it is a confidence check before keeping the production candidate."
+  ],
+  "scenarios": {
+    "dispatch_route_query_params": {
+      "before_iterations": [429144, 451562, 558139],
+      "current_iterations": [576040, 556280, 538330],
+      "before_median": 451562,
+      "current_median": 556280,
+      "median_ratio": 1.2319
+    },
+    "params_lookup_query": {
+      "before_iterations": [2926266, 2800128, 2723426],
+      "current_iterations": [2846136, 2802895, 2834285],
+      "before_median": 2800128,
+      "current_median": 2834285,
+      "median_ratio": 1.0122
+    },
+    "action_query_params": {
+      "before_iterations": [599479, 589203, 616895],
+      "current_iterations": [485748, 635834, 618643],
+      "before_median": 599479,
+      "current_median": 618643,
+      "median_ratio": 1.032
+    }
+  }
+}

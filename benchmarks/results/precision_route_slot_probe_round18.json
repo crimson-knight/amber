@@ -6,7 +6,8 @@
   "duration_seconds": 2.0,
   "notes": [
     "This is a precision-path probe, not a production router replacement.",
-    "The candidate models a compiled route branch writing param spans into a bounded reusable slot.",
+    "The production candidate stores the first routed param without materializing a Hash.",
+    "The generated-slot candidate models a compiled route branch writing param spans into a bounded reusable slot.",
     "The slot_param_size scenario reads a route param length without materializing a String.",
     "The slot_param_value scenario materializes the param String lazily."
   ],
@@ -14,37 +15,45 @@
     "version": "Crystal 1.20.0 (2026-04-16)",
     "scenarios": {
       "amber_best": {
-        "iterations": 8875761,
-        "ips": 4437880.5,
-        "allocated_bytes": 3834332544,
-        "bytes_per_iteration": 432.0004272309721
+        "iterations": 10922793,
+        "ips": 5461396.5,
+        "allocated_bytes": 2971004992,
+        "bytes_per_iteration": 272.0004848576733
       },
       "amber_best_param": {
-        "iterations": 8606258,
-        "ips": 4303129.0,
-        "allocated_bytes": 3717909616,
-        "bytes_per_iteration": 432.0007157582308
+        "iterations": 8401268,
+        "ips": 4200634.0,
+        "allocated_bytes": 3763770320,
+        "bytes_per_iteration": 448.0002685308932,
+        "notes": "Forces full Hash materialization through result.params."
+      },
+      "amber_best_param_lookup": {
+        "iterations": 10741218,
+        "ips": 5370609.0,
+        "allocated_bytes": 2921617056,
+        "bytes_per_iteration": 272.000536252034,
+        "notes": "Uses direct routed param lookup without forcing result.params Hash materialization."
       },
       "slot_match": {
-        "iterations": 118480834,
-        "ips": 59240417.0,
+        "iterations": 118706639,
+        "ips": 59353319.5,
         "allocated_bytes": 0,
         "bytes_per_iteration": 0.0,
-        "ratio_vs_amber_best": 13.35
+        "ratio_vs_amber_best": 10.87
       },
       "slot_param_size": {
-        "iterations": 118338493,
-        "ips": 59169246.5,
+        "iterations": 108902289,
+        "ips": 54451144.5,
         "allocated_bytes": 0,
         "bytes_per_iteration": 0.0,
-        "ratio_vs_amber_best_param": 13.75
+        "ratio_vs_amber_best_param_lookup": 10.14
       },
       "slot_param_value": {
-        "iterations": 102619115,
-        "ips": 51309557.5,
-        "allocated_bytes": 1641907952,
-        "bytes_per_iteration": 16.000020580960964,
-        "ratio_vs_amber_best_param": 11.92
+        "iterations": 102439102,
+        "ips": 51219551.0,
+        "allocated_bytes": 1639028816,
+        "bytes_per_iteration": 16.000031081881215,
+        "ratio_vs_amber_best_param_lookup": 9.54
       }
     }
   },
@@ -52,37 +61,45 @@
     "version": "Crystal 1.20.0-dev (2026-02-18)",
     "scenarios": {
       "amber_best": {
-        "iterations": 8865678,
-        "ips": 4432839.0,
-        "allocated_bytes": 3829975584,
-        "bytes_per_iteration": 432.00030319170173
+        "iterations": 10952542,
+        "ips": 5476271.0,
+        "allocated_bytes": 2979095936,
+        "bytes_per_iteration": 272.0004119591598
       },
       "amber_best_param": {
-        "iterations": 8555064,
-        "ips": 4277532.0,
-        "allocated_bytes": 3695789728,
-        "bytes_per_iteration": 432.0002431308521
+        "iterations": 8515825,
+        "ips": 4257912.5,
+        "allocated_bytes": 3815098000,
+        "bytes_per_iteration": 448.0009863988515,
+        "notes": "Forces full Hash materialization through result.params."
+      },
+      "amber_best_param_lookup": {
+        "iterations": 10935259,
+        "ips": 5467629.5,
+        "allocated_bytes": 2974395312,
+        "bytes_per_iteration": 272.00044479970705,
+        "notes": "Uses direct routed param lookup without forcing result.params Hash materialization."
       },
       "slot_match": {
-        "iterations": 118331451,
-        "ips": 59165725.5,
+        "iterations": 117894173,
+        "ips": 58947086.5,
         "allocated_bytes": 0,
         "bytes_per_iteration": 0.0,
-        "ratio_vs_amber_best": 13.35
+        "ratio_vs_amber_best": 10.76
       },
       "slot_param_size": {
-        "iterations": 117926810,
-        "ips": 58963405.0,
+        "iterations": 118726513,
+        "ips": 59363256.5,
         "allocated_bytes": 0,
         "bytes_per_iteration": 0.0,
-        "ratio_vs_amber_best_param": 13.78
+        "ratio_vs_amber_best_param_lookup": 10.86
       },
       "slot_param_value": {
-        "iterations": 102224524,
-        "ips": 51112262.0,
-        "allocated_bytes": 1635596464,
-        "bytes_per_iteration": 16.00003991214476,
-        "ratio_vs_amber_best_param": 11.95
+        "iterations": 103775217,
+        "ips": 51887608.5,
+        "allocated_bytes": 1660405360,
+        "bytes_per_iteration": 16.000018193168412,
+        "ratio_vs_amber_best_param_lookup": 9.49
       }
     }
   }

@@ -55,8 +55,8 @@ module Amber::Router
     def []?(key : String)
       _key = key
 
-      if resolved_route = route_if_resolved
-        if value = resolved_route[_key]?
+      if route_resolved?
+        if value = route_lookup(_key)
           return value
         end
       end
@@ -221,21 +221,18 @@ module Amber::Router
       end
     end
 
-    private def route_if_resolved
-      return @route if @route_loaded
-      return unless @request.matched_route_resolved?
-
-      @route = @request.matched_route.params
-      @route_loaded = true
-      @route
-    end
-
     private def route_lookup(key : String)
-      if resolved_route = route_if_resolved
-        resolved_route[key]?
+      if @route_loaded
+        @route.not_nil![key]?
+      elsif @request.matched_route_resolved?
+        @request.matched_route[key]?
       else
         route[key]?
       end
+    end
+
+    private def route_resolved?
+      @route_loaded || @request.matched_route_resolved?
     end
 
     private def body_source
