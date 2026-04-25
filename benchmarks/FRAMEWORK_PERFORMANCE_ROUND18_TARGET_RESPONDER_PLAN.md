@@ -39,6 +39,22 @@ That gives us both properties we want:
 - precompiled structure: the binary already knows which responder branches exist
 - lazy execution: expensive view/render/build work happens only after selection
 
+The same principle should apply outside `respond_with`. Amber should have a
+precision profile where compile-time knowledge removes runtime generality:
+
+- known compile target removes unrelated render/presentation systems
+- known route table enables generated matchers for hot/static routes
+- known maximum request concurrency enables bounded reusable request scratch
+  slots
+- known params schema enables fixed validation plans and lazy param
+  materialization
+- known response shape enables direct IO writes or reused builders instead of
+  short-lived strings
+
+The goal is not cleverness. The goal is to make hot paths boring enough that
+LLVM can turn them into straight-line code with predictable branches and little
+or no GC traffic.
+
 ## Compile Targets
 
 Round 18 should introduce explicit compile-time target flags. Candidate flags:
@@ -123,6 +139,10 @@ Do not promote this architecture until these pass on both stock `crystal` and
 - Expensive skipped branches remain faster than runtime branch construction.
 - A target-pruned multi-branch responder shows less allocation/CPU cost than an
   equivalent runtime target switch.
+- Precision candidates report both throughput and GC allocation deltas.
+- Winning precision candidates get a source-level benchmark first, then an
+  optional `--emit llvm-ir` or `--emit asm` inspection when the source benchmark
+  shows a real win.
 
 ## Benchmark Shape
 
@@ -144,6 +164,15 @@ The mixed responder benchmark should report:
 
 That lets us answer whether the new architecture stacks on top of Round 17 or
 only moves complexity around.
+
+The precision benchmark lane should report:
+
+- current Amber implementation
+- precision/generated candidate
+- selected branch without materializing params
+- selected branch with lazy param materialization
+- allocated bytes per iteration
+- stock `crystal` and `acrystal` results
 
 ## Implementation Plan
 
@@ -167,6 +196,8 @@ only moves complexity around.
 - Do not require `acrystal`-only macro behavior.
 - Do not disable or manually control the GC per request; prefer not allocating
   unused branch bodies in the first place.
+- Do not reach for LLVM intrinsics before the Crystal source-level shape proves
+  there is a real hot path. First make the code easy for LLVM to optimize.
 
 ## Current Verdict
 
@@ -202,3 +233,42 @@ Results:
 
 This confirms the core mechanism is compatible with stock Crystal and `acrystal`:
 compile-time target pruning plus lazy selected branch execution is viable.
+
+## Second Proof Checkpoint: Bounded Route Slot
+
+Added a standalone precision-path probe:
+
+- `benchmarks/precision_route_slot_probe.cr`
+- `benchmarks/results/precision_route_slot_probe_round18.json`
+
+The probe compares the current Amber route tree matcher with a deliberately
+specialized route branch that scans the request path and writes param spans into
+a reusable bounded slot. This models a future generated-router path for known
+hot routes.
+
+Verified with release builds on both compilers:
+
+- `crystal build --release benchmarks/precision_route_slot_probe.cr`
+- `acrystal build --release benchmarks/precision_route_slot_probe.cr`
+
+Results with 1,000 routes and a dynamic route `/bench/users/:id/details`:
+
+| Compiler | Scenario | IPS | Bytes/iteration | Ratio |
+| --- | ---: | ---: | ---: | ---: |
+| `crystal` | current Amber match | `4.44M` | `432` | `1.00x` |
+| `crystal` | slot match, no param materialization | `59.24M` | `0` | `13.35x` |
+| `crystal` | slot param size, no string materialization | `59.17M` | `0` | `13.75x` |
+| `crystal` | slot param value, lazy string materialization | `51.31M` | `16` | `11.92x` |
+| `acrystal` | current Amber match | `4.43M` | `432` | `1.00x` |
+| `acrystal` | slot match, no param materialization | `59.17M` | `0` | `13.35x` |
+| `acrystal` | slot param size, no string materialization | `58.96M` | `0` | `13.78x` |
+| `acrystal` | slot param value, lazy string materialization | `51.11M` | `16` | `11.95x` |
+
+This does not mean the production router gets a free 13x win. It means the
+precision direction is real: the current matcher pays about 432 allocated bytes
+per dynamic match in this probe, while a bounded slot can match and inspect a
+param without allocating at all.
+
+Actionable next step: prototype a generated precision route path behind an
+opt-in compile flag, probably for explicitly marked hot routes first. The
+compatibility path remains the existing router.

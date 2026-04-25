@@ -1,0 +1,89 @@
+{
+  "date": "2026-04-25",
+  "branch": "experiment/framework-performance-target-aware-respond-with-round18",
+  "benchmark": "benchmarks/precision_route_slot_probe.cr",
+  "route_count": 1000,
+  "duration_seconds": 2.0,
+  "notes": [
+    "This is a precision-path probe, not a production router replacement.",
+    "The candidate models a compiled route branch writing param spans into a bounded reusable slot.",
+    "The slot_param_size scenario reads a route param length without materializing a String.",
+    "The slot_param_value scenario materializes the param String lazily."
+  ],
+  "crystal": {
+    "version": "Crystal 1.20.0 (2026-04-16)",
+    "scenarios": {
+      "amber_best": {
+        "iterations": 8875761,
+        "ips": 4437880.5,
+        "allocated_bytes": 3834332544,
+        "bytes_per_iteration": 432.0004272309721
+      },
+      "amber_best_param": {
+        "iterations": 8606258,
+        "ips": 4303129.0,
+        "allocated_bytes": 3717909616,
+        "bytes_per_iteration": 432.0007157582308
+      },
+      "slot_match": {
+        "iterations": 118480834,
+        "ips": 59240417.0,
+        "allocated_bytes": 0,
+        "bytes_per_iteration": 0.0,
+        "ratio_vs_amber_best": 13.35
+      },
+      "slot_param_size": {
+        "iterations": 118338493,
+        "ips": 59169246.5,
+        "allocated_bytes": 0,
+        "bytes_per_iteration": 0.0,
+        "ratio_vs_amber_best_param": 13.75
+      },
+      "slot_param_value": {
+        "iterations": 102619115,
+        "ips": 51309557.5,
+        "allocated_bytes": 1641907952,
+        "bytes_per_iteration": 16.000020580960964,
+        "ratio_vs_amber_best_param": 11.92
+      }
+    }
+  },
+  "acrystal": {
+    "version": "Crystal 1.20.0-dev (2026-02-18)",
+    "scenarios": {
+      "amber_best": {
+        "iterations": 8865678,
+        "ips": 4432839.0,
+        "allocated_bytes": 3829975584,
+        "bytes_per_iteration": 432.00030319170173
+      },
+      "amber_best_param": {
+        "iterations": 8555064,
+        "ips": 4277532.0,
+        "allocated_bytes": 3695789728,
+        "bytes_per_iteration": 432.0002431308521
+      },
+      "slot_match": {
+        "iterations": 118331451,
+        "ips": 59165725.5,
+        "allocated_bytes": 0,
+        "bytes_per_iteration": 0.0,
+        "ratio_vs_amber_best": 13.35
+      },
+      "slot_param_size": {
+        "iterations": 117926810,
+        "ips": 58963405.0,
+        "allocated_bytes": 0,
+        "bytes_per_iteration": 0.0,
+        "ratio_vs_amber_best_param": 13.78
+      },
+      "slot_param_value": {
+        "iterations": 102224524,
+        "ips": 51112262.0,
+        "allocated_bytes": 1635596464,
+        "bytes_per_iteration": 16.00003991214476,
+        "ratio_vs_amber_best_param": 11.95
+      }
+    }
+  }
+}
