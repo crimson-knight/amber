@@ -34,8 +34,10 @@ module Amber::Configuration
     property secrets : Hash(String, String) = {} of String => String
 
     # Custom configuration sections loaded at runtime.
+    # Stored as raw YAML to avoid broad YAML::Serializable unions pulling
+    # application model types into Amber configuration deserialization.
     @[YAML::Field(ignore: true)]
-    property custom_configs : Hash(String, YAML::Serializable) = {} of String => YAML::Serializable
+    property custom_configs : Hash(String, String) = {} of String => String
 
     def initialize
     end
@@ -49,7 +51,16 @@ module Amber::Configuration
     # stripe.api_key # => "sk_test_..."
     # ```
     def custom(key : Symbol, type : T.class) : T forall T
-      custom_configs[key.to_s].as(T)
+      key_name = key.to_s
+      if yaml = custom_configs[key_name]?
+        return T.from_yaml(yaml)
+      end
+
+      if default = Amber::Configuration.custom_config_defaults[key_name]?
+        return default.as(T)
+      end
+
+      raise "Custom config #{key} is not registered"
     end
 
     # Run validation on all subsystem configurations.

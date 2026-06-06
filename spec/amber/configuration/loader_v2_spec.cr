@@ -1,5 +1,15 @@
 require "../../spec_helper"
 
+class LoaderCustomConfig
+  include YAML::Serializable
+
+  property api_key : String = ""
+  property timeout : Int32 = 30
+
+  def initialize
+  end
+end
+
 module Amber::Environment
   describe Loader do
     Dir.cd CURRENT_DIR
@@ -86,6 +96,31 @@ module Amber::Environment
         settings.session[:key].should eq "amber.session"
         settings.session[:store].should eq :signed_cookie
         settings.pubsub[:adapter].should eq "memory"
+      end
+
+      it "loads custom config sections lazily by concrete type" do
+        Amber::Configuration.register_custom("spec_loader_custom", LoaderCustomConfig.new)
+        dir = File.tempname("amber-loader-custom")
+        config_path = File.join(dir, "custom_loader.yml")
+        Dir.mkdir_p(dir)
+        File.write(config_path, <<-YAML)
+        name: custom_loader_app
+        server:
+          secret_key_base: "a-very-long-secret-key-that-is-at-least-32-chars"
+        spec_loader_custom:
+          api_key: "loader-key"
+          timeout: 75
+        YAML
+
+        loader = Loader.new(:custom_loader, dir)
+        settings = loader.settings
+
+        custom = settings.custom(:spec_loader_custom, LoaderCustomConfig)
+        custom.api_key.should eq "loader-key"
+        custom.timeout.should eq 75
+      ensure
+        File.delete(config_path) if config_path && File.exists?(config_path)
+        Dir.delete(dir) if dir && Dir.exists?(dir)
       end
     end
 
