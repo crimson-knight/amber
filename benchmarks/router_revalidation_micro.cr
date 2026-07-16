@@ -87,6 +87,34 @@ module Amber::Benchmarks::RouterRevalidationMicro
     sink
   end
 
+  private def run_span(router : Router, traffic : Array(RouterRevalidation::TrafficRequest), operations : Int64, include_params : Bool) : Int32
+    mask = traffic.size - 1
+    index = 0_i64
+    sink = 0
+
+    while index < operations
+      request = traffic[(index & mask).to_i]
+      sink &+= consume_result(router.find_span(request.path), request, include_params)
+      index += 1
+    end
+
+    sink
+  end
+
+  private def run_span_root(router : Router, traffic : Array(RouterRevalidation::TrafficRequest), operations : Int64, include_params : Bool) : Int32
+    mask = traffic.size - 1
+    index = 0_i64
+    sink = 0
+
+    while index < operations
+      request = traffic[(index & mask).to_i]
+      sink &+= consume_result(router.find_span("get", request.resource), request, include_params)
+      index += 1
+    end
+
+    sink
+  end
+
   private def measure(tier : Int32, strategy : String, workload : String, operations : Int64, warmup_operations : Int64, &run : Int64 -> Int32) : Measurement
     yield warmup_operations
     GC.collect
@@ -110,6 +138,25 @@ module Amber::Benchmarks::RouterRevalidationMicro
     }
   end
 
+  private def verify_equivalence(router : Router, traffic : Array(RouterRevalidation::TrafficRequest)) : Nil
+    traffic.each do |request|
+      current = router.find(request.path)
+
+      {
+        "best_find"      => router.find_best(request.path),
+        "best_root_find" => router.find_best("get", request.resource),
+        "span_find"      => router.find_span(request.path),
+        "span_root_find" => router.find_span("get", request.resource),
+      }.each do |strategy, candidate|
+        next if candidate.found? == current.found? &&
+                candidate.payload? == current.payload? &&
+                candidate.params == current.params
+
+        raise "#{strategy} diverged for #{request.path}: expected #{current.payload?} #{current.params}, got #{candidate.payload?} #{candidate.params}"
+      end
+    end
+  end
+
   def run(tiers : Array(Int32), operations : Int64, warmup_operations : Int64, output_path : String) : Nil
     measurements = [] of Measurement
 
@@ -117,6 +164,7 @@ module Amber::Benchmarks::RouterRevalidationMicro
       definitions = RouterRevalidation.generate_routes(tier)
       traffic = RouterRevalidation.generate_traffic(definitions)
       router = build_router(definitions)
+      verify_equivalence(router, traffic)
 
       {false, true}.each do |include_params|
         workload = include_params ? "mixed_dispatch_with_params" : "mixed_dispatch"
@@ -125,6 +173,8 @@ module Amber::Benchmarks::RouterRevalidationMicro
           "current_find"   => ->(count : Int64) { run_current(router, traffic, count, include_params) },
           "best_find"      => ->(count : Int64) { run_best(router, traffic, count, include_params) },
           "best_root_find" => ->(count : Int64) { run_best_root(router, traffic, count, include_params) },
+          "span_find"      => ->(count : Int64) { run_span(router, traffic, count, include_params) },
+          "span_root_find" => ->(count : Int64) { run_span_root(router, traffic, count, include_params) },
         }.each do |strategy, runner|
           measurement = measure(tier, strategy, workload, operations, warmup_operations) do |count|
             runner.call(count)
