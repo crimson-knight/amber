@@ -25,9 +25,11 @@ module Amber::Benchmarks::RouterRevalidation
 
   struct TrafficRequest
     getter path : String
+    getter resource : String
     getter kind : Symbol
 
     def initialize(@path, @kind)
+      @resource = path.byte_slice(3, path.bytesize - 3)
     end
   end
 
