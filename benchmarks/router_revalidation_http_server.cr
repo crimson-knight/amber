@@ -18,7 +18,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
   class Controller < Amber::Controller::Base
     def static_response
       exercise_optional_params
-      set_response(STATIC_BODY, 200, CONTENT_JSON)
+      render_json(STATIC_BODY)
     end
 
     def dynamic_response
@@ -29,7 +29,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
         id.to_json(io)
         io << '}'
       end
-      set_response(body, 200, CONTENT_JSON)
+      render_json(body)
     end
 
     def nested_response
@@ -43,7 +43,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
         child_id.to_json(io)
         io << '}'
       end
-      set_response(body, 200, CONTENT_JSON)
+      render_json(body)
     end
 
     def glob_response
@@ -54,13 +54,23 @@ module Amber::Benchmarks::RouterRevalidationHTTP
         path.to_json(io)
         io << '}'
       end
-      set_response(body, 200, CONTENT_JSON)
+      render_json(body)
     end
 
     private def exercise_optional_params : Nil
       {% if flag?(:amber_bench_optional_params) %}
         params["include"]?
         params["missing_optional"]?
+      {% end %}
+    end
+
+    private def render_json(body : String)
+      {% if flag?(:amber_bench_respond_with) %}
+        respond_with do
+          json body
+        end
+      {% else %}
+        set_response(body, 200, CONTENT_JSON)
       {% end %}
     end
   end
