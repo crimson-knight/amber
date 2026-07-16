@@ -4,6 +4,7 @@ private def expect_same_best_match(router, path : String)
   current = router.find(path)
   candidate = router.find_best(path)
   span_candidate = router.find_span(path)
+  root_span_candidate = router.find_span("get", path.lchop("/get"))
 
   candidate.found?.should eq(current.found?)
   candidate.payload?.should eq(current.payload?)
@@ -11,6 +12,9 @@ private def expect_same_best_match(router, path : String)
   span_candidate.found?.should eq(current.found?)
   span_candidate.payload?.should eq(current.payload?)
   span_candidate.params.should eq(current.params)
+  root_span_candidate.found?.should eq(current.found?)
+  root_span_candidate.payload?.should eq(current.payload?)
+  root_span_candidate.params.should eq(current.params)
 end
 
 describe "best-match routing" do
