@@ -12,6 +12,7 @@ This pass produced a real framework improvement, not just a faster toy matcher.
 - The same parsed-HTTP benchmark through `respond_with` improved from **452K to 728K requests/second**, or **61.3%**, while allocation fell **47.5%**.
 - A real Amber server driven through localhost TCP improved **3.2% at one connection** and **6.5% at 50 connections** for direct JSON responses.
 - The real server through `respond_with` improved **6.6% at one connection** and **12.2% at 50 connections**. At 50 connections, p99 latency fell **16.8%**.
+- The final default build passes **2,324 specs on stock Crystal and 2,324 specs on `acrystal`**, both with zero failures and zero errors.
 
 `1.33x` means 33% faster than the baseline. It does not mean 133% faster. A `4x` result means four times the throughput, or 300% more throughput than the baseline.
 
@@ -91,6 +92,18 @@ The accepted path is intentionally less clever than several rejected prototypes.
 
 `respond_with` remains compile-time aware: unused response formats do not occupy runtime slots, declaration order is retained, and only the selected response block executes. The optimized web path does not remove future native response targets; the macro can still discard formats that are not present in a given build target.
 
+## Compatibility gate
+
+The final source was validated without benchmark-only flags:
+
+| Compiler/path | Result |
+| --- | --- |
+| Homebrew Crystal 1.20.3, default optimized path | 2,324 examples, 0 failures, 0 errors |
+| `acrystal` 1.20.0-dev `[6636853e8]`, default optimized path | 2,324 examples, 0 failures, 0 errors |
+| Homebrew Crystal 1.20.3, `-Damber_router_legacy_match` router suite | 276 examples, 0 failures, 0 errors |
+
+Both compilers use LLVM 22.1.8 on this host. The legacy flag is an escape hatch, not a requirement for normal applications.
+
 ## Ideas we rejected
 
 A useful result of this round is knowing which attractive ideas do not survive a complete request benchmark.
@@ -109,7 +122,7 @@ This is why the final implementation uses a compact general matcher rather than 
 
 ## Reproduce it
 
-The original source baseline is `9f43742`. Branch `experiment/router-performance-revalidation-round19-baseline-harness` adds benchmark code only through `785baf4`; it does not contain the production optimizations. The optimized branch is `experiment/router-performance-revalidation-round19` at `1ff27bc` plus this report commit.
+The original source baseline is `9f43742`. Branch `experiment/router-performance-revalidation-round19-baseline-harness` adds benchmark code only through `785baf4`; it does not contain the production optimizations. The optimized production endpoint is `1ff27bc`, and its evidence package is checkpointed at `f9b0cb2`.
 
 Build and run the matcher matrix from the optimized worktree:
 

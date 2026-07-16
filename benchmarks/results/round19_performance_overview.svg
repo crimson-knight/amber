@@ -51,6 +51,8 @@
     <text x="285" y="22" text-anchor="middle" class="card-label">ACRYSTAL VERIFIED</text>
     <rect x="382" width="174" height="34" rx="17" fill="#fffdf8" stroke="#d9cbb8"/>
     <text x="469" y="22" text-anchor="middle" class="card-label">ALL HTTP 200</text>
+    <rect x="568" width="174" height="34" rx="17" fill="#fffdf8" stroke="#d9cbb8"/>
+    <text x="655" y="22" text-anchor="middle" class="card-label">2,324 SPECS X 2</text>
   </g>
 
   <rect x="48" y="238" width="798" height="492" rx="26" fill="#fffdf9" opacity="0.92" filter="url(#shadow)"/>
