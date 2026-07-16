@@ -72,10 +72,10 @@ module Amber
 
       def match(http_verb, resource) : RoutedResult(Route)
         if has_content_ext(resource)
-          result = @routes.find build_node(http_verb, resource.sub(PATH_EXT_REGEX, ""))
+          result = find_route(build_node(http_verb, resource.sub(PATH_EXT_REGEX, "")))
           return result if result.found?
         end
-        @routes.find build_node(http_verb, resource)
+        find_route(build_node(http_verb, resource))
       end
 
       # Returns all registered routes as RouteInfo structs for introspection.
@@ -129,6 +129,14 @@ module Amber
 
       private def build_node(http_verb : Symbol | String, resource : String)
         "#{http_verb.to_s.downcase}#{resource}"
+      end
+
+      private def find_route(path : String) : RoutedResult(Route)
+        {% if flag?(:amber_router_best_match) %}
+          @routes.find_best(path)
+        {% else %}
+          @routes.find(path)
+        {% end %}
       end
 
       private def has_content_ext(str)

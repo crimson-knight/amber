@@ -7,6 +7,11 @@ module Amber::Benchmarks::RouterRevalidationHTTP
 
   CONTENT_JSON = "application/json; charset=utf-8"
   STATIC_BODY  = %({"status":"ok","framework":"amber","route":"static"})
+  STRATEGY     = {% if flag?(:amber_router_best_match) %}
+                   "best_match"
+                 {% else %}
+                   "current_match"
+                 {% end %}
 
   class Controller < Amber::Controller::Base
     def static_response
@@ -79,7 +84,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
   end
 
   def write_urls(path : String, definitions : Array(RouterRevalidation::RouteDefinition), host : String, port : Int32) : Nil
-    traffic = RouterRevalidation.generate_traffic(definitions)
+    traffic = RouterRevalidation.generate_traffic(definitions, include_misses: false)
     File.open(path, "w") do |file|
       traffic.each_with_index do |request, index|
         resource = request.path.lchop("get")
@@ -100,7 +105,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
 
     Signal::INT.trap { server.close }
     Signal::TERM.trap { server.close }
-    puts "READY host=#{host} port=#{port} routes=#{route_count} compiler=#{Crystal::DESCRIPTION}"
+    puts "READY host=#{host} port=#{port} routes=#{route_count} strategy=#{STRATEGY} compiler=#{Crystal::DESCRIPTION}"
     STDOUT.flush
     server.listen
   end

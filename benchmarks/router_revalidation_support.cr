@@ -85,7 +85,7 @@ module Amber::Benchmarks::RouterRevalidation
     routes
   end
 
-  def self.generate_traffic(routes : Array(RouteDefinition), size = 4096) : Array(TrafficRequest)
+  def self.generate_traffic(routes : Array(RouteDefinition), size = 4096, include_misses = true) : Array(TrafficRequest)
     grouped = routes.group_by(&.kind)
     traffic = Array(TrafficRequest).new(size)
 
@@ -97,7 +97,7 @@ module Amber::Benchmarks::RouterRevalidation
              when 85..89 then :nested
              when 90..94 then :constrained
              when 95..97 then :glob
-             else             :notfound
+             else             include_misses ? :notfound : :static
              end
 
       if kind == :notfound
