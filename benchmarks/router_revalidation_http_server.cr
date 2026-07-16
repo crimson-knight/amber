@@ -17,10 +17,12 @@ module Amber::Benchmarks::RouterRevalidationHTTP
 
   class Controller < Amber::Controller::Base
     def static_response
+      exercise_optional_params
       set_response(STATIC_BODY, 200, CONTENT_JSON)
     end
 
     def dynamic_response
+      exercise_optional_params
       id = params["id"]? || "missing"
       body = String.build(96) do |io|
         io << "{\"status\":\"ok\",\"framework\":\"amber\",\"id\":"
@@ -31,6 +33,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
     end
 
     def nested_response
+      exercise_optional_params
       id = params["id"]? || "missing"
       child_id = params["child_id"]? || "missing"
       body = String.build(112) do |io|
@@ -44,6 +47,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
     end
 
     def glob_response
+      exercise_optional_params
       path = params["path"]? || "missing"
       body = String.build(128) do |io|
         io << "{\"status\":\"ok\",\"framework\":\"amber\",\"path\":"
@@ -51,6 +55,13 @@ module Amber::Benchmarks::RouterRevalidationHTTP
         io << '}'
       end
       set_response(body, 200, CONTENT_JSON)
+    end
+
+    private def exercise_optional_params : Nil
+      {% if flag?(:amber_bench_optional_params) %}
+        params["include"]?
+        params["missing_optional"]?
+      {% end %}
     end
   end
 

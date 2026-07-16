@@ -6,8 +6,13 @@ require "./router_revalidation_support"
 module Amber::Benchmarks::RouterRevalidationHTTPCPU
   extend self
 
-  CONTENT_JSON = "application/json; charset=utf-8"
-  STATIC_BODY  = %({"status":"ok","framework":"amber","route":"static"})
+  CONTENT_JSON           = "application/json; charset=utf-8"
+  STATIC_BODY            = %({"status":"ok","framework":"amber","route":"static"})
+  OPTIONAL_PARAM_LOOKUPS = {% if flag?(:amber_bench_optional_params) %}
+                             true
+                           {% else %}
+                             false
+                           {% end %}
 
   alias Measurement = NamedTuple(
     repetition: Int32,
@@ -34,10 +39,12 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
 
   class Controller < Amber::Controller::Base
     def static_response
+      exercise_optional_params
       set_response(STATIC_BODY, 200, CONTENT_JSON)
     end
 
     def dynamic_response
+      exercise_optional_params
       id = params["id"]? || "missing"
       body = String.build(96) do |io|
         io << %({"status":"ok","framework":"amber","id":)
@@ -48,6 +55,7 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
     end
 
     def nested_response
+      exercise_optional_params
       id = params["id"]? || "missing"
       child_id = params["child_id"]? || "missing"
       body = String.build(112) do |io|
@@ -61,6 +69,7 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
     end
 
     def glob_response
+      exercise_optional_params
       path = params["path"]? || "missing"
       body = String.build(128) do |io|
         io << %({"status":"ok","framework":"amber","path":)
@@ -68,6 +77,13 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
         io << '}'
       end
       set_response(body, 200, CONTENT_JSON)
+    end
+
+    private def exercise_optional_params : Nil
+      {% if flag?(:amber_bench_optional_params) %}
+        params["include"]?
+        params["missing_optional"]?
+      {% end %}
     end
   end
 
@@ -179,16 +195,17 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
     middle = repetitions // 2
     payload = {
       metadata: {
-        compiler:          Crystal::DESCRIPTION,
-        generated_at_utc:  Time.utc.to_s("%Y-%m-%dT%H:%M:%SZ"),
-        route_count:       route_count,
-        traffic_entries:   traffic.size,
-        operations:        operations,
-        warmup_operations: warmup_operations,
-        repetitions:       repetitions,
-        traffic_mix:       "45% static, 40% variable, 5% nested, 5% constrained, 3% glob; 70% hot-set; 20% query strings",
-        request_headers:   ["Host", "Accept", "User-Agent"],
-        scope:             "real Crystal HTTP parser and serializer plus full Amber pipeline; excludes sockets and kernel scheduling",
+        compiler:               Crystal::DESCRIPTION,
+        generated_at_utc:       Time.utc.to_s("%Y-%m-%dT%H:%M:%SZ"),
+        route_count:            route_count,
+        traffic_entries:        traffic.size,
+        operations:             operations,
+        warmup_operations:      warmup_operations,
+        repetitions:            repetitions,
+        traffic_mix:            "45% static, 40% variable, 5% nested, 5% constrained, 3% glob; 70% hot-set; 20% query strings",
+        request_headers:        ["Host", "Accept", "User-Agent"],
+        optional_param_lookups: OPTIONAL_PARAM_LOOKUPS,
+        scope:                  "real Crystal HTTP parser and serializer plus full Amber pipeline; excludes sockets and kernel scheduling",
       },
       summary: {
         median_requests_per_second: sorted_rps[middle],
