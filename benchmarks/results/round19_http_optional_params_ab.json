@@ -1,0 +1,476 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-16T22:21:55Z",
+    "host": "127.0.0.1",
+    "port": 41019,
+    "routes": 1000,
+    "url_file": "/tmp/amber_router_http_urls_success.txt",
+    "duration": "6s",
+    "warmup": "2s",
+    "repetitions": 5,
+    "connections": [
+      1,
+      50
+    ],
+    "servers": [
+      {
+        "name": "legacy_fallback",
+        "binary": "/tmp/amber_router_http_optional_params_legacy_fallback",
+        "sha256": "302548a849dd54d1c9de2095545f3bc4058cb4171fd9ba52c251807f6e458012"
+      },
+      {
+        "name": "short_circuit",
+        "binary": "/tmp/amber_router_http_optional_params_short_circuit",
+        "sha256": "78dd02d25a26b97e8f3589710ce6efe65722f55205e2fc6f96cd26b228bf79fc"
+      }
+    ]
+  },
+  "aggregates": {
+    "1": {
+      "legacy_fallback": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 23845.00894137852,
+          "median": 25348.90335197971,
+          "mean": 25045.33143513605,
+          "max": 25636.96992079825,
+          "stddev": 675.3502083192604,
+          "coefficient_of_variation": 0.0269651136407727
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 3.2125e-05,
+          "median": 3.2458e-05,
+          "mean": 3.2558199999999996e-05,
+          "max": 3.3375e-05,
+          "stddev": 4.6367376462335973e-07,
+          "coefficient_of_variation": 0.014241382036579412
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 9.375e-05,
+          "median": 9.4875e-05,
+          "mean": 9.825840000000001e-05,
+          "max": 0.000106833,
+          "stddev": 5.065790939231503e-06,
+          "coefficient_of_variation": 0.05155580529737409
+        },
+        "median_rps_ratio_vs_baseline": 1.0
+      },
+      "short_circuit": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 25366.62643698951,
+          "median": 25670.22176024968,
+          "mean": 25624.08820114707,
+          "max": 25785.88530598753,
+          "stddev": 144.73894170697614,
+          "coefficient_of_variation": 0.005648549933593221
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 3.1916e-05,
+          "median": 3.1959e-05,
+          "mean": 3.205e-05,
+          "max": 3.2375e-05,
+          "stddev": 1.7357419162997813e-07,
+          "coefficient_of_variation": 0.005415731408111642
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 9.3458e-05,
+          "median": 9.5458e-05,
+          "mean": 9.56e-05,
+          "max": 9.9875e-05,
+          "stddev": 2.3447956840629e-06,
+          "coefficient_of_variation": 0.024527151506934096
+        },
+        "median_rps_ratio_vs_baseline": 1.0126758307374617
+      }
+    },
+    "50": {
+      "legacy_fallback": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 84095.19427724661,
+          "median": 84467.76578117495,
+          "mean": 84635.53365442962,
+          "max": 85351.1229089447,
+          "stddev": 426.93200916212663,
+          "coefficient_of_variation": 0.005044358920277004
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 0.000553541,
+          "median": 0.000556792,
+          "mean": 0.0005574,
+          "max": 0.000562584,
+          "stddev": 3.105813581012238e-06,
+          "coefficient_of_variation": 0.00557196552029465
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 0.001489792,
+          "median": 0.001504333,
+          "mean": 0.0015078583999999999,
+          "max": 0.001528542,
+          "stddev": 1.506605316066552e-05,
+          "coefficient_of_variation": 0.009991689644508743
+        },
+        "median_rps_ratio_vs_baseline": 1.0
+      },
+      "short_circuit": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 83692.0046148408,
+          "median": 85704.48325076533,
+          "mean": 85144.14033323208,
+          "max": 85871.3180338897,
+          "stddev": 843.9360539405825,
+          "coefficient_of_variation": 0.009911851251743639
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 0.000549542,
+          "median": 0.00055275,
+          "mean": 0.0005518752,
+          "max": 0.00055275,
+          "stddev": 1.2509552190226393e-06,
+          "coefficient_of_variation": 0.0022667357022432594
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 0.001479792,
+          "median": 0.001499041,
+          "mean": 0.0014978666,
+          "max": 0.001522083,
+          "stddev": 1.559131646269808e-05,
+          "coefficient_of_variation": 0.01040901537072666
+        },
+        "median_rps_ratio_vs_baseline": 1.0146412949147283
+      }
+    }
+  },
+  "trials": [
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 1,
+      "connections": 1,
+      "requests_per_second": 25636.96992079825,
+      "average_seconds": 3.758052500617354e-05,
+      "p50_seconds": 3.2125e-05,
+      "p95_seconds": 6.5083e-05,
+      "p99_seconds": 9.4875e-05,
+      "successful_responses": 153882,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r1_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 1,
+      "connections": 50,
+      "requests_per_second": 84432.86298010044,
+      "average_seconds": 0.0005905092641971081,
+      "p50_seconds": 0.000556792,
+      "p95_seconds": 0.000745834,
+      "p99_seconds": 0.001521875,
+      "successful_responses": 506917,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r1_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 1,
+      "connections": 1,
+      "requests_per_second": 25785.88530598753,
+      "average_seconds": 3.735925095138062e-05,
+      "p50_seconds": 3.1916e-05,
+      "p95_seconds": 6.5958e-05,
+      "p99_seconds": 9.9875e-05,
+      "successful_responses": 154775,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r1_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 1,
+      "connections": 50,
+      "requests_per_second": 83692.0046148408,
+      "average_seconds": 0.0005958339915312965,
+      "p50_seconds": 0.00055275,
+      "p95_seconds": 0.000789792,
+      "p99_seconds": 0.001505917,
+      "successful_responses": 502321,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r1_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 2,
+      "connections": 1,
+      "requests_per_second": 25670.22176024968,
+      "average_seconds": 3.751684059682911e-05,
+      "p50_seconds": 3.2083e-05,
+      "p95_seconds": 6.5208e-05,
+      "p99_seconds": 9.3458e-05,
+      "successful_responses": 154081,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r2_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 2,
+      "connections": 50,
+      "requests_per_second": 84680.49847546287,
+      "average_seconds": 0.0005888388395850284,
+      "p50_seconds": 0.00055275,
+      "p95_seconds": 0.000743708,
+      "p99_seconds": 0.001522083,
+      "successful_responses": 508344,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r2_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 2,
+      "connections": 1,
+      "requests_per_second": 25616.800795086743,
+      "average_seconds": 3.7610068665452624e-05,
+      "p50_seconds": 3.2125e-05,
+      "p95_seconds": 6.5292e-05,
+      "p99_seconds": 9.375e-05,
+      "successful_responses": 153760,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r2_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 2,
+      "connections": 50,
+      "requests_per_second": 85351.1229089447,
+      "average_seconds": 0.0005841817356257752,
+      "p50_seconds": 0.000555333,
+      "p95_seconds": 0.00072275,
+      "p99_seconds": 0.001489792,
+      "successful_responses": 512410,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r2_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 3,
+      "connections": 1,
+      "requests_per_second": 25348.90335197971,
+      "average_seconds": 3.804256749740395e-05,
+      "p50_seconds": 3.2458e-05,
+      "p95_seconds": 6.5875e-05,
+      "p99_seconds": 9.4542e-05,
+      "successful_responses": 152154,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r3_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 3,
+      "connections": 50,
+      "requests_per_second": 84830.72232468137,
+      "average_seconds": 0.000587737053230532,
+      "p50_seconds": 0.000553541,
+      "p95_seconds": 0.000749792,
+      "p99_seconds": 0.00149475,
+      "successful_responses": 509313,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r3_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 3,
+      "connections": 1,
+      "requests_per_second": 25715.66308022377,
+      "average_seconds": 3.7454220744129584e-05,
+      "p50_seconds": 3.1959e-05,
+      "p95_seconds": 6.5542e-05,
+      "p99_seconds": 9.3459e-05,
+      "successful_responses": 154328,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r3_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 3,
+      "connections": 50,
+      "requests_per_second": 85772.39729120166,
+      "average_seconds": 0.0005812651491346677,
+      "p50_seconds": 0.000549542,
+      "p95_seconds": 0.000742084,
+      "p99_seconds": 0.001479792,
+      "successful_responses": 515011,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r3_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 4,
+      "connections": 1,
+      "requests_per_second": 25582.044422284867,
+      "average_seconds": 3.765404325200992e-05,
+      "p50_seconds": 3.1917e-05,
+      "p95_seconds": 6.5917e-05,
+      "p99_seconds": 9.575e-05,
+      "successful_responses": 153542,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r4_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 4,
+      "connections": 50,
+      "requests_per_second": 85704.48325076533,
+      "average_seconds": 0.0005817498004807533,
+      "p50_seconds": 0.00055275,
+      "p95_seconds": 0.000723208,
+      "p99_seconds": 0.0014825,
+      "successful_responses": 514582,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r4_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 4,
+      "connections": 1,
+      "requests_per_second": 23845.00894137852,
+      "average_seconds": 4.043247281963064e-05,
+      "p50_seconds": 3.3375e-05,
+      "p95_seconds": 7.0458e-05,
+      "p99_seconds": 0.000106833,
+      "successful_responses": 143118,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r4_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 4,
+      "connections": 50,
+      "requests_per_second": 84095.19427724661,
+      "average_seconds": 0.0005927531706328951,
+      "p50_seconds": 0.000562584,
+      "p95_seconds": 0.000750125,
+      "p99_seconds": 0.001528542,
+      "successful_responses": 504973,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r4_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 5,
+      "connections": 1,
+      "requests_per_second": 24778.97416643703,
+      "average_seconds": 3.8902917342260084e-05,
+      "p50_seconds": 3.2708e-05,
+      "p95_seconds": 6.8458e-05,
+      "p99_seconds": 0.000101292,
+      "successful_responses": 148758,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r5_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "legacy_fallback",
+      "repetition": 5,
+      "connections": 50,
+      "requests_per_second": 84467.76578117495,
+      "average_seconds": 0.0005901903710302541,
+      "p50_seconds": 0.00055875,
+      "p95_seconds": 0.000756708,
+      "p99_seconds": 0.001504333,
+      "successful_responses": 507212,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/legacy_fallback_r5_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 5,
+      "connections": 1,
+      "requests_per_second": 25366.62643698951,
+      "average_seconds": 3.797434069831641e-05,
+      "p50_seconds": 3.2375e-05,
+      "p95_seconds": 6.6667e-05,
+      "p99_seconds": 9.5458e-05,
+      "successful_responses": 152252,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r5_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "short_circuit",
+      "repetition": 5,
+      "connections": 50,
+      "requests_per_second": 85871.3180338897,
+      "average_seconds": 0.0005805560122990604,
+      "p50_seconds": 0.000551584,
+      "p95_seconds": 0.000725667,
+      "p99_seconds": 0.001499041,
+      "successful_responses": 515649,
+      "success_rate": 1.0,
+      "raw_result": "/tmp/router_http_optional_params_short_circuit_ab_raw/short_circuit_r5_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    }
+  ]
+}

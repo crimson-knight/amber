@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Amber v2 round 19 performance overview</title>
+  <desc id="desc">Before and after comparisons for router matching, parsed HTTP, localhost HTTP, respond_with, and allocation.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff9ed"/>
+      <stop offset="0.58" stop-color="#f7efe0"/>
+      <stop offset="1" stop-color="#dcebe5"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e77921"/>
+      <stop offset="1" stop-color="#f2b134"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0f6b62"/>
+      <stop offset="1" stop-color="#2c9a83"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#3d372d" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font: 700 48px Georgia, serif; fill: #202a28; letter-spacing: -1px; }
+      .subtitle { font: 500 18px "Avenir Next", "Helvetica Neue", sans-serif; fill: #59635f; }
+      .eyebrow { font: 700 12px "Avenir Next", "Helvetica Neue", sans-serif; fill: #8a4a17; letter-spacing: 2px; }
+      .section { font: 700 15px "Avenir Next", "Helvetica Neue", sans-serif; fill: #273c37; letter-spacing: 1.5px; }
+      .section-light { font: 700 13px "Avenir Next", "Helvetica Neue", sans-serif; fill: #dcebe5; letter-spacing: 1.3px; }
+      .row-label { font: 700 16px "Avenir Next", "Helvetica Neue", sans-serif; fill: #263330; }
+      .row-note { font: 500 12px "Avenir Next", "Helvetica Neue", sans-serif; fill: #69736f; }
+      .bar-label { font: 700 13px "Avenir Next", "Helvetica Neue", sans-serif; fill: #ffffff; }
+      .before-label { font: 700 13px "Avenir Next", "Helvetica Neue", sans-serif; fill: #4f5955; }
+      .gain { font: 800 17px "Avenir Next", "Helvetica Neue", sans-serif; fill: #a84b0f; }
+      .card-value { font: 700 22px Georgia, serif; fill: #0f6b62; }
+      .card-label { font: 700 12px "Avenir Next", "Helvetica Neue", sans-serif; fill: #283a35; letter-spacing: 0.5px; }
+      .card-note { font: 500 12px "Avenir Next", "Helvetica Neue", sans-serif; fill: #65706c; }
+      .footnote { font: 500 12px "Avenir Next", "Helvetica Neue", sans-serif; fill: #66716d; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="820" fill="url(#background)"/>
+  <circle cx="1090" cy="-10" r="230" fill="#f2b134" opacity="0.13"/>
+  <circle cx="75" cy="820" r="210" fill="#0f6b62" opacity="0.09"/>
+
+  <text x="70" y="62" class="eyebrow">AMBER V2 PERFORMANCE RESEARCH</text>
+  <text x="70" y="116" class="title">Round 19 made the whole request faster.</text>
+  <text x="70" y="150" class="subtitle">1,000-route mixed traffic with real parsing, parameter capture, controllers, and serialization</text>
+
+  <g transform="translate(70 180)">
+    <rect width="188" height="34" rx="17" fill="#fffdf8" stroke="#d9cbb8"/>
+    <text x="94" y="22" text-anchor="middle" class="card-label">STOCK CRYSTAL 1.20.3</text>
+    <rect x="200" width="170" height="34" rx="17" fill="#fffdf8" stroke="#d9cbb8"/>
+    <text x="285" y="22" text-anchor="middle" class="card-label">ACRYSTAL VERIFIED</text>
+    <rect x="382" width="174" height="34" rx="17" fill="#fffdf8" stroke="#d9cbb8"/>
+    <text x="469" y="22" text-anchor="middle" class="card-label">ALL HTTP 200</text>
+  </g>
+
+  <rect x="48" y="238" width="798" height="492" rx="26" fill="#fffdf9" opacity="0.92" filter="url(#shadow)"/>
+  <text x="76" y="278" class="section">THROUGHPUT: BEFORE VS NEW DEFAULT</text>
+
+  <g transform="translate(76 312)">
+    <text x="0" y="18" class="row-label">Router + params</text>
+    <text x="0" y="38" class="row-note">1,000 mixed routes</text>
+    <rect x="220" y="0" width="142" height="24" rx="12" fill="#d5d6d1"/>
+    <text x="232" y="17" class="before-label">1.63M/s</text>
+    <rect x="220" y="32" width="500" height="28" rx="14" fill="url(#amber)"/>
+    <text x="236" y="51" class="bar-label">5.75M/s</text>
+    <text x="780" y="51" text-anchor="end" class="gain">3.53x</text>
+  </g>
+
+  <g transform="translate(76 408)">
+    <text x="0" y="18" class="row-label">Parsed HTTP CPU</text>
+    <text x="0" y="38" class="row-note">direct JSON response</text>
+    <rect x="220" y="0" width="390" height="24" rx="12" fill="#d5d6d1"/>
+    <text x="236" y="17" class="before-label">593K/s</text>
+    <rect x="220" y="32" width="500" height="28" rx="14" fill="url(#amber)"/>
+    <text x="236" y="51" class="bar-label">759K/s</text>
+    <text x="780" y="51" text-anchor="end" class="gain">+28%</text>
+  </g>
+
+  <g transform="translate(76 504)">
+    <text x="0" y="18" class="row-label">Real HTTP server</text>
+    <text x="0" y="38" class="row-note">localhost, 50 connections</text>
+    <rect x="220" y="0" width="470" height="24" rx="12" fill="#d5d6d1"/>
+    <text x="236" y="17" class="before-label">82.4K/s</text>
+    <rect x="220" y="32" width="500" height="28" rx="14" fill="url(#amber)"/>
+    <text x="236" y="51" class="bar-label">87.8K/s</text>
+    <text x="780" y="51" text-anchor="end" class="gain">+6.5%</text>
+  </g>
+
+  <g transform="translate(76 600)">
+    <text x="0" y="18" class="row-label">HTTP + respond_with</text>
+    <text x="0" y="38" class="row-note">localhost, 50 connections</text>
+    <rect x="220" y="0" width="441" height="24" rx="12" fill="#d5d6d1"/>
+    <text x="236" y="17" class="before-label">77.5K/s</text>
+    <rect x="220" y="32" width="500" height="28" rx="14" fill="url(#amber)"/>
+    <text x="236" y="51" class="bar-label">86.9K/s</text>
+    <text x="780" y="51" text-anchor="end" class="gain">+12.2%</text>
+  </g>
+
+  <rect x="872" y="238" width="280" height="492" rx="26" fill="#173f39" filter="url(#shadow)"/>
+  <text x="900" y="278" class="section-light">LESS MEMORY PER REQUEST</text>
+
+  <g transform="translate(900 310)">
+    <rect width="224" height="112" rx="18" fill="#fffdf9"/>
+    <text x="20" y="31" class="card-label">MATCHER + PARAMS</text>
+    <text x="20" y="68" class="card-value">871 to 130 B</text>
+    <text x="20" y="93" class="card-note">85.1% less allocation</text>
+  </g>
+
+  <g transform="translate(900 440)">
+    <rect width="224" height="112" rx="18" fill="#fffdf9"/>
+    <text x="20" y="31" class="card-label">PARSED HTTP</text>
+    <text x="20" y="68" class="card-value">2,962 to 1,883 B</text>
+    <text x="20" y="93" class="card-note">36.4% less allocation</text>
+  </g>
+
+  <g transform="translate(900 570)">
+    <rect width="224" height="112" rx="18" fill="#fffdf9"/>
+    <text x="20" y="31" class="card-label">RESPOND_WITH</text>
+    <text x="20" y="68" class="card-value">3,586 to 1,883 B</text>
+    <text x="20" y="93" class="card-note">47.5% less allocation</text>
+  </g>
+
+  <line x1="70" y1="765" x2="1130" y2="765" stroke="#aeb9b4" stroke-width="1"/>
+  <text x="70" y="792" class="footnote">CPU ceiling includes Crystal HTTP parsing and serialization plus the Amber pipeline; it excludes sockets.</text>
+  <text x="1130" y="792" text-anchor="end" class="footnote">Apple M1 Max, macOS 26.5, release builds</text>
+</svg>

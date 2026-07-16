@@ -1,0 +1,476 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-16T23:21:44Z",
+    "host": "127.0.0.1",
+    "port": 41019,
+    "routes": 1000,
+    "url_file": "/tmp/amber_router_http_urls_success.txt",
+    "duration": "6s",
+    "warmup": "2s",
+    "repetitions": 5,
+    "connections": [
+      1,
+      50
+    ],
+    "servers": [
+      {
+        "name": "original_v2_respond",
+        "binary": "/tmp/amber_round19_base_respond",
+        "sha256": "8eefe94e3774b55fab922b3699b918746ae9617542184907be6025cd2a17b2d7"
+      },
+      {
+        "name": "final_respond",
+        "binary": "/tmp/amber_round19_final_respond",
+        "sha256": "679010557c9baa11de2ca819c3ec8ec349a0a166f2fb84e00310d2fa430fdd6b"
+      }
+    ]
+  },
+  "aggregates": {
+    "1": {
+      "original_v2_respond": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 23969.122902894385,
+          "median": 24036.645651171548,
+          "mean": 24088.63306165255,
+          "max": 24262.420557453508,
+          "stddev": 102.78883041183866,
+          "coefficient_of_variation": 0.004267109310385545
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 3.3458e-05,
+          "median": 3.3625e-05,
+          "mean": 3.36166e-05,
+          "max": 3.3791e-05,
+          "stddev": 1.1291164687489243e-07,
+          "coefficient_of_variation": 0.0033588062705595576
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 0.000101333,
+          "median": 0.000102917,
+          "mean": 0.0001027082,
+          "max": 0.000103917,
+          "stddev": 1.0975883381304667e-06,
+          "coefficient_of_variation": 0.010686472337461535
+        },
+        "median_rps_ratio_vs_baseline": 1.0
+      },
+      "final_respond": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 25405.063703411728,
+          "median": 25618.224338317657,
+          "mean": 25594.61467922046,
+          "max": 25694.03035650525,
+          "stddev": 106.39377847955016,
+          "coefficient_of_variation": 0.004156881430449048
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 3.1833e-05,
+          "median": 3.1916e-05,
+          "mean": 3.18832e-05,
+          "max": 3.1917e-05,
+          "stddev": 4.0989754817515324e-08,
+          "coefficient_of_variation": 0.0012856223596601133
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 9.6125e-05,
+          "median": 9.8125e-05,
+          "mean": 9.793340000000001e-05,
+          "max": 0.000100208,
+          "stddev": 1.5310465179085827e-06,
+          "coefficient_of_variation": 0.015633548083785333
+        },
+        "median_rps_ratio_vs_baseline": 1.0657986438747964
+      }
+    },
+    "50": {
+      "original_v2_respond": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 75650.73111946892,
+          "median": 77480.4384360547,
+          "mean": 77259.68802536349,
+          "max": 78456.48652914309,
+          "stddev": 924.8473557368112,
+          "coefficient_of_variation": 0.011970632801846083
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 0.00059225,
+          "median": 0.000594375,
+          "mean": 0.0005946082,
+          "max": 0.000597666,
+          "stddev": 1.743524866470202e-06,
+          "coefficient_of_variation": 0.002932224726248649
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 0.001726542,
+          "median": 0.001748792,
+          "mean": 0.0017508002000000001,
+          "max": 0.001784875,
+          "stddev": 2.1820382979223815e-05,
+          "coefficient_of_variation": 0.012463091436260867
+        },
+        "median_rps_ratio_vs_baseline": 1.0
+      },
+      "final_respond": {
+        "requests_per_second": {
+          "count": 5,
+          "min": 86321.66154704183,
+          "median": 86915.08886716011,
+          "mean": 86859.31816324529,
+          "max": 87366.80547119156,
+          "stddev": 335.89630430618183,
+          "coefficient_of_variation": 0.003867130336838369
+        },
+        "p50_seconds": {
+          "count": 5,
+          "min": 0.000536458,
+          "median": 0.000542292,
+          "mean": 0.0005412,
+          "max": 0.00054275,
+          "stddev": 2.383758712621745e-06,
+          "coefficient_of_variation": 0.004404580030712759
+        },
+        "p99_seconds": {
+          "count": 5,
+          "min": 0.001433208,
+          "median": 0.001455833,
+          "mean": 0.0014543750000000002,
+          "max": 0.001465125,
+          "stddev": 1.1252175842920337e-05,
+          "coefficient_of_variation": 0.007736777545626359
+        },
+        "median_rps_ratio_vs_baseline": 1.1217681600871672
+      }
+    }
+  },
+  "trials": [
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 1,
+      "connections": 1,
+      "requests_per_second": 24140.580629925767,
+      "average_seconds": 3.9918745063394545e-05,
+      "p50_seconds": 3.3542e-05,
+      "p95_seconds": 6.8292e-05,
+      "p99_seconds": 0.000101541,
+      "successful_responses": 144887,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r1_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 1,
+      "connections": 50,
+      "requests_per_second": 75650.73111946892,
+      "average_seconds": 0.0006591979741464213,
+      "p50_seconds": 0.000594625,
+      "p95_seconds": 0.001062958,
+      "p99_seconds": 0.001784875,
+      "successful_responses": 454173,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r1_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 1,
+      "connections": 1,
+      "requests_per_second": 25564.573135646275,
+      "average_seconds": 3.766498615147955e-05,
+      "p50_seconds": 3.1917e-05,
+      "p95_seconds": 6.6292e-05,
+      "p99_seconds": 9.6375e-05,
+      "successful_responses": 153446,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r1_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 1,
+      "connections": 50,
+      "requests_per_second": 86930.40889648629,
+      "average_seconds": 0.0005735074327829759,
+      "p50_seconds": 0.00054275,
+      "p95_seconds": 0.000750958,
+      "p99_seconds": 0.001455167,
+      "successful_responses": 521899,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r1_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 2,
+      "connections": 1,
+      "requests_per_second": 25618.224338317657,
+      "average_seconds": 3.757954475151093e-05,
+      "p50_seconds": 3.1833e-05,
+      "p95_seconds": 6.6417e-05,
+      "p99_seconds": 9.8125e-05,
+      "successful_responses": 153749,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r2_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 2,
+      "connections": 50,
+      "requests_per_second": 87366.80547119156,
+      "average_seconds": 0.000570683428073493,
+      "p50_seconds": 0.000536458,
+      "p95_seconds": 0.000783708,
+      "p99_seconds": 0.001433208,
+      "successful_responses": 524431,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r2_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 2,
+      "connections": 1,
+      "requests_per_second": 24034.395566817537,
+      "average_seconds": 4.015144178953405e-05,
+      "p50_seconds": 3.3667e-05,
+      "p95_seconds": 6.9042e-05,
+      "p99_seconds": 0.000103833,
+      "successful_responses": 144261,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r2_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 2,
+      "connections": 50,
+      "requests_per_second": 77662.47093599885,
+      "average_seconds": 0.0006421486052269055,
+      "p50_seconds": 0.000594125,
+      "p95_seconds": 0.000869708,
+      "p99_seconds": 0.001729625,
+      "successful_responses": 466202,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r2_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 3,
+      "connections": 1,
+      "requests_per_second": 24262.420557453508,
+      "average_seconds": 3.972987958607764e-05,
+      "p50_seconds": 3.3458e-05,
+      "p95_seconds": 6.8709e-05,
+      "p99_seconds": 0.000101333,
+      "successful_responses": 145631,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r3_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 3,
+      "connections": 50,
+      "requests_per_second": 78456.48652914309,
+      "average_seconds": 0.0006356440211629527,
+      "p50_seconds": 0.00059225,
+      "p95_seconds": 0.000848875,
+      "p99_seconds": 0.001726542,
+      "successful_responses": 470965,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r3_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 3,
+      "connections": 1,
+      "requests_per_second": 25691.181862221398,
+      "average_seconds": 3.748020758081749e-05,
+      "p50_seconds": 3.1833e-05,
+      "p95_seconds": 6.5709e-05,
+      "p99_seconds": 9.6125e-05,
+      "successful_responses": 154205,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r3_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 3,
+      "connections": 50,
+      "requests_per_second": 86915.08886716011,
+      "average_seconds": 0.0005736580831491729,
+      "p50_seconds": 0.000542292,
+      "p95_seconds": 0.000747458,
+      "p99_seconds": 0.001465125,
+      "successful_responses": 521761,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r3_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 4,
+      "connections": 1,
+      "requests_per_second": 25694.03035650525,
+      "average_seconds": 3.7470516025495235e-05,
+      "p50_seconds": 3.1916e-05,
+      "p95_seconds": 6.65e-05,
+      "p99_seconds": 0.000100208,
+      "successful_responses": 154223,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r4_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 4,
+      "connections": 50,
+      "requests_per_second": 86321.66154704183,
+      "average_seconds": 0.0005776108813689044,
+      "p50_seconds": 0.000542,
+      "p95_seconds": 0.000776167,
+      "p99_seconds": 0.001455833,
+      "successful_responses": 518203,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r4_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 4,
+      "connections": 1,
+      "requests_per_second": 23969.122902894385,
+      "average_seconds": 4.026110050121959e-05,
+      "p50_seconds": 3.3791e-05,
+      "p95_seconds": 6.8916e-05,
+      "p99_seconds": 0.000103917,
+      "successful_responses": 143849,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r4_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 4,
+      "connections": 50,
+      "requests_per_second": 77480.4384360547,
+      "average_seconds": 0.0006435872323059808,
+      "p50_seconds": 0.000594375,
+      "p95_seconds": 0.00088325,
+      "p99_seconds": 0.001748792,
+      "successful_responses": 465072,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r4_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 5,
+      "connections": 1,
+      "requests_per_second": 24036.645651171548,
+      "average_seconds": 4.012851192159469e-05,
+      "p50_seconds": 3.3625e-05,
+      "p95_seconds": 6.8833e-05,
+      "p99_seconds": 0.000102917,
+      "successful_responses": 144276,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r5_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "original_v2_respond",
+      "repetition": 5,
+      "connections": 50,
+      "requests_per_second": 77048.31310615185,
+      "average_seconds": 0.0006471968168733136,
+      "p50_seconds": 0.000597666,
+      "p95_seconds": 0.000896292,
+      "p99_seconds": 0.001764167,
+      "successful_responses": 462565,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/original_v2_respond_r5_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=current_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 5,
+      "connections": 1,
+      "requests_per_second": 25405.063703411728,
+      "average_seconds": 3.789642698729109e-05,
+      "p50_seconds": 3.1917e-05,
+      "p95_seconds": 6.6584e-05,
+      "p99_seconds": 9.8834e-05,
+      "successful_responses": 152494,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r5_c1.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    },
+    {
+      "strategy": "final_respond",
+      "repetition": 5,
+      "connections": 50,
+      "requests_per_second": 86762.62603434664,
+      "average_seconds": 0.0005746296233602035,
+      "p50_seconds": 0.0005425,
+      "p95_seconds": 0.000766,
+      "p99_seconds": 0.001462542,
+      "successful_responses": 520869,
+      "success_rate": 1.0,
+      "raw_result": "/Users/crimsonknight/open_source_coding_projects/amber-perf-router-round19/benchmarks/results/round19_http_respond_full_stack_ab_raw/final_respond_r5_c50.json",
+      "startup": [
+        "READY host=127.0.0.1 port=41019 routes=1000 strategy=span_match compiler=Crystal 1.20.3 (2026-07-02)"
+      ]
+    }
+  ]
+}

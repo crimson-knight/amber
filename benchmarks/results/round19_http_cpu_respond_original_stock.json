@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+    "generated_at_utc": "2026-07-16T23:02:38Z",
+    "route_count": 1000,
+    "traffic_entries": 4096,
+    "operations": 200000,
+    "warmup_operations": 20000,
+    "repetitions": 9,
+    "traffic_mix": "45% static, 40% variable, 5% nested, 5% constrained, 3% glob; 70% hot-set; 20% query strings",
+    "request_headers": [
+      "Host",
+      "Accept",
+      "User-Agent"
+    ],
+    "optional_param_lookups": false,
+    "response_mode": "respond_with_single",
+    "scope": "real Crystal HTTP parser and serializer plus full Amber pipeline; excludes sockets and kernel scheduling"
+  },
+  "summary": {
+    "median_requests_per_second": 451733.66912202735,
+    "median_bytes_per_request": 3585.50488
+  },
+  "results": [
+    {
+      "repetition": 1,
+      "operations": 200000,
+      "elapsed_seconds": 0.466241666,
+      "requests_per_second": 428962.0910886158,
+      "ns_per_request": 2331.20833,
+      "allocated_bytes": 717110752,
+      "bytes_per_request": 3585.55376,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 2,
+      "operations": 200000,
+      "elapsed_seconds": 0.44273875,
+      "requests_per_second": 451733.66912202735,
+      "ns_per_request": 2213.69375,
+      "allocated_bytes": 717094976,
+      "bytes_per_request": 3585.47488,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 3,
+      "operations": 200000,
+      "elapsed_seconds": 0.428606208,
+      "requests_per_second": 466628.79880638595,
+      "ns_per_request": 2143.03104,
+      "allocated_bytes": 717095136,
+      "bytes_per_request": 3585.47568,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 4,
+      "operations": 200000,
+      "elapsed_seconds": 0.436939333,
+      "requests_per_second": 457729.44867840497,
+      "ns_per_request": 2184.696665,
+      "allocated_bytes": 717107456,
+      "bytes_per_request": 3585.53728,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 5,
+      "operations": 200000,
+      "elapsed_seconds": 0.452042542,
+      "requests_per_second": 442436.2342427497,
+      "ns_per_request": 2260.21271,
+      "allocated_bytes": 717100976,
+      "bytes_per_request": 3585.50488,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 6,
+      "operations": 200000,
+      "elapsed_seconds": 0.480869541,
+      "requests_per_second": 415913.2216694091,
+      "ns_per_request": 2404.347705,
+      "allocated_bytes": 717099632,
+      "bytes_per_request": 3585.49816,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 7,
+      "operations": 200000,
+      "elapsed_seconds": 0.427611417,
+      "requests_per_second": 467714.3594601451,
+      "ns_per_request": 2138.057085,
+      "allocated_bytes": 717096720,
+      "bytes_per_request": 3585.4836,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 8,
+      "operations": 200000,
+      "elapsed_seconds": 0.42782925,
+      "requests_per_second": 467476.21860824147,
+      "ns_per_request": 2139.14625,
+      "allocated_bytes": 717105872,
+      "bytes_per_request": 3585.52936,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    },
+    {
+      "repetition": 9,
+      "operations": 200000,
+      "elapsed_seconds": 0.475903083,
+      "requests_per_second": 420253.63386855804,
+      "ns_per_request": 2379.515415,
+      "allocated_bytes": 717103024,
+      "bytes_per_request": 3585.51512,
+      "response_bytes": 39100418,
+      "response_bytes_per_request": 195.50209
+    }
+  ]
+}
