@@ -7,12 +7,12 @@ module Amber::Benchmarks::RouterRevalidationHTTP
 
   CONTENT_JSON = "application/json; charset=utf-8"
   STATIC_BODY  = %({"status":"ok","framework":"amber","route":"static"})
-  STRATEGY     = {% if flag?(:amber_router_span_match) %}
-                   "span_match"
+  STRATEGY     = {% if flag?(:amber_router_legacy_match) %}
+                   "current_match"
                  {% elsif flag?(:amber_router_best_match) %}
                    "best_match"
                  {% else %}
-                   "current_match"
+                   "span_match"
                  {% end %}
 
   class Controller < Amber::Controller::Base
