@@ -59,6 +59,20 @@ module Amber::Benchmarks::RouterRevalidationMicro
     sink
   end
 
+  private def run_best(router : Router, traffic : Array(RouterRevalidation::TrafficRequest), operations : Int64, include_params : Bool) : Int32
+    mask = traffic.size - 1
+    index = 0_i64
+    sink = 0
+
+    while index < operations
+      request = traffic[(index & mask).to_i]
+      sink &+= consume_result(router.find_best(request.path), request, include_params)
+      index += 1
+    end
+
+    sink
+  end
+
   private def measure(tier : Int32, strategy : String, workload : String, operations : Int64, warmup_operations : Int64, &run : Int64 -> Int32) : Measurement
     yield warmup_operations
     GC.collect
@@ -92,12 +106,18 @@ module Amber::Benchmarks::RouterRevalidationMicro
 
       {false, true}.each do |include_params|
         workload = include_params ? "mixed_dispatch_with_params" : "mixed_dispatch"
-        measurement = measure(tier, "current_find", workload, operations, warmup_operations) do |count|
-          run_current(router, traffic, count, include_params)
-        end
-        measurements << measurement
 
-        puts "#{tier.to_s.rjust(4)} routes | #{workload.ljust(26)} | #{measurement[:ips].round.to_i} ops/s | #{measurement[:ns_per_operation].round(2)} ns/op | #{measurement[:bytes_per_operation].round(2)} B/op"
+        {
+          "current_find" => ->(count : Int64) { run_current(router, traffic, count, include_params) },
+          "best_find"    => ->(count : Int64) { run_best(router, traffic, count, include_params) },
+        }.each do |strategy, runner|
+          measurement = measure(tier, strategy, workload, operations, warmup_operations) do |count|
+            runner.call(count)
+          end
+          measurements << measurement
+
+          puts "#{tier.to_s.rjust(4)} routes | #{strategy.ljust(12)} | #{workload.ljust(26)} | #{measurement[:ips].round.to_i} ops/s | #{measurement[:ns_per_operation].round(2)} ns/op | #{measurement[:bytes_per_operation].round(2)} B/op"
+        end
       end
     end
 
