@@ -1,0 +1,981 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-16T23:29:37Z",
+    "routes": 1000,
+    "operations": 200000,
+    "warmup_operations": 20000,
+    "inner_repetitions": 5,
+    "process_repetitions": 7,
+    "scope": "same-source parsed HTTP CPU A/B with rotated process order; excludes sockets and kernel scheduling",
+    "binaries": [
+      {
+        "name": "legacy_router",
+        "path": "/tmp/amber_round19_cpu_isolate_legacy",
+        "sha256": "25fa9915ca7e80059f4c4c04e750c021079710529c2c953780049e357eeae2b2"
+      },
+      {
+        "name": "span_router",
+        "path": "/tmp/amber_round19_cpu_isolate_default",
+        "sha256": "7e0807a82f078ff050a1eea71d01314855ec29fd0953057fc22acc175b22dcbd"
+      }
+    ]
+  },
+  "aggregates": {
+    "legacy_router": {
+      "requests_per_second": {
+        "count": 7,
+        "min": 564924.8738187333,
+        "median": 596562.7539558322,
+        "mean": 597241.6764913244,
+        "max": 615861.1175535317,
+        "stddev": 15178.46213151308,
+        "coefficient_of_variation": 0.02541427152352045
+      },
+      "bytes_per_request": {
+        "count": 7,
+        "min": 2716.85368,
+        "median": 2716.87384,
+        "mean": 2716.8682400000002,
+        "max": 2716.874,
+        "stddev": 0.008445211661045218,
+        "coefficient_of_variation": 3.108436226942392e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.0,
+      "median_allocation_ratio_vs_baseline": 1.0
+    },
+    "span_router": {
+      "requests_per_second": {
+        "count": 7,
+        "min": 769040.6061937968,
+        "median": 776594.353255096,
+        "mean": 776536.5108219022,
+        "max": 781971.1331680927,
+        "stddev": 4494.692612573375,
+        "coefficient_of_variation": 0.0057881278599715815
+      },
+      "bytes_per_request": {
+        "count": 7,
+        "min": 1883.34264,
+        "median": 1883.35104,
+        "mean": 1883.3524457142855,
+        "max": 1883.36176,
+        "stddev": 0.005555226257787523,
+        "coefficient_of_variation": 2.949647725484877e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.3017814942442631,
+      "median_allocation_ratio_vs_baseline": 0.6932051876210784
+    }
+  },
+  "trials": [
+    {
+      "strategy": "legacy_router",
+      "repetition": 1,
+      "median_requests_per_second": 564924.8738187333,
+      "median_bytes_per_request": 2716.85624,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.354029375,
+          "requests_per_second": 564924.8738187333,
+          "ns_per_request": 1770.146875,
+          "allocated_bytes": 543372432,
+          "bytes_per_request": 2716.86216,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.347625875,
+          "requests_per_second": 575331.1660128868,
+          "ns_per_request": 1738.129375,
+          "allocated_bytes": 543383952,
+          "bytes_per_request": 2716.91976,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.350981167,
+          "requests_per_second": 569831.1442448421,
+          "ns_per_request": 1754.905835,
+          "allocated_bytes": 543364912,
+          "bytes_per_request": 2716.82456,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.3579815,
+          "requests_per_second": 558688.0886302784,
+          "ns_per_request": 1789.9075,
+          "allocated_bytes": 543371248,
+          "bytes_per_request": 2716.85624,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.358842584,
+          "requests_per_second": 557347.4523859743,
+          "ns_per_request": 1794.21292,
+          "allocated_bytes": 543370224,
+          "bytes_per_request": 2716.85112,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r1.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 1,
+      "median_requests_per_second": 771509.193147315,
+      "median_bytes_per_request": 1883.36176,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.262987875,
+          "requests_per_second": 760491.3344388977,
+          "ns_per_request": 1314.939375,
+          "allocated_bytes": 376667680,
+          "bytes_per_request": 1883.3384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.253215042,
+          "requests_per_second": 789842.4928484304,
+          "ns_per_request": 1266.07521,
+          "allocated_bytes": 376675216,
+          "bytes_per_request": 1883.37608,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.254561625,
+          "requests_per_second": 785664.3749818929,
+          "ns_per_request": 1272.808125,
+          "allocated_bytes": 376663440,
+          "bytes_per_request": 1883.3172,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.259232167,
+          "requests_per_second": 771509.193147315,
+          "ns_per_request": 1296.160835,
+          "allocated_bytes": 376673024,
+          "bytes_per_request": 1883.36512,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.266187209,
+          "requests_per_second": 751350.9035665196,
+          "ns_per_request": 1330.936045,
+          "allocated_bytes": 376672352,
+          "bytes_per_request": 1883.36176,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r1.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 2,
+      "median_requests_per_second": 780635.5544366445,
+      "median_bytes_per_request": 1883.35448,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.29796975,
+          "requests_per_second": 671209.0740754724,
+          "ns_per_request": 1489.84875,
+          "allocated_bytes": 376670896,
+          "bytes_per_request": 1883.35448,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.254239208,
+          "requests_per_second": 786660.7262244147,
+          "ns_per_request": 1271.19604,
+          "allocated_bytes": 376672576,
+          "bytes_per_request": 1883.36288,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.2562015,
+          "requests_per_second": 780635.5544366445,
+          "ns_per_request": 1281.0075000000002,
+          "allocated_bytes": 376666784,
+          "bytes_per_request": 1883.33392,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.255815959,
+          "requests_per_second": 781812.0526249107,
+          "ns_per_request": 1279.0797949999999,
+          "allocated_bytes": 376669248,
+          "bytes_per_request": 1883.34624,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.259850958,
+          "requests_per_second": 769671.9748094983,
+          "ns_per_request": 1299.2547900000002,
+          "allocated_bytes": 376674592,
+          "bytes_per_request": 1883.37296,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r2.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 2,
+      "median_requests_per_second": 611567.9608718818,
+      "median_bytes_per_request": 2716.85368,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.335014,
+          "requests_per_second": 596989.976538294,
+          "ns_per_request": 1675.07,
+          "allocated_bytes": 543370080,
+          "bytes_per_request": 2716.8504,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.33488625,
+          "requests_per_second": 597217.7119842932,
+          "ns_per_request": 1674.43125,
+          "allocated_bytes": 543370832,
+          "bytes_per_request": 2716.85416,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.325160875,
+          "requests_per_second": 615080.1507100139,
+          "ns_per_request": 1625.804375,
+          "allocated_bytes": 543370736,
+          "bytes_per_request": 2716.85368,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.325105042,
+          "requests_per_second": 615185.7835536122,
+          "ns_per_request": 1625.52521,
+          "allocated_bytes": 543370736,
+          "bytes_per_request": 2716.85368,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.32702825,
+          "requests_per_second": 611567.9608718818,
+          "ns_per_request": 1635.14125,
+          "allocated_bytes": 543370736,
+          "bytes_per_request": 2716.85368,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r2.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 3,
+      "median_requests_per_second": 594989.9614037449,
+      "median_bytes_per_request": 2716.87384,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.336140125,
+          "requests_per_second": 594989.9614037449,
+          "ns_per_request": 1680.700625,
+          "allocated_bytes": 543392432,
+          "bytes_per_request": 2716.96216,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.330859083,
+          "requests_per_second": 604486.9561583111,
+          "ns_per_request": 1654.295415,
+          "allocated_bytes": 543374800,
+          "bytes_per_request": 2716.874,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.330967958,
+          "requests_per_second": 604288.1045300463,
+          "ns_per_request": 1654.83979,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.337899541,
+          "requests_per_second": 591891.8960591308,
+          "ns_per_request": 1689.497705,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.344864167,
+          "requests_per_second": 579938.4776325573,
+          "ns_per_request": 1724.320835,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r3.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 3,
+      "median_requests_per_second": 781971.1331680927,
+      "median_bytes_per_request": 1883.34264,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.261406291,
+          "requests_per_second": 765092.5279376692,
+          "ns_per_request": 1307.031455,
+          "allocated_bytes": 376667152,
+          "bytes_per_request": 1883.33576,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.255763917,
+          "requests_per_second": 781971.1331680927,
+          "ns_per_request": 1278.819585,
+          "allocated_bytes": 376668528,
+          "bytes_per_request": 1883.34264,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.254162375,
+          "requests_per_second": 786898.5328768666,
+          "ns_per_request": 1270.811875,
+          "allocated_bytes": 376666688,
+          "bytes_per_request": 1883.33344,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.256908791,
+          "requests_per_second": 778486.4006463678,
+          "ns_per_request": 1284.543955,
+          "allocated_bytes": 376671536,
+          "bytes_per_request": 1883.35768,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.2551415,
+          "requests_per_second": 783878.7496350064,
+          "ns_per_request": 1275.7075000000002,
+          "allocated_bytes": 376668880,
+          "bytes_per_request": 1883.3444,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r3.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 4,
+      "median_requests_per_second": 776594.353255096,
+      "median_bytes_per_request": 1883.3496,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.261395292,
+          "requests_per_second": 765124.7215271192,
+          "ns_per_request": 1306.97646,
+          "allocated_bytes": 376664992,
+          "bytes_per_request": 1883.32496,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.255333167,
+          "requests_per_second": 783290.3274959183,
+          "ns_per_request": 1276.6658350000002,
+          "allocated_bytes": 376674864,
+          "bytes_per_request": 1883.37432,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.257281667,
+          "requests_per_second": 777358.1473257479,
+          "ns_per_request": 1286.408335,
+          "allocated_bytes": 376667744,
+          "bytes_per_request": 1883.33872,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.257534708,
+          "requests_per_second": 776594.353255096,
+          "ns_per_request": 1287.67354,
+          "allocated_bytes": 376675936,
+          "bytes_per_request": 1883.37968,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.2637625,
+          "requests_per_second": 758257.9024690773,
+          "ns_per_request": 1318.8125,
+          "allocated_bytes": 376669920,
+          "bytes_per_request": 1883.3496,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r4.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 4,
+      "median_requests_per_second": 596365.4495748352,
+      "median_bytes_per_request": 2716.87224,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.339786542,
+          "requests_per_second": 588604.8306174527,
+          "ns_per_request": 1698.93271,
+          "allocated_bytes": 543381216,
+          "bytes_per_request": 2716.90608,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.337546458,
+          "requests_per_second": 592511.0314740734,
+          "ns_per_request": 1687.73229,
+          "allocated_bytes": 543374448,
+          "bytes_per_request": 2716.87224,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.335364834,
+          "requests_per_second": 596365.4495748352,
+          "ns_per_request": 1676.82417,
+          "allocated_bytes": 543371664,
+          "bytes_per_request": 2716.85832,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.332052375,
+          "requests_per_second": 602314.6197945429,
+          "ns_per_request": 1660.261875,
+          "allocated_bytes": 543378688,
+          "bytes_per_request": 2716.89344,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.329881458,
+          "requests_per_second": 606278.3922823573,
+          "ns_per_request": 1649.40729,
+          "allocated_bytes": 543371808,
+          "bytes_per_request": 2716.85904,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r4.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 5,
+      "median_requests_per_second": 615861.1175535317,
+      "median_bytes_per_request": 2716.87384,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.322828708,
+          "requests_per_second": 619523.5895811347,
+          "ns_per_request": 1614.14354,
+          "allocated_bytes": 543362320,
+          "bytes_per_request": 2716.8116,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.320092166,
+          "requests_per_second": 624820.0401130717,
+          "ns_per_request": 1600.46083,
+          "allocated_bytes": 543380800,
+          "bytes_per_request": 2716.904,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.324748542,
+          "requests_per_second": 615861.1175535317,
+          "ns_per_request": 1623.74271,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.327695166,
+          "requests_per_second": 610323.3149310478,
+          "ns_per_request": 1638.47583,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.328407833,
+          "requests_per_second": 608998.8724477227,
+          "ns_per_request": 1642.039165,
+          "allocated_bytes": 543376592,
+          "bytes_per_request": 2716.88296,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r5.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 5,
+      "median_requests_per_second": 775844.2175257863,
+      "median_bytes_per_request": 1883.35104,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.267043875,
+          "requests_per_second": 748940.6001167411,
+          "ns_per_request": 1335.219375,
+          "allocated_bytes": 376675568,
+          "bytes_per_request": 1883.37784,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.257783709,
+          "requests_per_second": 775844.2175257863,
+          "ns_per_request": 1288.9185450000002,
+          "allocated_bytes": 376667456,
+          "bytes_per_request": 1883.33728,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.253911583,
+          "requests_per_second": 787675.7634959883,
+          "ns_per_request": 1269.557915,
+          "allocated_bytes": 376670784,
+          "bytes_per_request": 1883.35392,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.253800916,
+          "requests_per_second": 788019.2205452876,
+          "ns_per_request": 1269.00458,
+          "allocated_bytes": 376669632,
+          "bytes_per_request": 1883.34816,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.260678958,
+          "requests_per_second": 767227.2496961568,
+          "ns_per_request": 1303.39479,
+          "allocated_bytes": 376670208,
+          "bytes_per_request": 1883.35104,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r5.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 6,
+      "median_requests_per_second": 780160.518026584,
+      "median_bytes_per_request": 1883.35104,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.262813833,
+          "requests_per_second": 760994.9511295321,
+          "ns_per_request": 1314.069165,
+          "allocated_bytes": 376668064,
+          "bytes_per_request": 1883.34032,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.257649375,
+          "requests_per_second": 776248.7294991497,
+          "ns_per_request": 1288.246875,
+          "allocated_bytes": 376672032,
+          "bytes_per_request": 1883.36016,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.256209625,
+          "requests_per_second": 780610.7986770598,
+          "ns_per_request": 1281.048125,
+          "allocated_bytes": 376670208,
+          "bytes_per_request": 1883.35104,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.2563575,
+          "requests_per_second": 780160.518026584,
+          "ns_per_request": 1281.7875000000001,
+          "allocated_bytes": 376666688,
+          "bytes_per_request": 1883.33344,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.255111083,
+          "requests_per_second": 783972.2118227219,
+          "ns_per_request": 1275.555415,
+          "allocated_bytes": 376672496,
+          "bytes_per_request": 1883.36248,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r6.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 6,
+      "median_requests_per_second": 596562.7539558322,
+      "median_bytes_per_request": 2716.87384,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.393458459,
+          "requests_per_second": 508312.8737613442,
+          "ns_per_request": 1967.292295,
+          "allocated_bytes": 543387568,
+          "bytes_per_request": 2716.93784,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.340174125,
+          "requests_per_second": 587934.1939955016,
+          "ns_per_request": 1700.870625,
+          "allocated_bytes": 543377248,
+          "bytes_per_request": 2716.88624,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.335253917,
+          "requests_per_second": 596562.7539558322,
+          "ns_per_request": 1676.269585,
+          "allocated_bytes": 543372288,
+          "bytes_per_request": 2716.86144,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.335046375,
+          "requests_per_second": 596932.290343389,
+          "ns_per_request": 1675.231875,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.333328584,
+          "requests_per_second": 600008.5489218051,
+          "ns_per_request": 1666.64292,
+          "allocated_bytes": 543374576,
+          "bytes_per_request": 2716.87288,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r6.json"
+    },
+    {
+      "strategy": "legacy_router",
+      "repetition": 7,
+      "median_requests_per_second": 600419.6182607119,
+      "median_bytes_per_request": 2716.874,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.330681958,
+          "requests_per_second": 604810.7408387851,
+          "ns_per_request": 1653.40979,
+          "allocated_bytes": 543390160,
+          "bytes_per_request": 2716.9508,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.328327375,
+          "requests_per_second": 609148.1101750958,
+          "ns_per_request": 1641.636875,
+          "allocated_bytes": 543374800,
+          "bytes_per_request": 2716.874,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.333100375,
+          "requests_per_second": 600419.6182607119,
+          "ns_per_request": 1665.501875,
+          "allocated_bytes": 543374768,
+          "bytes_per_request": 2716.87384,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.334813125,
+          "requests_per_second": 597348.147567393,
+          "ns_per_request": 1674.065625,
+          "allocated_bytes": 543374448,
+          "bytes_per_request": 2716.87224,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.337448084,
+          "requests_per_second": 592683.7622820819,
+          "ns_per_request": 1687.24042,
+          "allocated_bytes": 543375088,
+          "bytes_per_request": 2716.87544,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/legacy_router_r7.json"
+    },
+    {
+      "strategy": "span_router",
+      "repetition": 7,
+      "median_requests_per_second": 769040.6061937968,
+      "median_bytes_per_request": 1883.35656,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 200000,
+          "elapsed_seconds": 0.263208833,
+          "requests_per_second": 759852.918765838,
+          "ns_per_request": 1316.0441649999998,
+          "allocated_bytes": 376670896,
+          "bytes_per_request": 1883.35448,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 2,
+          "operations": 200000,
+          "elapsed_seconds": 0.260064291,
+          "requests_per_second": 769040.6061937968,
+          "ns_per_request": 1300.321455,
+          "allocated_bytes": 376672576,
+          "bytes_per_request": 1883.36288,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 3,
+          "operations": 200000,
+          "elapsed_seconds": 0.258343042,
+          "requests_per_second": 774164.4537885406,
+          "ns_per_request": 1291.71521,
+          "allocated_bytes": 376666784,
+          "bytes_per_request": 1883.33392,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 4,
+          "operations": 200000,
+          "elapsed_seconds": 0.260992833,
+          "requests_per_second": 766304.5674514748,
+          "ns_per_request": 1304.9641649999999,
+          "allocated_bytes": 376672528,
+          "bytes_per_request": 1883.36264,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        },
+        {
+          "repetition": 5,
+          "operations": 200000,
+          "elapsed_seconds": 0.256999833,
+          "requests_per_second": 778210.6224170192,
+          "ns_per_request": 1284.999165,
+          "allocated_bytes": 376671312,
+          "bytes_per_request": 1883.35656,
+          "response_bytes": 39100418,
+          "response_bytes_per_request": 195.50209
+        }
+      ],
+      "raw_result": "round19_http_cpu_router_isolate_ab_raw/span_router_r7.json"
+    }
+  ]
+}

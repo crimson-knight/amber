@@ -8,6 +8,7 @@ This pass produced a real framework improvement, not just a faster toy matcher.
 
 - The new default router is **3.33x to 4.05x faster** than the original matcher across 500, 1,000, and 1,500 mixed routes on stock Crystal and `acrystal`.
 - At 1,000 routes with path parameters consumed, stock Crystal improved from **1.63M to 5.75M matches/second**, a **3.53x** result, while allocation fell from **871 to 130 bytes/match**.
+- With the rest of the final framework held constant, the router alone raises parsed-HTTP throughput from **597K to 777K requests/second**, or **30.2%**, and cuts allocation **30.7%**.
 - A parsed-HTTP CPU benchmark improved from **593K to 759K requests/second** for direct JSON responses, or **28.1%**, while allocation fell **36.4%**.
 - The same parsed-HTTP benchmark through `respond_with` improved from **452K to 728K requests/second**, or **61.3%**, while allocation fell **47.5%**.
 - A real Amber server driven through localhost TCP improved **3.2% at one connection** and **6.5% at 50 connections** for direct JSON responses.
@@ -54,6 +55,15 @@ The parsed-HTTP test is the best estimate of Amber's user-space request ceiling 
 The same matrix on `acrystal` produced **3.33x to 4.05x** speedups with the same allocation profile. This is important: the optimization does not depend on a fork-only compiler behavior.
 
 ### Parsed HTTP CPU ceiling
+
+The first table is the router attribution control. Both binaries come from the same final source and differ only by `-Damber_router_legacy_match`; process order rotates across seven repetitions.
+
+| Held-constant path | Legacy router | New default | Change |
+| --- | ---: | ---: | ---: |
+| parsed requests/second | 596,563 | 776,594 | +30.2% |
+| allocation/request | 2,717 B | 1,883 B | -30.7% |
+
+This is the cleanest answer to "how much does the router itself matter in a real parsed request?" The separate original-to-final tables below measure the complete stack. Absolute RPS from independently scheduled process sets should not be subtracted from one another; their within-run A/B ratios are the meaningful comparison.
 
 | Response path | Original | New default | Throughput gain | Bytes/request | Allocation reduction |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -151,6 +161,20 @@ crystal build benchmarks/router_revalidation_http_cpu.cr --release -o /tmp/amber
 
 Add `-Damber_bench_respond_with` at build time for negotiated responses, or `-Damber_bench_optional_params` for the optional-param workload.
 
+To isolate the router, build the optimized CPU benchmark twice, adding `-Damber_router_legacy_match` to one binary, then rotate the two processes with:
+
+```sh
+ruby benchmarks/bin/router_http_cpu_ab.rb \
+  --binary=legacy_router:/tmp/amber-router-cpu-legacy \
+  --binary=span_router:/tmp/amber-router-cpu-default \
+  --routes=1000 \
+  --operations=200000 \
+  --warmup=20000 \
+  --inner-repetitions=5 \
+  --repetitions=7 \
+  --output=benchmarks/results/router_http_cpu_ab.json
+```
+
 For real TCP, build `benchmarks/router_revalidation_http_server.cr` in each worktree, generate a URL file once with `--url-file`, and compare the two release binaries with:
 
 ```sh
@@ -172,6 +196,7 @@ The committed evidence is in [`benchmarks/results`](results/). The primary files
 - [`round19_router_micro_final_acrystal.json`](results/round19_router_micro_final_acrystal.json)
 - [`round19_http_cpu_original_stock.json`](results/round19_http_cpu_original_stock.json)
 - [`round19_http_cpu_final_default_stock.json`](results/round19_http_cpu_final_default_stock.json)
+- [`round19_http_cpu_router_isolate_ab.json`](results/round19_http_cpu_router_isolate_ab.json)
 - [`round19_http_cpu_respond_original_stock.json`](results/round19_http_cpu_respond_original_stock.json)
 - [`round19_http_cpu_respond_final_stock.json`](results/round19_http_cpu_respond_final_stock.json)
 - [`round19_http_final_vs_original_ab.json`](results/round19_http_final_vs_original_ab.json)
