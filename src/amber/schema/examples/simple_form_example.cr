@@ -119,5 +119,7 @@ module SimpleFormExample
   end
 end
 
-# Run the examples
-SimpleFormExample.run
+# Run only when this example is the program entry point.
+if PROGRAM_NAME.includes?("simple_form_example")
+  SimpleFormExample.run
+end
