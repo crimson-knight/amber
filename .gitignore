@@ -14,3 +14,5 @@ shard.lock
 *.bak
 *.png
 benchmarks/results/*_raw/
+benchmarks/digitalocean/*-inventory.json
+benchmarks/digitalocean/*.user-data.yml
