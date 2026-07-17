@@ -112,6 +112,8 @@ users:
     ssh_authorized_keys:
       - ${SSH_PUBLIC_KEY}
 ssh_pwauth: false
+bootcmd:
+  - chage -d -1 -E -1 -M 99999 root
 package_update: true
 package_upgrade: false
 packages:
