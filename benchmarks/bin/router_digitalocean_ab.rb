@@ -77,18 +77,18 @@ def scp_capture(source, destination, ssh_options)
 end
 
 def parse_properties(output)
-  output.lines.filter_map do |line|
+  output.lines.each_with_object({}) do |line, properties|
     key, value = line.strip.split("=", 2)
-    [key, value] if key && value
-  end.to_h
+    properties[key] = value if key && value
+  end
 end
 
 def parse_time_verbose(output)
-  output.lines.filter_map do |line|
+  output.lines.each_with_object({}) do |line, properties|
     next unless line.include?(":")
     key, value = line.strip.split(":", 2)
-    [key, value.strip]
-  end.to_h
+    properties[key] = value.strip
+  end
 end
 
 def percentile(values, fraction)
