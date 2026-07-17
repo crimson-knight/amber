@@ -144,6 +144,7 @@ EOF
   - libyaml-dev
   - lld
   - pkg-config
+  - ruby
   - zlib1g-dev
 EOF
   fi
