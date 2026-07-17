@@ -1,0 +1,2389 @@
+{
+  "metadata": {
+    "compiler": "Crystal 1.20.0-dev [6636853e8] (2026-06-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+    "generated_at_utc": "2026-07-17T01:32:16Z",
+    "route_count": 1000,
+    "route_mix": "45% static; 25% REST ID; 15% dynamic action; 5% nested; 5% constrained; 5% glob",
+    "traffic_entries": 4096,
+    "profiles": [
+      "mixed",
+      "static",
+      "rest_integer",
+      "rest_uuid",
+      "rest_ulid",
+      "rest_slug",
+      "dynamic_uuid",
+      "nested_uuid",
+      "constrained_integer",
+      "constrained_uuid",
+      "constrained_ulid",
+      "glob",
+      "notfound"
+    ],
+    "profile_descriptions": {
+      "mixed": "45% static; 25% REST ID; 15% dynamic action; 5% nested; 5% constrained; 5% glob",
+      "static": "literal-only paths with no captured parameters",
+      "rest_integer": "REST resource routes ending in an unconstrained decimal-looking :id",
+      "rest_uuid": "REST resource routes ending in an unconstrained 36-byte UUID :id",
+      "rest_ulid": "REST resource routes ending in an unconstrained 26-byte ULID :id",
+      "rest_slug": "REST resource routes ending in an unconstrained human-readable slug :id",
+      "dynamic_uuid": "unconstrained UUID :id followed by a literal action segment",
+      "nested_uuid": "two unconstrained UUID parameters in one path",
+      "constrained_integer": "decimal :id checked by an anchored regular expression",
+      "constrained_uuid": "UUID :id checked by an anchored regular expression",
+      "constrained_ulid": "ULID :id checked by an anchored regular expression",
+      "glob": "multi-segment wildcard capture",
+      "notfound": "paths that do not match any registered route"
+    },
+    "operations": 1000000,
+    "warmup_operations": 100000,
+    "repetitions": 5,
+    "parameter_values_consumed": true,
+    "legacy_scope": "method/path concatenation, split matcher, parameter materialization",
+    "optimized_scope": "method-root selection, byte-span matcher, parameter materialization"
+  },
+  "aggregates": {
+    "mixed": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1724681.2294104537,
+          "median": 1737060.562479283,
+          "mean": 1740355.7270149228,
+          "max": 1758677.885619945,
+          "stddev": 11990.954114491564,
+          "coefficient_of_variation": 0.006889944353536607
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 568.608958,
+          "median": 575.685167,
+          "mean": 574.6224,
+          "max": 579.817292,
+          "stddev": 3.9517683454211117,
+          "coefficient_of_variation": 0.006877156799702051
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 925.401856,
+          "median": 925.403136,
+          "mean": 925.4038591999999,
+          "max": 925.406464,
+          "stddev": 0.0015847723369840762,
+          "coefficient_of_variation": 1.7125196974584611e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 5756377.166466513,
+          "median": 5839528.313735526,
+          "mean": 5854492.966700666,
+          "max": 5955439.886090539,
+          "stddev": 69411.5782024651,
+          "coefficient_of_variation": 0.01185612120422145
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 167.913709,
+          "median": 171.246708,
+          "mean": 170.83297480000002,
+          "max": 173.720375,
+          "stddev": 2.023538304555003,
+          "coefficient_of_variation": 0.011845127130309755
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 142.787376,
+          "median": 142.790992,
+          "mean": 142.790688,
+          "max": 142.793376,
+          "stddev": 0.0019172780705987366,
+          "coefficient_of_variation": 1.3427192609357949e-5
+        }
+      }
+    },
+    "static": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1996901.3083946987,
+          "median": 2183899.6367082954,
+          "mean": 2136534.753122741,
+          "max": 2215532.9571095463,
+          "stddev": 86652.67285585238,
+          "coefficient_of_variation": 0.04055757704348201
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 451.358666,
+          "median": 457.8965,
+          "mean": 468.83830820000003,
+          "max": 500.775875,
+          "stddev": 19.500914177445598,
+          "coefficient_of_variation": 0.041594114295640645
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 860.8004,
+          "median": 860.80432,
+          "mean": 860.8041184000001,
+          "max": 860.806048,
+          "stddev": 0.001977423940405778,
+          "coefficient_of_variation": 2.2971822487109717e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 8421182.619180975,
+          "median": 8556042.997127788,
+          "mean": 8537736.540492302,
+          "max": 8597096.99762378,
+          "stddev": 65096.94882503763,
+          "coefficient_of_variation": 0.007624614383015855
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 116.318334,
+          "median": 116.876458,
+          "mean": 117.1339168,
+          "max": 118.748167,
+          "stddev": 0.8990068797662013,
+          "coefficient_of_variation": 0.00767503473226468
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 96.0,
+          "median": 96.002976,
+          "mean": 96.0023424,
+          "max": 96.002976,
+          "stddev": 0.0011735582814687562,
+          "coefficient_of_variation": 1.222426715984751e-5
+        }
+      }
+    },
+    "rest_integer": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 2159936.2602809593,
+          "median": 2165267.2724723616,
+          "mean": 2174459.9963893252,
+          "max": 2193576.150411744,
+          "stddev": 14057.221245651846,
+          "coefficient_of_variation": 0.006464695266408101
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 455.876583,
+          "median": 461.83675,
+          "mean": 459.90346659999994,
+          "max": 462.976625,
+          "stddev": 2.9657651580346505,
+          "coefficient_of_variation": 0.006448668847747822
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 847.998576,
+          "median": 848.000304,
+          "mean": 848.0020959999999,
+          "max": 848.007632,
+          "stddev": 0.0032223857000473265,
+          "coefficient_of_variation": 3.799973744460328e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 6871466.936497263,
+          "median": 6934682.530372453,
+          "mean": 6959267.0850481,
+          "max": 7068163.866812637,
+          "stddev": 66656.48944630414,
+          "coefficient_of_variation": 0.009578090427009878
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 141.479459,
+          "median": 144.202708,
+          "mean": 143.7064252,
+          "max": 145.529333,
+          "stddev": 1.3711869589285666,
+          "coefficient_of_variation": 0.009541584219496446
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 127.995328,
+          "median": 128.000768,
+          "mean": 128.0009664,
+          "max": 128.005792,
+          "stddev": 0.004260852571964062,
+          "coefficient_of_variation": 3.328765939664079e-5
+        }
+      }
+    },
+    "rest_uuid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1785089.7720575314,
+          "median": 1900678.4654247467,
+          "mean": 1877452.464291703,
+          "max": 1927240.7192383732,
+          "stddev": 50202.469584226594,
+          "coefficient_of_variation": 0.026739675458662664
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 518.876542,
+          "median": 526.127916,
+          "mean": 533.0282748,
+          "max": 560.195916,
+          "stddev": 14.648508137591447,
+          "coefficient_of_variation": 0.027481671855189637
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 895.992928,
+          "median": 895.997728,
+          "mean": 895.9975968000001,
+          "max": 896.001472,
+          "stddev": 0.003295198349112232,
+          "coefficient_of_variation": 3.6776865930007275e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 5790942.605568261,
+          "median": 5837049.982489726,
+          "mean": 5858973.869208863,
+          "max": 5922281.906387046,
+          "stddev": 52761.836497166914,
+          "coefficient_of_variation": 0.009005303262137837
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 168.853833,
+          "median": 171.319417,
+          "mean": 170.6921752,
+          "max": 172.683459,
+          "stddev": 1.535110945135417,
+          "coefficient_of_variation": 0.0089934464971035
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 159.997152,
+          "median": 159.999968,
+          "mean": 160.0008192,
+          "max": 160.006208,
+          "stddev": 0.0031020926098306086,
+          "coefficient_of_variation": 1.9387979544986034e-5
+        }
+      }
+    },
+    "rest_ulid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1927099.431840212,
+          "median": 1933544.8710053037,
+          "mean": 1940771.1249529782,
+          "max": 1963157.262744857,
+          "stddev": 13259.755533873316,
+          "coefficient_of_variation": 0.006832209817731382
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 509.383542,
+          "median": 517.184791,
+          "mean": 515.2830502,
+          "max": 518.914584,
+          "stddev": 3.504250672224498,
+          "coefficient_of_variation": 0.006800632527820139
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 879.998032,
+          "median": 879.99992,
+          "mean": 880.001168,
+          "max": 880.005312,
+          "stddev": 0.0031558392861671383,
+          "coefficient_of_variation": 3.5861762471741834e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 5072373.255658391,
+          "median": 6271846.959709015,
+          "mean": 6027448.59528566,
+          "max": 6293937.90181837,
+          "stddev": 478246.4375803012,
+          "coefficient_of_variation": 0.07934475591452732
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 158.883042,
+          "median": 159.442666,
+          "mean": 167.10076660000001,
+          "max": 197.146375,
+          "stddev": 15.037545714621091,
+          "coefficient_of_variation": 0.08999088406708176
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 143.998128,
+          "median": 144.001056,
+          "mean": 144.0014784,
+          "max": 144.003792,
+          "stddev": 0.0020347471194217433,
+          "coefficient_of_variation": 1.4130043260873516e-5
+        }
+      }
+    },
+    "rest_slug": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1861359.0014739637,
+          "median": 1888881.0634645186,
+          "mean": 1889628.0617255997,
+          "max": 1911808.4373757648,
+          "stddev": 16480.246791790298,
+          "coefficient_of_variation": 0.008721423610073092
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 523.0649579999999,
+          "median": 529.413958,
+          "mean": 529.2451082,
+          "max": 537.241875,
+          "stddev": 4.636539763954293,
+          "coefficient_of_variation": 0.008760666262411933
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 879.993728,
+          "median": 879.998592,
+          "mean": 879.9978848000001,
+          "max": 880.002192,
+          "stddev": 0.0030572546115701254,
+          "coefficient_of_variation": 3.4741613183138018e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 5891821.757238079,
+          "median": 5993143.81949792,
+          "mean": 5968998.1991385855,
+          "max": 6000310.504067964,
+          "stddev": 40385.10403991345,
+          "coefficient_of_variation": 0.006765809385860029
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 166.658042,
+          "median": 166.857334,
+          "mean": 167.5400334,
+          "max": 169.726791,
+          "stddev": 1.1429459466372984,
+          "coefficient_of_variation": 0.006821927413065076
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 143.997552,
+          "median": 143.999664,
+          "mean": 143.99968320000002,
+          "max": 144.001536,
+          "stddev": 0.0013311153819184798,
+          "coefficient_of_variation": 9.243877155408072e-6
+        }
+      }
+    },
+    "dynamic_uuid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1599043.664432935,
+          "median": 1702627.3394008128,
+          "mean": 1680819.709078643,
+          "max": 1715868.480396846,
+          "stddev": 42180.36238802224,
+          "coefficient_of_variation": 0.025095114104262732
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 582.79525,
+          "median": 587.327583,
+          "mean": 595.3352998,
+          "max": 625.373792,
+          "stddev": 15.442395854204891,
+          "coefficient_of_variation": 0.025938989103103223
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 1007.996704,
+          "median": 1008.000624,
+          "mean": 1008.0009216000001,
+          "max": 1008.006816,
+          "stddev": 0.003667660704024809,
+          "coefficient_of_variation": 3.6385489590655635e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 5279432.662874246,
+          "median": 5406843.567341955,
+          "mean": 5380041.543282052,
+          "max": 5510426.175423635,
+          "stddev": 85471.93816287552,
+          "coefficient_of_variation": 0.01588685467858563
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 181.474167,
+          "median": 184.950792,
+          "mean": 185.91896699999998,
+          "max": 189.414292,
+          "stddev": 2.945841882637284,
+          "coefficient_of_variation": 0.015844762533761735
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 159.997152,
+          "median": 159.99968,
+          "mean": 159.99952000000002,
+          "max": 160.001408,
+          "stddev": 0.001360056469416208,
+          "coefficient_of_variation": 8.500378434986605e-6
+        }
+      }
+    },
+    "nested_uuid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1159649.866915682,
+          "median": 1184532.9024002634,
+          "mean": 1179994.915994686,
+          "max": 1198689.2338023128,
+          "stddev": 13483.61387140467,
+          "coefficient_of_variation": 0.011426840648748517
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 834.244583,
+          "median": 844.214625,
+          "mean": 847.5722,
+          "max": 862.32925,
+          "stddev": 9.707613701322572,
+          "coefficient_of_variation": 0.01145343570886654
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 1391.99592,
+          "median": 1392.000304,
+          "mean": 1392.0010624000001,
+          "max": 1392.005232,
+          "stddev": 0.0031993215280388884,
+          "coefficient_of_variation": 2.2983614125429046e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 3260100.606704723,
+          "median": 3324919.436287706,
+          "mean": 3312254.4518124214,
+          "max": 3386482.7693640143,
+          "stddev": 47474.25389520588,
+          "coefficient_of_variation": 0.014332912699152265
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 295.291625,
+          "median": 300.759167,
+          "mean": 301.9709836,
+          "max": 306.739,
+          "stddev": 4.312843974270082,
+          "coefficient_of_variation": 0.014282312568094315
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 399.996208,
+          "median": 399.998608,
+          "mean": 399.9977951999999,
+          "max": 399.998608,
+          "stddev": 0.001022318619599673,
+          "coefficient_of_variation": 2.555810636627412e-6
+        }
+      }
+    },
+    "constrained_integer": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1796330.1445784757,
+          "median": 1801116.5142885474,
+          "mean": 1806099.8073629923,
+          "max": 1819147.4812005751,
+          "stddev": 9430.756684864524,
+          "coefficient_of_variation": 0.005221614357311715
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 549.708042,
+          "median": 555.211166,
+          "mean": 553.6943248,
+          "max": 556.690541,
+          "stddev": 2.885602588533754,
+          "coefficient_of_variation": 0.005211544455645384
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 991.998512,
+          "median": 992.00048,
+          "mean": 992.0012704000001,
+          "max": 992.004,
+          "stddev": 0.0022517088266464265,
+          "coefficient_of_variation": 2.2698648619053486e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 4607267.849851444,
+          "median": 4676520.231973361,
+          "mean": 4686922.683100514,
+          "max": 4790831.2993938895,
+          "stddev": 69675.46357972272,
+          "coefficient_of_variation": 0.014865929798874066
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 208.732042,
+          "median": 213.834208,
+          "mean": 213.4065834,
+          "max": 217.048375,
+          "stddev": 3.159905731549251,
+          "coefficient_of_variation": 0.014806973998672111
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 191.99632,
+          "median": 191.99888,
+          "mean": 191.9984832,
+          "max": 191.999648,
+          "stddev": 0.0012457168859777354,
+          "coefficient_of_variation": 6.488160037598335e-6
+        }
+      }
+    },
+    "constrained_uuid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1432347.6248328984,
+          "median": 1569381.5763699068,
+          "mean": 1536634.825330612,
+          "max": 1590590.0691509033,
+          "stddev": 60742.15819006853,
+          "coefficient_of_variation": 0.03952933851866832
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 628.6975,
+          "median": 637.193666,
+          "mean": 651.8234248,
+          "max": 698.154542,
+          "stddev": 26.589754200596037,
+          "coefficient_of_variation": 0.040792879158576746
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 1053.169984,
+          "median": 1053.179936,
+          "mean": 1053.1786304000002,
+          "max": 1053.185232,
+          "stddev": 0.006267497159131542,
+          "coefficient_of_variation": 5.951029557778939e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 3501062.933209711,
+          "median": 3552179.665041677,
+          "mean": 3546198.294044128,
+          "max": 3572853.450905174,
+          "stddev": 25242.05060105735,
+          "coefficient_of_variation": 0.007118059540960132
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 279.888334,
+          "median": 281.517292,
+          "mean": 282.0065002,
+          "max": 285.627542,
+          "stddev": 2.0192811710097684,
+          "coefficient_of_variation": 0.007160406478494954
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 255.99632,
+          "median": 255.9976,
+          "mean": 255.997856,
+          "max": 255.999296,
+          "stddev": 0.0010953165752412167,
+          "coefficient_of_variation": 4.278616205446723e-6
+        }
+      }
+    },
+    "constrained_ulid": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1563565.5870490726,
+          "median": 1601486.3920492146,
+          "mean": 1597771.5881428714,
+          "max": 1612350.4990525497,
+          "stddev": 17938.127667590248,
+          "coefficient_of_variation": 0.011226966232664188
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 620.212541,
+          "median": 624.419917,
+          "mean": 625.9516416,
+          "max": 639.563833,
+          "stddev": 7.121817094859325,
+          "coefficient_of_variation": 0.011377583540886946
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 1023.999008,
+          "median": 1024.00344,
+          "mean": 1024.0027296,
+          "max": 1024.0052,
+          "stddev": 0.0022027206450255738,
+          "coefficient_of_variation": 2.151088645912115e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 3775763.678032415,
+          "median": 3879080.029466889,
+          "mean": 3857387.621487929,
+          "max": 3892825.3333300794,
+          "stddev": 43935.64003193539,
+          "coefficient_of_variation": 0.011389998709797249
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 256.88283299999995,
+          "median": 257.79308299999997,
+          "mean": 259.2768584,
+          "max": 264.847084,
+          "stddev": 2.9895496594251654,
+          "coefficient_of_variation": 0.011530337407949577
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 223.998528,
+          "median": 224.000512,
+          "mean": 224.0007136,
+          "max": 224.004256,
+          "stddev": 0.002062488749061556,
+          "coefficient_of_variation": 9.207509725815249e-6
+        }
+      }
+    },
+    "glob": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 1806021.6837320547,
+          "median": 1822109.8463913477,
+          "mean": 1822137.8079000995,
+          "max": 1832832.679507848,
+          "stddev": 9417.381111934694,
+          "coefficient_of_variation": 0.005168314422270641
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 545.603541,
+          "median": 548.814333,
+          "mean": 548.8206164000001,
+          "max": 553.703208,
+          "stddev": 2.8452903616358585,
+          "coefficient_of_variation": 0.005184372227668119
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 1039.603552,
+          "median": 1039.607008,
+          "mean": 1039.6069023999999,
+          "max": 1039.60992,
+          "stddev": 0.0020183250085321213,
+          "coefficient_of_variation": 1.941430942669472e-6
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 4554779.773824485,
+          "median": 4702546.311263892,
+          "mean": 4670975.645258201,
+          "max": 4714819.254009227,
+          "stddev": 59528.74702302197,
+          "coefficient_of_variation": 0.012744392508972578
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 212.097208,
+          "median": 212.65075,
+          "mean": 214.1234164,
+          "max": 219.549583,
+          "stddev": 2.7762395137437768,
+          "coefficient_of_variation": 0.012965604418330105
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 239.996016,
+          "median": 239.999904,
+          "mean": 239.9984832,
+          "max": 240.000288,
+          "stddev": 0.0020184214029793355,
+          "coefficient_of_variation": 8.410142331180097e-6
+        }
+      }
+    },
+    "notfound": {
+      "legacy": {
+        "ips": {
+          "count": 5,
+          "min": 3323083.9234343916,
+          "median": 3696307.1056946563,
+          "mean": 3639008.9230263247,
+          "max": 3782820.1113827927,
+          "stddev": 161753.96323938572,
+          "coefficient_of_variation": 0.04445000456466745
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 264.353041,
+          "median": 270.540291,
+          "mean": 275.3784416,
+          "max": 300.925292,
+          "stddev": 13.014915933903522,
+          "coefficient_of_variation": 0.04726192747073605
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 543.60336,
+          "median": 543.60336,
+          "mean": 543.603536,
+          "max": 543.604064,
+          "stddev": 0.0002726580275890984,
+          "coefficient_of_variation": 5.015751545609858e-7
+        }
+      },
+      "optimized": {
+        "ips": {
+          "count": 5,
+          "min": 14808461.874978138,
+          "median": 15229953.102100816,
+          "mean": 15249421.828223387,
+          "max": 15533839.903244061,
+          "stddev": 260201.09492994958,
+          "coefficient_of_variation": 0.017063013789045664
+        },
+        "ns_per_operation": {
+          "count": 5,
+          "min": 64.375583,
+          "median": 65.660084,
+          "mean": 65.5955416,
+          "max": 67.528958,
+          "stddev": 1.1303467977966037,
+          "coefficient_of_variation": 0.01723206745802071
+        },
+        "bytes_per_operation": {
+          "count": 5,
+          "min": 95.999136,
+          "median": 96.00048,
+          "mean": 96.00009599999998,
+          "max": 96.00048,
+          "stddev": 0.0005293074720810516,
+          "coefficient_of_variation": 5.513613987230301e-6
+        }
+      }
+    }
+  },
+  "trials": [
+    {
+      "profile": "mixed",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.577124666,
+      "ips": 1732727.8817086637,
+      "ns_per_operation": 577.124666,
+      "allocated_bytes": 925401856,
+      "bytes_per_operation": 925.401856,
+      "sink": 419051938
+    },
+    {
+      "profile": "mixed",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.171940166,
+      "ips": 5815976.704361213,
+      "ns_per_operation": 171.940166,
+      "allocated_bytes": 142793376,
+      "bytes_per_operation": 142.793376,
+      "sink": 419051938
+    },
+    {
+      "profile": "static",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.116335416,
+      "ips": 8595834.651074786,
+      "ns_per_operation": 116.335416,
+      "allocated_bytes": 96000000,
+      "bytes_per_operation": 96.0,
+      "sink": 76211148
+    },
+    {
+      "profile": "static",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.4578965,
+      "ips": 2183899.6367082954,
+      "ns_per_operation": 457.8965,
+      "allocated_bytes": 860805504,
+      "bytes_per_operation": 860.805504,
+      "sink": 76211148
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.462069,
+      "ips": 2164178.942971721,
+      "ns_per_operation": 462.069,
+      "allocated_bytes": 848003664,
+      "bytes_per_operation": 848.003664,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.143001584,
+      "ips": 6992929.532864476,
+      "ns_per_operation": 143.001584,
+      "allocated_bytes": 127995328,
+      "bytes_per_operation": 127.995328,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.171669625,
+      "ips": 5825142.333712211,
+      "ns_per_operation": 171.669625,
+      "allocated_bytes": 159997152,
+      "bytes_per_operation": 159.997152,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.524129834,
+      "ips": 1907924.2110076107,
+      "ns_per_operation": 524.129834,
+      "allocated_bytes": 895992928,
+      "bytes_per_operation": 895.992928,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.517184791,
+      "ips": 1933544.8710053037,
+      "ns_per_operation": 517.184791,
+      "allocated_bytes": 879999920,
+      "bytes_per_operation": 879.99992,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.197146375,
+      "ips": 5072373.255658391,
+      "ns_per_operation": 197.146375,
+      "allocated_bytes": 144001056,
+      "bytes_per_operation": 144.001056,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.169726791,
+      "ips": 5891821.757238079,
+      "ns_per_operation": 169.726791,
+      "allocated_bytes": 144000480,
+      "bytes_per_operation": 144.00048,
+      "sink": 530081422
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.529545708,
+      "ips": 1888411.1133235735,
+      "ns_per_operation": 529.545708,
+      "allocated_bytes": 879998592,
+      "bytes_per_operation": 879.998592,
+      "sink": 530081422
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.587327583,
+      "ips": 1702627.3394008128,
+      "ns_per_operation": 587.327583,
+      "allocated_bytes": 1007996704,
+      "bytes_per_operation": 1007.996704,
+      "sink": 767350498
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.188956292,
+      "ips": 5292229.168002513,
+      "ns_per_operation": 188.956292,
+      "allocated_bytes": 159997152,
+      "bytes_per_operation": 159.997152,
+      "sink": 767350498
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.306639792,
+      "ips": 3261155.355858055,
+      "ns_per_operation": 306.639792,
+      "allocated_bytes": 399996944,
+      "bytes_per_operation": 399.996944,
+      "sink": 938384748
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.854133625,
+      "ips": 1170776.9963979581,
+      "ns_per_operation": 854.133625,
+      "allocated_bytes": 1392005232,
+      "bytes_per_operation": 1392.005232,
+      "sink": 938384748
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.556690541,
+      "ips": 1796330.1445784757,
+      "ns_per_operation": 556.690541,
+      "allocated_bytes": 991999520,
+      "bytes_per_operation": 991.99952,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.216396625,
+      "ips": 4621144.160635592,
+      "ns_per_operation": 216.396625,
+      "allocated_bytes": 191997952,
+      "bytes_per_operation": 191.997952,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.281517292,
+      "ips": 3552179.665041677,
+      "ns_per_operation": 281.517292,
+      "allocated_bytes": 255998880,
+      "bytes_per_operation": 255.99888,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.637193666,
+      "ips": 1569381.5763699068,
+      "ns_per_operation": 637.193666,
+      "allocated_bytes": 1053185168,
+      "bytes_per_operation": 1053.185168,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.639563833,
+      "ips": 1563565.5870490726,
+      "ns_per_operation": 639.563833,
+      "allocated_bytes": 1023999008,
+      "bytes_per_operation": 1023.999008,
+      "sink": 950500000
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.264847084,
+      "ips": 3775763.678032415,
+      "ns_per_operation": 264.847084,
+      "allocated_bytes": 223998864,
+      "bytes_per_operation": 223.998864,
+      "sink": 950500000
+    },
+    {
+      "profile": "glob",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.219549583,
+      "ips": 4554779.773824485,
+      "ns_per_operation": 219.549583,
+      "allocated_bytes": 239996016,
+      "bytes_per_operation": 239.996016,
+      "sink": 992113222
+    },
+    {
+      "profile": "glob",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.553703208,
+      "ips": 1806021.6837320547,
+      "ns_per_operation": 553.703208,
+      "allocated_bytes": 1039607024,
+      "bytes_per_operation": 1039.607024,
+      "sink": 992113222
+    },
+    {
+      "profile": "notfound",
+      "strategy": "legacy",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.270540291,
+      "ips": 3696307.1056946563,
+      "ns_per_operation": 270.540291,
+      "allocated_bytes": 543603536,
+      "bytes_per_operation": 543.603536,
+      "sink": -1000000
+    },
+    {
+      "profile": "notfound",
+      "strategy": "optimized",
+      "repetition": 1,
+      "operations": 1000000,
+      "elapsed_seconds": 0.065660084,
+      "ips": 15229953.102100816,
+      "ns_per_operation": 65.660084,
+      "allocated_bytes": 95999904,
+      "bytes_per_operation": 95.999904,
+      "sink": -1000000
+    },
+    {
+      "profile": "static",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.117391209,
+      "ips": 8518525.437454179,
+      "ns_per_operation": 117.391209,
+      "allocated_bytes": 96002784,
+      "bytes_per_operation": 96.002784,
+      "sink": 76211148
+    },
+    {
+      "profile": "static",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.500775875,
+      "ips": 1996901.3083946987,
+      "ns_per_operation": 500.775875,
+      "allocated_bytes": 860800400,
+      "bytes_per_operation": 860.8004,
+      "sink": 76211148
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.462976625,
+      "ips": 2159936.2602809593,
+      "ns_per_operation": 462.976625,
+      "allocated_bytes": 848007632,
+      "bytes_per_operation": 848.007632,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.144319042,
+      "ips": 6929092.558693675,
+      "ns_per_operation": 144.319042,
+      "allocated_bytes": 127997280,
+      "bytes_per_operation": 127.99728,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.171319417,
+      "ips": 5837049.982489726,
+      "ns_per_operation": 171.319417,
+      "allocated_bytes": 160006208,
+      "bytes_per_operation": 160.006208,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.535811166,
+      "ips": 1866329.1537302528,
+      "ns_per_operation": 535.811166,
+      "allocated_bytes": 896001472,
+      "bytes_per_operation": 896.001472,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.518914584,
+      "ips": 1927099.431840212,
+      "ns_per_operation": 518.914584,
+      "allocated_bytes": 880005312,
+      "bytes_per_operation": 880.005312,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.159199958,
+      "ips": 6281408.692331439,
+      "ns_per_operation": 159.199958,
+      "allocated_bytes": 144003408,
+      "bytes_per_operation": 144.003408,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.166833875,
+      "ips": 5993986.5330107575,
+      "ns_per_operation": 166.833875,
+      "allocated_bytes": 144001536,
+      "bytes_per_operation": 144.001536,
+      "sink": 530081422
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.526959042,
+      "ips": 1897680.6929901775,
+      "ns_per_operation": 526.959042,
+      "allocated_bytes": 879993728,
+      "bytes_per_operation": 879.993728,
+      "sink": 530081422
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.587153833,
+      "ips": 1703131.179252644,
+      "ns_per_operation": 587.153833,
+      "allocated_bytes": 1007997616,
+      "bytes_per_operation": 1007.997616,
+      "sink": 767350498
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.184950792,
+      "ips": 5406843.567341955,
+      "ns_per_operation": 184.950792,
+      "allocated_bytes": 160001408,
+      "bytes_per_operation": 160.001408,
+      "sink": 767350498
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.300425334,
+      "ips": 3328614.0908476114,
+      "ns_per_operation": 300.425334,
+      "allocated_bytes": 399996208,
+      "bytes_per_operation": 399.996208,
+      "sink": 938384748
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.834244583,
+      "ips": 1198689.2338023128,
+      "ns_per_operation": 834.244583,
+      "allocated_bytes": 1392003552,
+      "bytes_per_operation": 1392.003552,
+      "sink": 938384748
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.549708042,
+      "ips": 1819147.4812005751,
+      "ns_per_operation": 549.708042,
+      "allocated_bytes": 992000480,
+      "bytes_per_operation": 992.00048,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.211021667,
+      "ips": 4738849.873648283,
+      "ns_per_operation": 211.021667,
+      "allocated_bytes": 191998880,
+      "bytes_per_operation": 191.99888,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.285627542,
+      "ips": 3501062.933209711,
+      "ns_per_operation": 285.627542,
+      "allocated_bytes": 255997184,
+      "bytes_per_operation": 255.997184,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.698154542,
+      "ips": 1432347.6248328984,
+      "ns_per_operation": 698.154542,
+      "allocated_bytes": 1053185232,
+      "bytes_per_operation": 1053.185232,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.620212541,
+      "ips": 1612350.4990525497,
+      "ns_per_operation": 620.212541,
+      "allocated_bytes": 1024005200,
+      "bytes_per_operation": 1024.0052,
+      "sink": 950500000
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.257793083,
+      "ips": 3879080.029466889,
+      "ns_per_operation": 257.79308299999997,
+      "allocated_bytes": 223998528,
+      "bytes_per_operation": 223.998528,
+      "sink": 950500000
+    },
+    {
+      "profile": "glob",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.21265075,
+      "ips": 4702546.311263892,
+      "ns_per_operation": 212.65075,
+      "allocated_bytes": 239999904,
+      "bytes_per_operation": 239.999904,
+      "sink": 992113222
+    },
+    {
+      "profile": "glob",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.54642375,
+      "ips": 1830081.5072551295,
+      "ns_per_operation": 546.42375,
+      "allocated_bytes": 1039603552,
+      "bytes_per_operation": 1039.603552,
+      "sink": 992113222
+    },
+    {
+      "profile": "notfound",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.269430375,
+      "ips": 3711534.0094820415,
+      "ns_per_operation": 269.430375,
+      "allocated_bytes": 543604064,
+      "bytes_per_operation": 543.604064,
+      "sink": -1000000
+    },
+    {
+      "profile": "notfound",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.067528958,
+      "ips": 14808461.874978138,
+      "ns_per_operation": 67.528958,
+      "allocated_bytes": 95999136,
+      "bytes_per_operation": 95.999136,
+      "sink": -1000000
+    },
+    {
+      "profile": "mixed",
+      "strategy": "optimized",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.171246708,
+      "ips": 5839528.313735526,
+      "ns_per_operation": 171.246708,
+      "allocated_bytes": 142787376,
+      "bytes_per_operation": 142.787376,
+      "sink": 419051938
+    },
+    {
+      "profile": "mixed",
+      "strategy": "legacy",
+      "repetition": 2,
+      "operations": 1000000,
+      "elapsed_seconds": 0.579817292,
+      "ips": 1724681.2294104537,
+      "ns_per_operation": 579.817292,
+      "allocated_bytes": 925404704,
+      "bytes_per_operation": 925.404704,
+      "sink": 419051938
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.455876583,
+      "ips": 2193576.150411744,
+      "ns_per_operation": 455.876583,
+      "allocated_bytes": 847998576,
+      "bytes_per_operation": 847.998576,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.141479459,
+      "ips": 7068163.866812637,
+      "ns_per_operation": 141.479459,
+      "allocated_bytes": 128000768,
+      "bytes_per_operation": 128.000768,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.168934542,
+      "ips": 5919452.517887076,
+      "ns_per_operation": 168.934542,
+      "allocated_bytes": 159998880,
+      "bytes_per_operation": 159.99888,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.518876542,
+      "ips": 1927240.7192383732,
+      "ns_per_operation": 518.876542,
+      "allocated_bytes": 895997728,
+      "bytes_per_operation": 895.997728,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.509383542,
+      "ips": 1963157.262744857,
+      "ns_per_operation": 509.383542,
+      "allocated_bytes": 879998032,
+      "bytes_per_operation": 879.998032,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.160831792,
+      "ips": 6217676.16691108,
+      "ns_per_operation": 160.831792,
+      "allocated_bytes": 144001008,
+      "bytes_per_operation": 144.001008,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.166857334,
+      "ips": 5993143.81949792,
+      "ns_per_operation": 166.857334,
+      "allocated_bytes": 143997552,
+      "bytes_per_operation": 143.997552,
+      "sink": 530081422
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.537241875,
+      "ips": 1861359.0014739637,
+      "ns_per_operation": 537.241875,
+      "allocated_bytes": 879995216,
+      "bytes_per_operation": 879.995216,
+      "sink": 530081422
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.625373792,
+      "ips": 1599043.664432935,
+      "ns_per_operation": 625.373792,
+      "allocated_bytes": 1008006816,
+      "bytes_per_operation": 1008.006816,
+      "sink": 767350498
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.184799292,
+      "ips": 5411276.142767906,
+      "ns_per_operation": 184.799292,
+      "allocated_bytes": 159999680,
+      "bytes_per_operation": 159.99968,
+      "sink": 767350498
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.306739,
+      "ips": 3260100.606704723,
+      "ns_per_operation": 306.739,
+      "allocated_bytes": 399998608,
+      "bytes_per_operation": 399.998608,
+      "sink": 938384748
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.86232925,
+      "ips": 1159649.866915682,
+      "ns_per_operation": 862.32925,
+      "allocated_bytes": 1392000304,
+      "bytes_per_operation": 1392.000304,
+      "sink": 938384748
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.550754541,
+      "ips": 1815690.8850616268,
+      "ns_per_operation": 550.754541,
+      "allocated_bytes": 992003840,
+      "bytes_per_operation": 992.00384,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.213834208,
+      "ips": 4676520.231973361,
+      "ns_per_operation": 213.834208,
+      "allocated_bytes": 191999616,
+      "bytes_per_operation": 191.999616,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.282508583,
+      "ips": 3539715.464149279,
+      "ns_per_operation": 282.508583,
+      "allocated_bytes": 255996320,
+      "bytes_per_operation": 255.99632,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.6286975,
+      "ips": 1590590.0691509033,
+      "ns_per_operation": 628.6975,
+      "allocated_bytes": 1053179936,
+      "bytes_per_operation": 1053.179936,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.625322584,
+      "ips": 1599174.610971671,
+      "ns_per_operation": 625.322584,
+      "allocated_bytes": 1024004352,
+      "bytes_per_operation": 1024.004352,
+      "sink": 950500000
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.256882833,
+      "ips": 3892825.3333300794,
+      "ns_per_operation": 256.88283299999995,
+      "allocated_bytes": 224000512,
+      "bytes_per_operation": 224.000512,
+      "sink": 950500000
+    },
+    {
+      "profile": "glob",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.212465958,
+      "ips": 4706636.345009209,
+      "ns_per_operation": 212.465958,
+      "allocated_bytes": 240000192,
+      "bytes_per_operation": 240.000192,
+      "sink": 992113222
+    },
+    {
+      "profile": "glob",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.548814333,
+      "ips": 1822109.8463913477,
+      "ns_per_operation": 548.814333,
+      "allocated_bytes": 1039607008,
+      "bytes_per_operation": 1039.607008,
+      "sink": 992113222
+    },
+    {
+      "profile": "notfound",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.271643209,
+      "ips": 3681299.4651377425,
+      "ns_per_operation": 271.643209,
+      "allocated_bytes": 543603360,
+      "bytes_per_operation": 543.60336,
+      "sink": -1000000
+    },
+    {
+      "profile": "notfound",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.065860458,
+      "ips": 15183617.459811775,
+      "ns_per_operation": 65.860458,
+      "allocated_bytes": 96000480,
+      "bytes_per_operation": 96.00048,
+      "sink": -1000000
+    },
+    {
+      "profile": "mixed",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.173720375,
+      "ips": 5756377.166466513,
+      "ns_per_operation": 173.720375,
+      "allocated_bytes": 142790992,
+      "bytes_per_operation": 142.790992,
+      "sink": 419051938
+    },
+    {
+      "profile": "mixed",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.568608958,
+      "ips": 1758677.885619945,
+      "ns_per_operation": 568.608958,
+      "allocated_bytes": 925403136,
+      "bytes_per_operation": 925.403136,
+      "sink": 419051938
+    },
+    {
+      "profile": "static",
+      "strategy": "legacy",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.452080625,
+      "ips": 2211994.8184021376,
+      "ns_per_operation": 452.080625,
+      "allocated_bytes": 860804320,
+      "bytes_per_operation": 860.80432,
+      "sink": 76211148
+    },
+    {
+      "profile": "static",
+      "strategy": "optimized",
+      "repetition": 3,
+      "operations": 1000000,
+      "elapsed_seconds": 0.116318334,
+      "ips": 8597096.99762378,
+      "ns_per_operation": 116.318334,
+      "allocated_bytes": 96002976,
+      "bytes_per_operation": 96.002976,
+      "sink": 76211148
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.168853833,
+      "ips": 5922281.906387046,
+      "ns_per_operation": 168.853833,
+      "allocated_bytes": 160001888,
+      "bytes_per_operation": 160.001888,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.560195916,
+      "ips": 1785089.7720575314,
+      "ns_per_operation": 560.195916,
+      "allocated_bytes": 896000864,
+      "bytes_per_operation": 896.000864,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.517671042,
+      "ips": 1931728.682633169,
+      "ns_per_operation": 517.671042,
+      "allocated_bytes": 879998032,
+      "bytes_per_operation": 879.998032,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.158883042,
+      "ips": 6293937.90181837,
+      "ns_per_operation": 158.883042,
+      "allocated_bytes": 143998128,
+      "bytes_per_operation": 143.998128,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.166658042,
+      "ips": 6000310.504067964,
+      "ns_per_operation": 166.658042,
+      "allocated_bytes": 143999664,
+      "bytes_per_operation": 143.999664,
+      "sink": 530081422
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.523064958,
+      "ips": 1911808.4373757648,
+      "ns_per_operation": 523.0649579999999,
+      "allocated_bytes": 879999696,
+      "bytes_per_operation": 879.999696,
+      "sink": 530081422
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.58279525,
+      "ips": 1715868.480396846,
+      "ns_per_operation": 582.79525,
+      "allocated_bytes": 1008000624,
+      "bytes_per_operation": 1008.000624,
+      "sink": 767350498
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.181474167,
+      "ips": 5510426.175423635,
+      "ns_per_operation": 181.474167,
+      "allocated_bytes": 159999680,
+      "bytes_per_operation": 159.99968,
+      "sink": 767350498
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.295291625,
+      "ips": 3386482.7693640143,
+      "ns_per_operation": 295.291625,
+      "allocated_bytes": 399998608,
+      "bytes_per_operation": 399.998608,
+      "sink": 938384748
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.844214625,
+      "ips": 1184532.9024002634,
+      "ns_per_operation": 844.214625,
+      "allocated_bytes": 1392000304,
+      "bytes_per_operation": 1392.000304,
+      "sink": 938384748
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.556107334,
+      "ips": 1798214.011685737,
+      "ns_per_operation": 556.107334,
+      "allocated_bytes": 991998512,
+      "bytes_per_operation": 991.998512,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.217048375,
+      "ips": 4607267.849851444,
+      "ns_per_operation": 217.048375,
+      "allocated_bytes": 191996320,
+      "bytes_per_operation": 191.99632,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.28049075,
+      "ips": 3565179.9569148,
+      "ns_per_operation": 280.49075,
+      "allocated_bytes": 255997600,
+      "bytes_per_operation": 255.9976,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.630173458,
+      "ips": 1586864.6755985713,
+      "ns_per_operation": 630.173458,
+      "allocated_bytes": 1053169984,
+      "bytes_per_operation": 1053.169984,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.620239333,
+      "ips": 1612280.8515918483,
+      "ns_per_operation": 620.239333,
+      "allocated_bytes": 1024003440,
+      "bytes_per_operation": 1024.00344,
+      "sink": 950500000
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.256965292,
+      "ips": 3891576.1432870864,
+      "ns_per_operation": 256.965292,
+      "allocated_bytes": 224004256,
+      "bytes_per_operation": 224.004256,
+      "sink": 950500000
+    },
+    {
+      "profile": "glob",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.213853583,
+      "ips": 4676096.542184191,
+      "ns_per_operation": 213.853583,
+      "allocated_bytes": 240000288,
+      "bytes_per_operation": 240.000288,
+      "sink": 992113222
+    },
+    {
+      "profile": "glob",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.54955825,
+      "ips": 1819643.3226141178,
+      "ns_per_operation": 549.55825,
+      "allocated_bytes": 1039607008,
+      "bytes_per_operation": 1039.607008,
+      "sink": 992113222
+    },
+    {
+      "profile": "notfound",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.300925292,
+      "ips": 3323083.9234343916,
+      "ns_per_operation": 300.925292,
+      "allocated_bytes": 543603360,
+      "bytes_per_operation": 543.60336,
+      "sink": -1000000
+    },
+    {
+      "profile": "notfound",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.064552625,
+      "ips": 15491236.800982144,
+      "ns_per_operation": 64.552625,
+      "allocated_bytes": 96000480,
+      "bytes_per_operation": 96.00048,
+      "sink": -1000000
+    },
+    {
+      "profile": "mixed",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.169343916,
+      "ips": 5905142.762849537,
+      "ns_per_operation": 169.343916,
+      "allocated_bytes": 142790704,
+      "bytes_per_operation": 142.790704,
+      "sink": 419051938
+    },
+    {
+      "profile": "mixed",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.575685167,
+      "ips": 1737060.562479283,
+      "ns_per_operation": 575.685167,
+      "allocated_bytes": 925403136,
+      "bytes_per_operation": 925.403136,
+      "sink": 419051938
+    },
+    {
+      "profile": "static",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.482079875,
+      "ips": 2074345.0449990265,
+      "ns_per_operation": 482.079875,
+      "allocated_bytes": 860804320,
+      "bytes_per_operation": 860.80432,
+      "sink": 76211148
+    },
+    {
+      "profile": "static",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.116876458,
+      "ips": 8556042.997127788,
+      "ns_per_operation": 116.876458,
+      "allocated_bytes": 96002976,
+      "bytes_per_operation": 96.002976,
+      "sink": 76211148
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "optimized",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.144202708,
+      "ips": 6934682.530372453,
+      "ns_per_operation": 144.202708,
+      "allocated_bytes": 128005664,
+      "bytes_per_operation": 128.005664,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "legacy",
+      "repetition": 4,
+      "operations": 1000000,
+      "elapsed_seconds": 0.46183675,
+      "ips": 2165267.2724723616,
+      "ns_per_operation": 461.83675,
+      "allocated_bytes": 848000304,
+      "bytes_per_operation": 848.000304,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.513261292,
+      "ips": 1948325.3765413503,
+      "ns_per_operation": 513.261292,
+      "allocated_bytes": 880004544,
+      "bytes_per_operation": 880.004544,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_ulid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.159442666,
+      "ips": 6271846.959709015,
+      "ns_per_operation": 159.442666,
+      "allocated_bytes": 144003792,
+      "bytes_per_operation": 144.003792,
+      "sink": 522352948
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.167624125,
+      "ips": 5965728.381878205,
+      "ns_per_operation": 167.624125,
+      "allocated_bytes": 143999184,
+      "bytes_per_operation": 143.999184,
+      "sink": 530081422
+    },
+    {
+      "profile": "rest_slug",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.529413958,
+      "ips": 1888881.0634645186,
+      "ns_per_operation": 529.413958,
+      "allocated_bytes": 880002192,
+      "bytes_per_operation": 880.002192,
+      "sink": 530081422
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.594026041,
+      "ips": 1683427.8819099783,
+      "ns_per_operation": 594.026041,
+      "allocated_bytes": 1008002848,
+      "bytes_per_operation": 1008.002848,
+      "sink": 767350498
+    },
+    {
+      "profile": "dynamic_uuid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.189414292,
+      "ips": 5279432.662874246,
+      "ns_per_operation": 189.414292,
+      "allocated_bytes": 159999680,
+      "bytes_per_operation": 159.99968,
+      "sink": 767350498
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.300759167,
+      "ips": 3324919.436287706,
+      "ns_per_operation": 300.759167,
+      "allocated_bytes": 399998608,
+      "bytes_per_operation": 399.998608,
+      "sink": 938384748
+    },
+    {
+      "profile": "nested_uuid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.842938917,
+      "ips": 1186325.5804572136,
+      "ns_per_operation": 842.938917,
+      "allocated_bytes": 1391995920,
+      "bytes_per_operation": 1391.99592,
+      "sink": 938384748
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.555211166,
+      "ips": 1801116.5142885474,
+      "ns_per_operation": 555.211166,
+      "allocated_bytes": 992004000,
+      "bytes_per_operation": 992.004,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_integer",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.208732042,
+      "ips": 4790831.2993938895,
+      "ns_per_operation": 208.732042,
+      "allocated_bytes": 191999648,
+      "bytes_per_operation": 191.999648,
+      "sink": 932000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.279888334,
+      "ips": 3572853.450905174,
+      "ns_per_operation": 279.888334,
+      "allocated_bytes": 255999296,
+      "bytes_per_operation": 255.999296,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_uuid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.664897958,
+      "ips": 1503990.1807007806,
+      "ns_per_operation": 664.897958,
+      "allocated_bytes": 1053172832,
+      "bytes_per_operation": 1053.172832,
+      "sink": 961000756
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.624419917,
+      "ips": 1601486.3920492146,
+      "ns_per_operation": 624.419917,
+      "allocated_bytes": 1024001648,
+      "bytes_per_operation": 1024.001648,
+      "sink": 950500000
+    },
+    {
+      "profile": "constrained_ulid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.259896,
+      "ips": 3847692.9233231754,
+      "ns_per_operation": 259.896,
+      "allocated_bytes": 224001408,
+      "bytes_per_operation": 224.001408,
+      "sink": 950500000
+    },
+    {
+      "profile": "glob",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.212097208,
+      "ips": 4714819.254009227,
+      "ns_per_operation": 212.097208,
+      "allocated_bytes": 239996016,
+      "bytes_per_operation": 239.996016,
+      "sink": 992113222
+    },
+    {
+      "profile": "glob",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.545603541,
+      "ips": 1832832.679507848,
+      "ns_per_operation": 545.603541,
+      "allocated_bytes": 1039609920,
+      "bytes_per_operation": 1039.60992,
+      "sink": 992113222
+    },
+    {
+      "profile": "notfound",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.264353041,
+      "ips": 3782820.1113827927,
+      "ns_per_operation": 264.353041,
+      "allocated_bytes": 543603360,
+      "bytes_per_operation": 543.60336,
+      "sink": -1000000
+    },
+    {
+      "profile": "notfound",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.064375583,
+      "ips": 15533839.903244061,
+      "ns_per_operation": 64.375583,
+      "allocated_bytes": 96000480,
+      "bytes_per_operation": 96.00048,
+      "sink": -1000000
+    },
+    {
+      "profile": "mixed",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.167913709,
+      "ips": 5955439.886090539,
+      "ns_per_operation": 167.913709,
+      "allocated_bytes": 142790992,
+      "bytes_per_operation": 142.790992,
+      "sink": 419051938
+    },
+    {
+      "profile": "mixed",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.571875917,
+      "ips": 1748631.0758562684,
+      "ns_per_operation": 571.875917,
+      "allocated_bytes": 925406464,
+      "bytes_per_operation": 925.406464,
+      "sink": 419051938
+    },
+    {
+      "profile": "static",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.451358666,
+      "ips": 2215532.9571095463,
+      "ns_per_operation": 451.358666,
+      "allocated_bytes": 860806048,
+      "bytes_per_operation": 860.806048,
+      "sink": 76211148
+    },
+    {
+      "profile": "static",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.118748167,
+      "ips": 8421182.619180975,
+      "ns_per_operation": 118.748167,
+      "allocated_bytes": 96002976,
+      "bytes_per_operation": 96.002976,
+      "sink": 76211148
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.145529333,
+      "ips": 6871466.936497263,
+      "ns_per_operation": 145.529333,
+      "allocated_bytes": 128005792,
+      "bytes_per_operation": 128.005792,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_integer",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.456758375,
+      "ips": 2189341.3558098413,
+      "ns_per_operation": 456.758375,
+      "allocated_bytes": 848000304,
+      "bytes_per_operation": 848.000304,
+      "sink": 504352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "legacy",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.526127916,
+      "ips": 1900678.4654247467,
+      "ns_per_operation": 526.127916,
+      "allocated_bytes": 895994992,
+      "bytes_per_operation": 895.994992,
+      "sink": 532352948
+    },
+    {
+      "profile": "rest_uuid",
+      "strategy": "optimized",
+      "repetition": 5,
+      "operations": 1000000,
+      "elapsed_seconds": 0.172683459,
+      "ips": 5790942.605568261,
+      "ns_per_operation": 172.683459,
+      "allocated_bytes": 159999968,
+      "bytes_per_operation": 159.999968,
+      "sink": 532352948
+    }
+  ]
+}

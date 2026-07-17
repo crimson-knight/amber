@@ -106,8 +106,14 @@ module Amber::Benchmarks::RouterRevalidationHTTP
     definitions
   end
 
-  def write_urls(path : String, definitions : Array(RouterRevalidation::RouteDefinition), host : String, port : Int32) : Nil
-    traffic = RouterRevalidation.generate_traffic(definitions, include_misses: false)
+  def write_urls(
+    path : String,
+    definitions : Array(RouterRevalidation::RouteDefinition),
+    host : String,
+    port : Int32,
+    traffic_profile : Symbol,
+  ) : Nil
+    traffic = RouterRevalidation.generate_profile_traffic(definitions, traffic_profile)
     File.open(path, "w") do |file|
       traffic.each_with_index do |request, index|
         resource = request.path.lchop("get")
@@ -117,9 +123,9 @@ module Amber::Benchmarks::RouterRevalidationHTTP
     end
   end
 
-  def run(host : String, port : Int32, route_count : Int32, url_file : String?) : Nil
+  def run(host : String, port : Int32, route_count : Int32, url_file : String?, traffic_profile : Symbol) : Nil
     definitions = install_routes(route_count)
-    write_urls(url_file, definitions, host, port) if url_file
+    write_urls(url_file, definitions, host, port, traffic_profile) if url_file
 
     pipeline = Amber::Pipe::Pipeline.new
     pipeline.prepare_pipelines
@@ -128,7 +134,7 @@ module Amber::Benchmarks::RouterRevalidationHTTP
 
     Signal::INT.trap { server.close }
     Signal::TERM.trap { server.close }
-    puts "READY host=#{host} port=#{port} routes=#{route_count} strategy=#{STRATEGY} compiler=#{Crystal::DESCRIPTION}"
+    puts "READY host=#{host} port=#{port} routes=#{route_count} profile=#{traffic_profile} strategy=#{STRATEGY} compiler=#{Crystal::DESCRIPTION}"
     STDOUT.flush
     server.listen
   end
@@ -138,6 +144,7 @@ host = "127.0.0.1"
 port = 41019
 route_count = 1000
 url_file : String? = nil
+traffic_profile = :mixed
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: router_revalidation_http_server [options]"
@@ -145,6 +152,9 @@ OptionParser.parse do |parser|
   parser.on("--port=PORT", "Bind port") { |value| port = value.to_i }
   parser.on("--routes=COUNT", "Number of GET routes") { |value| route_count = value.to_i }
   parser.on("--url-file=PATH", "Write a mixed-traffic URL file") { |value| url_file = value }
+  parser.on("--traffic-profile=NAME", "URL profile written with --url-file") do |value|
+    traffic_profile = Amber::Benchmarks::RouterRevalidation.profile_from_string(value)
+  end
 end
 
-Amber::Benchmarks::RouterRevalidationHTTP.run(host, port, route_count, url_file)
+Amber::Benchmarks::RouterRevalidationHTTP.run(host, port, route_count, url_file, traffic_profile)

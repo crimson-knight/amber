@@ -11,6 +11,22 @@ require "time"
 
 Binary = Struct.new(:name, :remote_path, keyword_init: true)
 
+PROFILE_DESCRIPTIONS = {
+  "mixed" => "45% static; 25% REST ID; 15% dynamic action; 5% nested; 5% constrained; 5% glob",
+  "static" => "literal-only paths with no captured parameters",
+  "rest_integer" => "REST route ending in an unconstrained decimal-looking :id",
+  "rest_uuid" => "REST route ending in an unconstrained UUID :id",
+  "rest_ulid" => "REST route ending in an unconstrained ULID :id",
+  "rest_slug" => "REST route ending in an unconstrained slug :id",
+  "dynamic_uuid" => "unconstrained UUID :id followed by a literal action segment",
+  "nested_uuid" => "two unconstrained UUID parameters",
+  "constrained_integer" => "decimal :id checked by an anchored regex",
+  "constrained_uuid" => "UUID :id checked by an anchored regex",
+  "constrained_ulid" => "ULID :id checked by an anchored regex",
+  "glob" => "multi-segment wildcard capture",
+  "notfound" => "path that does not match a registered route",
+}.freeze
+
 options = {
   binaries: [],
   binary_source_commit: nil,
@@ -19,6 +35,7 @@ options = {
   inventory: nil,
   output: "benchmarks/results/round20_digitalocean_ab.json",
   port: 41_019,
+  profiles: ["mixed"],
   repetitions: 5,
   routes: 1_000,
   ssh_key: File.expand_path("~/.ssh/agentc_droplets_id_ed25519"),
@@ -40,6 +57,7 @@ OptionParser.new do |parser|
   parser.on("--repetitions=COUNT", Integer, "Rotated process repetitions") { |value| options[:repetitions] = value }
   parser.on("--routes=COUNT", Integer, "Mixed routes installed on the target") { |value| options[:routes] = value }
   parser.on("--port=PORT", Integer, "Private benchmark port") { |value| options[:port] = value }
+  parser.on("--profiles=LIST", "Comma-separated traffic profiles") { |value| options[:profiles] = value.split(",") }
   parser.on("--ssh-key=PATH", "Private key used for both hosts") { |value| options[:ssh_key] = File.expand_path(value) }
   parser.on("--output=PATH", "Combined result JSON") { |value| options[:output] = File.expand_path(value) }
 end.parse!
@@ -48,6 +66,8 @@ abort "--inventory is required" unless options[:inventory]
 abort "At least two --binary entries are required" if options[:binaries].size < 2
 abort "Inventory not found: #{options[:inventory]}" unless File.file?(options[:inventory])
 abort "SSH private key not found: #{options[:ssh_key]}" unless File.file?(options[:ssh_key])
+unknown_profiles = options[:profiles] - PROFILE_DESCRIPTIONS.keys
+abort "Unknown traffic profiles: #{unknown_profiles.join(", ")}" unless unknown_profiles.empty?
 
 inventory = JSON.parse(File.read(options[:inventory]))
 target = inventory.fetch("resources").fetch("target")
@@ -113,19 +133,21 @@ def summarize(values)
   }
 end
 
-def safe_unit_name(strategy, repetition, connections)
-  normalized = strategy.gsub(/[^a-zA-Z0-9]+/, "-").downcase
-  "amber-router-#{normalized}-r#{repetition}-c#{connections}"
+def safe_unit_name(strategy, profile, repetition, connections)
+  strategy_name = strategy.gsub(/[^a-zA-Z0-9]+/, "-").downcase
+  profile_name = profile.gsub(/[^a-zA-Z0-9]+/, "-").downcase
+  "amber-router-#{strategy_name}-#{profile_name}-r#{repetition}-c#{connections}"
 end
 
-def start_server(target, loadgen, ssh_options, binary, unit, options, url_file: false)
+def start_server(target, loadgen, ssh_options, binary, unit, options, profile:, url_file: nil)
   args = [
     binary.remote_path,
     "--host=#{target.fetch("private_ip")}",
     "--port=#{options.fetch(:port)}",
     "--routes=#{options.fetch(:routes)}",
+    "--traffic-profile=#{profile}",
   ]
-  args << "--url-file=/opt/amber-router/urls.txt" if url_file
+  args << "--url-file=#{url_file}" if url_file
 
   command = [
     "systemd-run", "--quiet", "--collect", "--unit=#{unit}",
@@ -152,13 +174,13 @@ def unit_stats(target, ssh_options, unit)
   parse_properties(output)
 end
 
-def run_oha(loadgen, ssh_options, connections, duration, output_stem, measured: true)
+def run_oha(loadgen, ssh_options, connections, duration, output_stem, url_file, measured: true)
   result_path = "/tmp/#{output_stem}.json"
   time_path = "/tmp/#{output_stem}.time.txt"
   command = [
     "/usr/local/bin/oha", "--no-tui", "--output-format", "json",
     "--output", result_path, "--urls-from-file", "-z", duration,
-    "-c", connections.to_s, "/opt/amber-router/urls.txt",
+    "-c", connections.to_s, url_file,
   ].map { |value| Shellwords.escape(value) }.join(" ")
 
   if measured
@@ -181,21 +203,39 @@ options[:binaries].each do |binary|
 end
 ssh_capture(loadgen.fetch("public_ip"), ssh_options, "/usr/local/bin/oha --version")
 
-# Generate the exact mixed-traffic URL file from the deployed benchmark binary.
-url_unit = "amber-router-url-generator"
-begin
-  start_server(target, loadgen, ssh_options, options[:binaries].first, url_unit, options, url_file: true)
-  Tempfile.create(["amber-router-urls", ".txt"]) do |file|
-    file.close
-    scp_capture("root@#{target.fetch("public_ip")}:/opt/amber-router/urls.txt", file.path, ssh_options)
-    scp_capture(file.path, "root@#{loadgen.fetch("public_ip")}:/opt/amber-router/urls.txt", ssh_options)
+# Generate each exact URL profile from the deployed benchmark binary.
+ssh_capture(target.fetch("public_ip"), ssh_options, "mkdir -p /opt/amber-router/urls")
+ssh_capture(loadgen.fetch("public_ip"), ssh_options, "mkdir -p /opt/amber-router/urls")
+url_files = {}
+url_counts = {}
+options[:profiles].each do |profile|
+  url_unit = "amber-router-url-generator-#{profile.tr("_", "-")}"
+  url_file = "/opt/amber-router/urls/#{profile}.txt"
+  begin
+    start_server(
+      target,
+      loadgen,
+      ssh_options,
+      options[:binaries].first,
+      url_unit,
+      options,
+      profile: profile,
+      url_file: url_file
+    )
+    Tempfile.create(["amber-router-#{profile}", ".txt"]) do |file|
+      file.close
+      scp_capture("root@#{target.fetch("public_ip")}:#{url_file}", file.path, ssh_options)
+      scp_capture(file.path, "root@#{loadgen.fetch("public_ip")}:#{url_file}", ssh_options)
+    end
+  ensure
+    stop_server(target, ssh_options, url_unit)
   end
-ensure
-  stop_server(target, ssh_options, url_unit)
-end
 
-url_count = ssh_capture(loadgen.fetch("public_ip"), ssh_options, "wc -l < /opt/amber-router/urls.txt").to_i
-abort "Generated URL file is unexpectedly small: #{url_count}" if url_count < 1_000
+  count = ssh_capture(loadgen.fetch("public_ip"), ssh_options, "wc -l < #{Shellwords.escape(url_file)}").to_i
+  abort "Generated URL profile #{profile} is unexpectedly small: #{count}" if count < 1_000
+  url_files[profile] = url_file
+  url_counts[profile] = count
+end
 
 hardware = {
   "target" => {
@@ -231,26 +271,31 @@ end
 trials = []
 trial_sequence = 0
 
-# Keep each A/B pair temporally close while rotating both binary and load order.
+# Keep each A/B pair temporally close while rotating binary and profile order.
+scenarios = options[:profiles].product(options[:connections])
 options[:repetitions].times do |repetition_index|
   repetition = repetition_index + 1
-  options[:connections].rotate(repetition_index % options[:connections].size).each_with_index do |connections, connection_index|
-    rotation = (repetition_index + connection_index) % options[:binaries].size
+  scenarios.rotate(repetition_index % scenarios.size).each_with_index do |(profile, connections), scenario_index|
+    rotation = (repetition_index + scenario_index) % options[:binaries].size
     options[:binaries].rotate(rotation).each do |binary|
       trial_sequence += 1
-      unit = safe_unit_name(binary.name, repetition, connections)
-      stem = "#{binary.name}_r#{repetition}_c#{connections}"
+      unit = safe_unit_name(binary.name, profile, repetition, connections)
+      stem = "#{binary.name}_#{profile}_r#{repetition}_c#{connections}"
+      url_file = url_files.fetch(profile)
+      expected_status = profile == "notfound" ? "404" : "200"
 
       begin
-        start_server(target, loadgen, ssh_options, binary, unit, options)
-        run_oha(loadgen, ssh_options, connections, options[:warmup], "warmup-#{stem}", measured: false)
+        start_server(target, loadgen, ssh_options, binary, unit, options, profile: profile)
+        run_oha(loadgen, ssh_options, connections, options[:warmup], "warmup-#{stem}", url_file, measured: false)
         before = unit_stats(target, ssh_options, unit)
-        result, loadgen_time = run_oha(loadgen, ssh_options, connections, options[:duration], stem)
+        result, loadgen_time = run_oha(loadgen, ssh_options, connections, options[:duration], stem, url_file)
         after = unit_stats(target, ssh_options, unit)
         journal = ssh_capture(target.fetch("public_ip"), ssh_options, "journalctl -u #{Shellwords.escape(unit)}.service --no-pager -n 20")
 
         statuses = result.fetch("statusCodeDistribution")
-        raise "#{stem} returned non-200 responses: #{statuses}" unless statuses.keys == ["200"]
+        unless statuses.keys == [expected_status]
+          raise "#{stem} returned statuses other than #{expected_status}: #{statuses}"
+        end
 
         summary = result.fetch("summary")
         total_seconds = summary.fetch("total")
@@ -265,6 +310,7 @@ options[:repetitions].times do |repetition_index|
 
         trial = {
           "strategy" => binary.name,
+          "profile" => profile,
           "repetition" => repetition,
           "connections" => connections,
           "trial_sequence" => trial_sequence,
@@ -273,8 +319,9 @@ options[:repetitions].times do |repetition_index|
           "p50_seconds" => result.fetch("latencyPercentiles").fetch("p50"),
           "p95_seconds" => result.fetch("latencyPercentiles").fetch("p95"),
           "p99_seconds" => result.fetch("latencyPercentiles").fetch("p99"),
-          "successful_responses" => statuses.fetch("200"),
-          "success_rate" => summary.fetch("successRate"),
+          "expected_status" => expected_status.to_i,
+          "expected_responses" => statuses.fetch(expected_status),
+          "oha_success_rate" => summary.fetch("successRate"),
           "server_cpu_cores" => server_cpu_cores,
           "requests_per_cpu_second" => summary.fetch("requestsPerSec") / server_cpu_cores,
           "server_memory_current_bytes" => after.fetch("MemoryCurrent", "0").to_i,
@@ -287,8 +334,9 @@ options[:repetitions].times do |repetition_index|
         }
         trials << trial
         warn format(
-          "%s r%d c%d: %.0f RPS, p50 %.1f us, p99 %.1f us, server %.1f%% CPU, %.1f MiB peak",
+          "%s %-19s r%d c%d: %.0f RPS, p50 %.1f us, p99 %.1f us, server %.1f%% CPU, %.1f MiB peak",
           binary.name,
+          profile,
           repetition,
           connections,
           trial["requests_per_second"],
@@ -305,56 +353,68 @@ options[:repetitions].times do |repetition_index|
 end
 
 aggregates = {}
-options[:connections].each do |connections|
-  aggregates[connections.to_s] = {}
-  baseline_median = nil
+options[:profiles].each do |profile|
+  aggregates[profile] = {}
+  options[:connections].each do |connections|
+    aggregates[profile][connections.to_s] = {}
+    baseline_median = nil
 
-  options[:binaries].each_with_index do |binary, index|
-    rows = trials.select { |trial| trial["strategy"] == binary.name && trial["connections"] == connections }
-    rps = summarize(rows.map { |row| row["requests_per_second"] })
-    baseline_median = rps["median"] if index.zero?
-    aggregates[connections.to_s][binary.name] = {
-      "requests_per_second" => rps,
-      "p50_seconds" => summarize(rows.map { |row| row["p50_seconds"] }),
-      "p99_seconds" => summarize(rows.map { |row| row["p99_seconds"] }),
-      "server_cpu_cores" => summarize(rows.map { |row| row["server_cpu_cores"] }),
-      "requests_per_cpu_second" => summarize(rows.map { |row| row["requests_per_cpu_second"] }),
-      "server_memory_peak_bytes" => summarize(rows.map { |row| row["server_memory_peak_bytes"] }),
-      "loadgen_cpu_percent" => summarize(rows.map { |row| row["loadgen_cpu_percent"] }),
-      "median_rps_ratio_vs_first_binary" => baseline_median ? rps["median"] / baseline_median : 1.0,
-    }
+    options[:binaries].each_with_index do |binary, index|
+      rows = trials.select do |trial|
+        trial["strategy"] == binary.name && trial["profile"] == profile && trial["connections"] == connections
+      end
+      rps = summarize(rows.map { |row| row["requests_per_second"] })
+      baseline_median = rps["median"] if index.zero?
+      aggregates[profile][connections.to_s][binary.name] = {
+        "requests_per_second" => rps,
+        "p50_seconds" => summarize(rows.map { |row| row["p50_seconds"] }),
+        "p99_seconds" => summarize(rows.map { |row| row["p99_seconds"] }),
+        "server_cpu_cores" => summarize(rows.map { |row| row["server_cpu_cores"] }),
+        "requests_per_cpu_second" => summarize(rows.map { |row| row["requests_per_cpu_second"] }),
+        "server_memory_peak_bytes" => summarize(rows.map { |row| row["server_memory_peak_bytes"] }),
+        "loadgen_cpu_percent" => summarize(rows.map { |row| row["loadgen_cpu_percent"] }),
+        "median_rps_ratio_vs_first_binary" => baseline_median ? rps["median"] / baseline_median : 1.0,
+      }
+    end
   end
 end
 
 paired_comparisons = {}
 baseline = options[:binaries].first
-options[:connections].each do |connections|
-  baseline_rows = trials
-    .select { |trial| trial["strategy"] == baseline.name && trial["connections"] == connections }
-    .to_h { |trial| [trial["repetition"], trial] }
-
-  paired_comparisons[connections.to_s] = {}
-  options[:binaries].drop(1).each do |binary|
-    candidate_rows = trials
-      .select { |trial| trial["strategy"] == binary.name && trial["connections"] == connections }
+options[:profiles].each do |profile|
+  paired_comparisons[profile] = {}
+  options[:connections].each do |connections|
+    baseline_rows = trials
+      .select do |trial|
+        trial["strategy"] == baseline.name && trial["profile"] == profile && trial["connections"] == connections
+      end
       .to_h { |trial| [trial["repetition"], trial] }
-    repetitions = baseline_rows.keys & candidate_rows.keys
-    rps_ratios = repetitions.map do |repetition|
-      candidate_rows.fetch(repetition).fetch("requests_per_second") /
-        baseline_rows.fetch(repetition).fetch("requests_per_second")
-    end
-    efficiency_ratios = repetitions.map do |repetition|
-      candidate_rows.fetch(repetition).fetch("requests_per_cpu_second") /
-        baseline_rows.fetch(repetition).fetch("requests_per_cpu_second")
-    end
 
-    paired_comparisons[connections.to_s][binary.name] = {
-      "baseline" => baseline.name,
-      "rps_ratio" => summarize(rps_ratios),
-      "requests_per_cpu_second_ratio" => summarize(efficiency_ratios),
-      "rps_wins" => rps_ratios.count { |ratio| ratio > 1.0 },
-      "pair_count" => repetitions.size,
-    }
+    paired_comparisons[profile][connections.to_s] = {}
+    options[:binaries].drop(1).each do |binary|
+      candidate_rows = trials
+        .select do |trial|
+          trial["strategy"] == binary.name && trial["profile"] == profile && trial["connections"] == connections
+        end
+        .to_h { |trial| [trial["repetition"], trial] }
+      repetitions = baseline_rows.keys & candidate_rows.keys
+      rps_ratios = repetitions.map do |repetition|
+        candidate_rows.fetch(repetition).fetch("requests_per_second") /
+          baseline_rows.fetch(repetition).fetch("requests_per_second")
+      end
+      efficiency_ratios = repetitions.map do |repetition|
+        candidate_rows.fetch(repetition).fetch("requests_per_cpu_second") /
+          baseline_rows.fetch(repetition).fetch("requests_per_cpu_second")
+      end
+
+      paired_comparisons[profile][connections.to_s][binary.name] = {
+        "baseline" => baseline.name,
+        "rps_ratio" => summarize(rps_ratios),
+        "requests_per_cpu_second_ratio" => summarize(efficiency_ratios),
+        "rps_wins" => rps_ratios.count { |ratio| ratio > 1.0 },
+        "pair_count" => repetitions.size,
+      }
+    end
   end
 end
 
@@ -366,13 +426,16 @@ payload = {
     "region" => inventory.fetch("region"),
     "vpc_ip_range" => inventory.fetch("vpc").fetch("ip_range"),
     "routes" => options[:routes],
-    "traffic_entries" => url_count,
-    "traffic_mix" => "45% static, 40% variable, 5% nested, 5% constrained, 3% glob; 70% hot-set; 20% query strings",
+    "route_mix" => "45% static; 25% REST ID; 15% dynamic action; 5% nested; 5% constrained; 5% glob",
+    "traffic_profiles" => options[:profiles].map do |profile|
+      {"name" => profile, "description" => PROFILE_DESCRIPTIONS.fetch(profile), "entries" => url_counts.fetch(profile)}
+    end,
+    "traffic_locality" => "70% hot-set; 20% query strings",
     "connections" => options[:connections],
     "duration" => options[:duration],
     "warmup" => options[:warmup],
     "repetitions" => options[:repetitions],
-    "trial_schedule" => "paired interleaving with rotating binary and connection order",
+    "trial_schedule" => "paired interleaving with rotating binary, profile, and connection order",
     "scope" => "separate DigitalOcean load generator and smallest target Droplet over a private VPC",
     "hardware" => hardware,
     "binaries" => binaries,

@@ -9,7 +9,7 @@ INVENTORY_PATH="${INVENTORY_PATH:-${SCRIPT_DIR}/${PREFIX}-inventory.json}"
 OBJECT_DIR="${OBJECT_DIR:-/tmp/amber-router-r20-objects}"
 SSH_KEY_PATH="${SSH_KEY_PATH:-${HOME}/.ssh/agentc_droplets_id_ed25519}"
 KNOWN_HOSTS_PATH="${KNOWN_HOSTS_PATH:-/tmp/${PREFIX}-known-hosts}"
-RESULT_MANIFEST="${ROOT_DIR}/benchmarks/results/round20_do_binaries_manifest.json"
+RESULT_MANIFEST="${RESULT_MANIFEST:-${ROOT_DIR}/benchmarks/results/round20_do_binaries_manifest.json}"
 
 for path in "${INVENTORY_PATH}" "${OBJECT_DIR}/objects-manifest.json" "${SSH_KEY_PATH}"; do
   if [[ ! -e "${path}" ]]; then
