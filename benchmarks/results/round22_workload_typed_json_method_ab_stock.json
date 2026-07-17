@@ -1,0 +1,1017 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-17T12:06:25Z",
+    "routes": 1000,
+    "operations": 150000,
+    "warmup_operations": 20000,
+    "inner_repetitions": 3,
+    "process_repetitions": 11,
+    "scope": "same-source parsed HTTP CPU A/B with rotated process order; excludes sockets and kernel scheduling",
+    "binaries": [
+      {
+        "name": "legacy_method",
+        "path": "/tmp/amber-round22-workload-json-typed-buffered-legacy-method",
+        "sha256": "7448126852f4c6b44537c29b0bb024070dae7a35ea9648da2c416b14362c87cb"
+      },
+      {
+        "name": "fast_method",
+        "path": "/tmp/amber-round22-workload-json-typed-buffered",
+        "sha256": "9cc1a37b3e3a02770257931daa8cca97dd6b2a1cf1357dc4a79bf9cd3fcaf8b2"
+      }
+    ]
+  },
+  "aggregates": {
+    "legacy_method": {
+      "requests_per_second": {
+        "count": 11,
+        "min": 411693.23173966643,
+        "median": 441790.4839967317,
+        "mean": 436021.3659573428,
+        "max": 445498.8458327751,
+        "stddev": 11189.84461609516,
+        "coefficient_of_variation": 0.025663523601707847
+      },
+      "bytes_per_request": {
+        "count": 11,
+        "min": 3449.3042133333333,
+        "median": 3449.3304533333335,
+        "mean": 3449.332615757576,
+        "max": 3449.3591466666667,
+        "stddev": 0.017022311507914407,
+        "coefficient_of_variation": 4.934957977131991e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.0,
+      "median_allocation_ratio_vs_baseline": 1.0
+    },
+    "fast_method": {
+      "requests_per_second": {
+        "count": 11,
+        "min": 414323.580501518,
+        "median": 444368.40807239653,
+        "mean": 437977.5206931755,
+        "max": 452497.8455747992,
+        "stddev": 13262.082965397545,
+        "coefficient_of_variation": 0.03028028229487211
+      },
+      "bytes_per_request": {
+        "count": 11,
+        "min": 3391.63904,
+        "median": 3391.69984,
+        "mean": 3391.6934593939395,
+        "max": 3391.72256,
+        "stddev": 0.02054332725199869,
+        "coefficient_of_variation": 6.0569528166232245e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.00583517338885,
+      "median_allocation_ratio_vs_baseline": 0.9832922318945577
+    }
+  },
+  "trials": [
+    {
+      "strategy": "legacy_method",
+      "repetition": 1,
+      "median_requests_per_second": 445498.8458327751,
+      "median_bytes_per_request": 3449.3326933333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.342747791,
+          "requests_per_second": 437639.5820447461,
+          "ns_per_request": 2284.985273333333,
+          "allocated_bytes": 517408512,
+          "bytes_per_request": 3449.39008,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.336318542,
+          "requests_per_second": 446005.73940404394,
+          "ns_per_request": 2242.123613333333,
+          "allocated_bytes": 517399904,
+          "bytes_per_request": 3449.3326933333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.336701209,
+          "requests_per_second": 445498.8458327751,
+          "ns_per_request": 2244.6747266666666,
+          "allocated_bytes": 517395616,
+          "bytes_per_request": 3449.3041066666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r1.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 1,
+      "median_requests_per_second": 444368.40807239653,
+      "median_bytes_per_request": 3391.69984,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.33755775,
+          "requests_per_second": 444368.40807239653,
+          "ns_per_request": 2250.385,
+          "allocated_bytes": 508757984,
+          "bytes_per_request": 3391.7198933333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.337446667,
+          "requests_per_second": 444514.6883018406,
+          "ns_per_request": 2249.6444466666667,
+          "allocated_bytes": 508748192,
+          "bytes_per_request": 3391.654613333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.349102458,
+          "requests_per_second": 429673.2851992695,
+          "ns_per_request": 2327.34972,
+          "allocated_bytes": 508754976,
+          "bytes_per_request": 3391.69984,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r1.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 2,
+      "median_requests_per_second": 414323.580501518,
+      "median_bytes_per_request": 3391.6928,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.36416775,
+          "requests_per_second": 411898.08817502373,
+          "ns_per_request": 2427.785,
+          "allocated_bytes": 508758768,
+          "bytes_per_request": 3391.72512,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.362035875,
+          "requests_per_second": 414323.580501518,
+          "ns_per_request": 2413.5725,
+          "allocated_bytes": 508753888,
+          "bytes_per_request": 3391.6925866666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.351822834,
+          "requests_per_second": 426350.95139958995,
+          "ns_per_request": 2345.48556,
+          "allocated_bytes": 508753920,
+          "bytes_per_request": 3391.6928,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r2.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 2,
+      "median_requests_per_second": 443943.33567639726,
+      "median_bytes_per_request": 3449.3256533333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.354762458,
+          "requests_per_second": 422818.13257703837,
+          "ns_per_request": 2365.0830533333333,
+          "allocated_bytes": 517398848,
+          "bytes_per_request": 3449.3256533333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.337880959,
+          "requests_per_second": 443943.33567639726,
+          "ns_per_request": 2252.539726666667,
+          "allocated_bytes": 517398352,
+          "bytes_per_request": 3449.322346666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.337086458,
+          "requests_per_second": 444989.69460232666,
+          "ns_per_request": 2247.243053333333,
+          "allocated_bytes": 517404656,
+          "bytes_per_request": 3449.3643733333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r2.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 3,
+      "median_requests_per_second": 441790.4839967317,
+      "median_bytes_per_request": 3449.3397333333332,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.339527458,
+          "requests_per_second": 441790.4839967317,
+          "ns_per_request": 2263.5163866666667,
+          "allocated_bytes": 517400960,
+          "bytes_per_request": 3449.3397333333332,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.336484375,
+          "requests_per_second": 445785.9298815881,
+          "ns_per_request": 2243.2291666666665,
+          "allocated_bytes": 517405744,
+          "bytes_per_request": 3449.3716266666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.3550905,
+          "requests_per_second": 422427.52199791325,
+          "ns_per_request": 2367.27,
+          "allocated_bytes": 517396640,
+          "bytes_per_request": 3449.310933333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r3.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 3,
+      "median_requests_per_second": 418260.17053002527,
+      "median_bytes_per_request": 3391.700373333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.363231208,
+          "requests_per_second": 412960.1110706324,
+          "ns_per_request": 2421.5413866666668,
+          "allocated_bytes": 508756256,
+          "bytes_per_request": 3391.7083733333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.358628458,
+          "requests_per_second": 418260.17053002527,
+          "ns_per_request": 2390.856386666667,
+          "allocated_bytes": 508755056,
+          "bytes_per_request": 3391.700373333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.349103541,
+          "requests_per_second": 429671.9522532715,
+          "ns_per_request": 2327.35694,
+          "allocated_bytes": 508747152,
+          "bytes_per_request": 3391.64768,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r3.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 4,
+      "median_requests_per_second": 442972.0264287506,
+      "median_bytes_per_request": 3391.676053333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.338621834,
+          "requests_per_second": 442972.0264287506,
+          "ns_per_request": 2257.4788933333334,
+          "allocated_bytes": 508751408,
+          "bytes_per_request": 3391.676053333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.346576916,
+          "requests_per_second": 432804.3590762404,
+          "ns_per_request": 2310.5127733333334,
+          "allocated_bytes": 508749792,
+          "bytes_per_request": 3391.66528,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.338255459,
+          "requests_per_second": 443451.8231973309,
+          "ns_per_request": 2255.0363933333333,
+          "allocated_bytes": 508754592,
+          "bytes_per_request": 3391.69728,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r4.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 4,
+      "median_requests_per_second": 443023.5412756572,
+      "median_bytes_per_request": 3449.3591466666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.338582459,
+          "requests_per_second": 443023.5412756572,
+          "ns_per_request": 2257.216393333333,
+          "allocated_bytes": 517395200,
+          "bytes_per_request": 3449.3013333333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.334942542,
+          "requests_per_second": 447838.0056003755,
+          "ns_per_request": 2232.95028,
+          "allocated_bytes": 517407120,
+          "bytes_per_request": 3449.3808,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.359233583,
+          "requests_per_second": 417555.61589574435,
+          "ns_per_request": 2394.890553333333,
+          "allocated_bytes": 517403872,
+          "bytes_per_request": 3449.3591466666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r4.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 5,
+      "median_requests_per_second": 415113.83420374495,
+      "median_bytes_per_request": 3449.3533866666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.366889917,
+          "requests_per_second": 408841.9797047734,
+          "ns_per_request": 2445.93278,
+          "allocated_bytes": 517412160,
+          "bytes_per_request": 3449.4144,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.361346666,
+          "requests_per_second": 415113.83420374495,
+          "ns_per_request": 2408.9777733333335,
+          "allocated_bytes": 517398032,
+          "bytes_per_request": 3449.3202133333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.351738792,
+          "requests_per_second": 426452.8207056559,
+          "ns_per_request": 2344.92528,
+          "allocated_bytes": 517403008,
+          "bytes_per_request": 3449.3533866666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r5.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 5,
+      "median_requests_per_second": 450092.0433727777,
+      "median_bytes_per_request": 3391.71168,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.337197125,
+          "requests_per_second": 444843.65043147985,
+          "ns_per_request": 2247.9808333333335,
+          "allocated_bytes": 508759984,
+          "bytes_per_request": 3391.7332266666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.331115625,
+          "requests_per_second": 453013.958492596,
+          "ns_per_request": 2207.4375,
+          "allocated_bytes": 508756752,
+          "bytes_per_request": 3391.71168,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.333265167,
+          "requests_per_second": 450092.0433727777,
+          "ns_per_request": 2221.76778,
+          "allocated_bytes": 508752128,
+          "bytes_per_request": 3391.6808533333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r5.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 6,
+      "median_requests_per_second": 446068.40836118715,
+      "median_bytes_per_request": 3391.72256,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.33853625,
+          "requests_per_second": 443084.0124211218,
+          "ns_per_request": 2256.9083333333333,
+          "allocated_bytes": 508758384,
+          "bytes_per_request": 3391.72256,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.333622459,
+          "requests_per_second": 449610.01861088735,
+          "ns_per_request": 2224.1497266666665,
+          "allocated_bytes": 508754928,
+          "bytes_per_request": 3391.69952,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.336271292,
+          "requests_per_second": 446068.40836118715,
+          "ns_per_request": 2241.808613333333,
+          "allocated_bytes": 508758544,
+          "bytes_per_request": 3391.723626666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r6.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 6,
+      "median_requests_per_second": 433908.9211347307,
+      "median_bytes_per_request": 3449.3042133333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.345694667,
+          "requests_per_second": 433908.9211347307,
+          "ns_per_request": 2304.6311133333334,
+          "allocated_bytes": 517395632,
+          "bytes_per_request": 3449.3042133333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.363846542,
+          "requests_per_second": 412261.7166442659,
+          "ns_per_request": 2425.643613333333,
+          "allocated_bytes": 517390848,
+          "bytes_per_request": 3449.27232,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.340867417,
+          "requests_per_second": 440053.79370126186,
+          "ns_per_request": 2272.4494466666665,
+          "allocated_bytes": 517402400,
+          "bytes_per_request": 3449.349333333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r6.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 7,
+      "median_requests_per_second": 440523.94449545146,
+      "median_bytes_per_request": 3449.3560533333334,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.34054475,
+          "requests_per_second": 440470.74576836085,
+          "ns_per_request": 2270.298333333333,
+          "allocated_bytes": 517403408,
+          "bytes_per_request": 3449.3560533333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.337480292,
+          "requests_per_second": 444470.39888184046,
+          "ns_per_request": 2249.8686133333335,
+          "allocated_bytes": 517391424,
+          "bytes_per_request": 3449.27616,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.340503625,
+          "requests_per_second": 440523.94449545146,
+          "ns_per_request": 2270.0241666666666,
+          "allocated_bytes": 517408704,
+          "bytes_per_request": 3449.39136,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r7.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 7,
+      "median_requests_per_second": 447657.85321665474,
+      "median_bytes_per_request": 3391.7010133333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.335077334,
+          "requests_per_second": 447657.85321665474,
+          "ns_per_request": 2233.8488933333333,
+          "allocated_bytes": 508755152,
+          "bytes_per_request": 3391.7010133333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.330399084,
+          "requests_per_second": 453996.4160433326,
+          "ns_per_request": 2202.66056,
+          "allocated_bytes": 508757552,
+          "bytes_per_request": 3391.7170133333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.356658708,
+          "requests_per_second": 420570.1322733441,
+          "ns_per_request": 2377.72472,
+          "allocated_bytes": 508749808,
+          "bytes_per_request": 3391.6653866666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r7.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 8,
+      "median_requests_per_second": 421722.10847143026,
+      "median_bytes_per_request": 3391.700373333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.361783208,
+          "requests_per_second": 414612.94135022425,
+          "ns_per_request": 2411.888053333333,
+          "allocated_bytes": 508759840,
+          "bytes_per_request": 3391.732266666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.355684459,
+          "requests_per_second": 421722.10847143026,
+          "ns_per_request": 2371.2297266666665,
+          "allocated_bytes": 508755056,
+          "bytes_per_request": 3391.700373333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.336349792,
+          "requests_per_second": 445964.3013544662,
+          "ns_per_request": 2242.3319466666667,
+          "allocated_bytes": 508752832,
+          "bytes_per_request": 3391.6855466666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r8.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 8,
+      "median_requests_per_second": 441931.0574704883,
+      "median_bytes_per_request": 3449.3304533333335,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.339419458,
+          "requests_per_second": 441931.0574704883,
+          "ns_per_request": 2262.796386666667,
+          "allocated_bytes": 517399568,
+          "bytes_per_request": 3449.3304533333335,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.336924458,
+          "requests_per_second": 445203.65452364995,
+          "ns_per_request": 2246.163053333333,
+          "allocated_bytes": 517400976,
+          "bytes_per_request": 3449.33984,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.346582875,
+          "requests_per_second": 432796.9176203527,
+          "ns_per_request": 2310.5525,
+          "allocated_bytes": 517398832,
+          "bytes_per_request": 3449.3255466666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r8.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 9,
+      "median_requests_per_second": 435472.05309907,
+      "median_bytes_per_request": 3449.3236266666668,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.344453792,
+          "requests_per_second": 435472.05309907,
+          "ns_per_request": 2296.3586133333333,
+          "allocated_bytes": 517399008,
+          "bytes_per_request": 3449.32672,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.337549333,
+          "requests_per_second": 444379.4886716603,
+          "ns_per_request": 2250.3288866666667,
+          "allocated_bytes": 517398304,
+          "bytes_per_request": 3449.3220266666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.356442667,
+          "requests_per_second": 420825.0411278625,
+          "ns_per_request": 2376.2844466666666,
+          "allocated_bytes": 517398544,
+          "bytes_per_request": 3449.3236266666668,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r9.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 9,
+      "median_requests_per_second": 431762.66911053547,
+      "median_bytes_per_request": 3391.69312,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.359914084,
+          "requests_per_second": 416766.1302190108,
+          "ns_per_request": 2399.4272266666667,
+          "allocated_bytes": 508758640,
+          "bytes_per_request": 3391.7242666666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.347413083,
+          "requests_per_second": 431762.66911053547,
+          "ns_per_request": 2316.08722,
+          "allocated_bytes": 508753968,
+          "bytes_per_request": 3391.69312,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.338275458,
+          "requests_per_second": 443425.6061224519,
+          "ns_per_request": 2255.16972,
+          "allocated_bytes": 508753920,
+          "bytes_per_request": 3391.6928,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r9.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 10,
+      "median_requests_per_second": 448027.61398485577,
+      "median_bytes_per_request": 3391.63904,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.33760275,
+          "requests_per_second": 444309.176983896,
+          "ns_per_request": 2250.685,
+          "allocated_bytes": 508741360,
+          "bytes_per_request": 3391.609066666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.333555667,
+          "requests_per_second": 449700.0496172053,
+          "ns_per_request": 2223.7044466666666,
+          "allocated_bytes": 508760160,
+          "bytes_per_request": 3391.7344,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.334800792,
+          "requests_per_second": 448027.61398485577,
+          "ns_per_request": 2232.00528,
+          "allocated_bytes": 508745856,
+          "bytes_per_request": 3391.63904,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r10.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 10,
+      "median_requests_per_second": 443335.77660605777,
+      "median_bytes_per_request": 3449.3198933333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.338344,
+          "requests_per_second": 443335.77660605777,
+          "ns_per_request": 2255.6266666666666,
+          "allocated_bytes": 517397984,
+          "bytes_per_request": 3449.3198933333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.337206166,
+          "requests_per_second": 444831.72351006186,
+          "ns_per_request": 2248.0411066666666,
+          "allocated_bytes": 517395664,
+          "bytes_per_request": 3449.3044266666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.362460834,
+          "requests_per_second": 413837.81619837024,
+          "ns_per_request": 2416.40556,
+          "allocated_bytes": 517399792,
+          "bytes_per_request": 3449.3319466666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r10.json"
+    },
+    {
+      "strategy": "legacy_method",
+      "repetition": 11,
+      "median_requests_per_second": 411693.23173966643,
+      "median_bytes_per_request": 3449.31392,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.365038833,
+          "requests_per_second": 410915.1861111719,
+          "ns_per_request": 2433.59222,
+          "allocated_bytes": 517394416,
+          "bytes_per_request": 3449.2961066666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.364348958,
+          "requests_per_second": 411693.23173966643,
+          "ns_per_request": 2428.993053333333,
+          "allocated_bytes": 517397088,
+          "bytes_per_request": 3449.31392,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.344192875,
+          "requests_per_second": 435802.1647019858,
+          "ns_per_request": 2294.619166666667,
+          "allocated_bytes": 517397328,
+          "bytes_per_request": 3449.31552,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/legacy_method_r11.json"
+    },
+    {
+      "strategy": "fast_method",
+      "repetition": 11,
+      "median_requests_per_second": 452497.8455747992,
+      "median_bytes_per_request": 3391.6912,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.348648125,
+          "requests_per_second": 430233.2043231267,
+          "ns_per_request": 2324.320833333333,
+          "allocated_bytes": 508763728,
+          "bytes_per_request": 3391.7581866666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.330236083,
+          "requests_per_second": 454220.5038205955,
+          "ns_per_request": 2201.5738866666666,
+          "allocated_bytes": 508743648,
+          "bytes_per_request": 3391.62432,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.331493291,
+          "requests_per_second": 452497.8455747992,
+          "ns_per_request": 2209.9552733333335,
+          "allocated_bytes": 508753680,
+          "bytes_per_request": 3391.6912,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_typed_json_method_ab_stock_raw/fast_method_r11.json"
+    }
+  ]
+}

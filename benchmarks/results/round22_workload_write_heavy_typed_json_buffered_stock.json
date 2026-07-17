@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+    "generated_at_utc": "2026-07-17T12:08:18Z",
+    "codec_mode": "typed_json_buffered",
+    "route_count": 1000,
+    "route_method_counts": {
+      "GET": 400,
+      "POST": 300,
+      "PUT": 153,
+      "PATCH": 100,
+      "DELETE": 47
+    },
+    "route_shape_counts": {
+      "static": 450,
+      "restful": 250,
+      "variable": 150,
+      "nested": 50,
+      "constrained": 50,
+      "glob": 50
+    },
+    "traffic_profile": "write_heavy",
+    "traffic_entries": 4096,
+    "sampled_method_counts": {
+      "GET": 820,
+      "POST": 1640,
+      "PUT": 820,
+      "PATCH": 615,
+      "DELETE": 201
+    },
+    "sampled_route_shape_counts": {
+      "static": 1844,
+      "variable": 613,
+      "restful": 1024,
+      "nested": 205,
+      "glob": 205,
+      "constrained": 205
+    },
+    "traffic_locality": "70% selects the first 20% of each method's route pool; 20% query strings",
+    "operations": 100000,
+    "warmup_operations": 10000,
+    "repetitions": 7,
+    "request_payload_fields": 8,
+    "request_payload_bytes": 257,
+    "buffered_request_body": true,
+    "response_behavior": "reads consume route params; writes consume every body field and emit a JSON acknowledgement",
+    "http_scope": "Crystal HTTP/1.1 parser and serializer plus full Amber pipeline; excludes sockets and kernel scheduling",
+    "legacy_request_method": false,
+    "legacy_keep_alive_headers": false
+  },
+  "summary": {
+    "median_requests_per_second": 299042.83863424143,
+    "median_ns_per_request": 3344.0025,
+    "median_bytes_per_request": 5272.47488,
+    "response_bytes_per_request": 220.1881
+  },
+  "results": [
+    {
+      "repetition": 1,
+      "operations": 100000,
+      "elapsed_seconds": 0.353120958,
+      "requests_per_second": 283189.08219545556,
+      "ns_per_request": 3531.20958,
+      "allocated_bytes": 527269088,
+      "bytes_per_request": 5272.69088,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 2,
+      "operations": 100000,
+      "elapsed_seconds": 0.335164916,
+      "requests_per_second": 298360.5837790015,
+      "ns_per_request": 3351.64916,
+      "allocated_bytes": 527237680,
+      "bytes_per_request": 5272.3768,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 3,
+      "operations": 100000,
+      "elapsed_seconds": 0.337972166,
+      "requests_per_second": 295882.35381489963,
+      "ns_per_request": 3379.72166,
+      "allocated_bytes": 527247456,
+      "bytes_per_request": 5272.47456,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 4,
+      "operations": 100000,
+      "elapsed_seconds": 0.334261875,
+      "requests_per_second": 299166.6339453161,
+      "ns_per_request": 3342.61875,
+      "allocated_bytes": 527248000,
+      "bytes_per_request": 5272.48,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 5,
+      "operations": 100000,
+      "elapsed_seconds": 0.333932959,
+      "requests_per_second": 299461.30594434676,
+      "ns_per_request": 3339.32959,
+      "allocated_bytes": 527247488,
+      "bytes_per_request": 5272.47488,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 6,
+      "operations": 100000,
+      "elapsed_seconds": 0.33440025,
+      "requests_per_second": 299042.83863424143,
+      "ns_per_request": 3344.0025,
+      "allocated_bytes": 527248000,
+      "bytes_per_request": 5272.48,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    },
+    {
+      "repetition": 7,
+      "operations": 100000,
+      "elapsed_seconds": 0.334147584,
+      "requests_per_second": 299268.96014905797,
+      "ns_per_request": 3341.47584,
+      "allocated_bytes": 527247488,
+      "bytes_per_request": 5272.47488,
+      "response_bytes": 22018810,
+      "response_bytes_per_request": 220.1881
+    }
+  ]
+}

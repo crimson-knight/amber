@@ -1,0 +1,1017 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-17T12:05:17Z",
+    "routes": 1000,
+    "operations": 150000,
+    "warmup_operations": 20000,
+    "inner_repetitions": 3,
+    "process_repetitions": 11,
+    "scope": "same-source parsed HTTP CPU A/B with rotated process order; excludes sockets and kernel scheduling",
+    "binaries": [
+      {
+        "name": "legacy",
+        "path": "/tmp/amber-round22-workload-json-baseline",
+        "sha256": "8ee4b6cb149dddeee94b158ff98ac27bd22098b46f2ce04096ba1b56c3f9ac51"
+      },
+      {
+        "name": "no_policy_header",
+        "path": "/tmp/amber-round22-workload-json-headers-only",
+        "sha256": "27f0d9b469036e9163d09e1e49bb1e5d7fbecb1411b4806da78908f42b1f4be2"
+      }
+    ]
+  },
+  "aggregates": {
+    "legacy": {
+      "requests_per_second": {
+        "count": 11,
+        "min": 310464.3293747365,
+        "median": 330476.7292057157,
+        "mean": 326836.71539704484,
+        "max": 332158.7219212642,
+        "stddev": 6800.525222034585,
+        "coefficient_of_variation": 0.020807103062987376
+      },
+      "bytes_per_request": {
+        "count": 11,
+        "min": 4775.49088,
+        "median": 4775.509546666667,
+        "mean": 4775.51039030303,
+        "max": 4775.524693333334,
+        "stddev": 0.009495180431306907,
+        "coefficient_of_variation": 1.988306935859141e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.0,
+      "median_allocation_ratio_vs_baseline": 1.0
+    },
+    "no_policy_header": {
+      "requests_per_second": {
+        "count": 11,
+        "min": 318707.18224780256,
+        "median": 336678.1371037544,
+        "mean": 331598.8916844455,
+        "max": 342698.9459738745,
+        "stddev": 9583.509823316748,
+        "coefficient_of_variation": 0.02890091029748242
+      },
+      "bytes_per_request": {
+        "count": 11,
+        "min": 4727.498346666666,
+        "median": 4727.51552,
+        "mean": 4727.514618181818,
+        "max": 4727.526506666667,
+        "stddev": 0.007504715334425248,
+        "coefficient_of_variation": 1.5874547072921647e-06
+      },
+      "median_rps_ratio_vs_baseline": 1.0187650365365921,
+      "median_allocation_ratio_vs_baseline": 0.9899499673914028
+    }
+  },
+  "trials": [
+    {
+      "strategy": "legacy",
+      "repetition": 1,
+      "median_requests_per_second": 332158.7219212642,
+      "median_bytes_per_request": 4775.51904,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.451591333,
+          "requests_per_second": 332158.7219212642,
+          "ns_per_request": 3010.608886666667,
+          "allocated_bytes": 716328832,
+          "bytes_per_request": 4775.525546666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.449120542,
+          "requests_per_second": 333986.05935953825,
+          "ns_per_request": 2994.1369466666665,
+          "allocated_bytes": 716327856,
+          "bytes_per_request": 4775.51904,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.457584709,
+          "requests_per_second": 327808.15671880334,
+          "ns_per_request": 3050.5647266666665,
+          "allocated_bytes": 716318240,
+          "bytes_per_request": 4775.454933333333,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r1.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 1,
+      "median_requests_per_second": 323747.67476596084,
+      "median_bytes_per_request": 4727.51552,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.463323791,
+          "requests_per_second": 323747.67476596084,
+          "ns_per_request": 3088.8252733333334,
+          "allocated_bytes": 709127328,
+          "bytes_per_request": 4727.51552,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.469907041,
+          "requests_per_second": 319212.07156374573,
+          "ns_per_request": 3132.7136066666667,
+          "allocated_bytes": 709125200,
+          "bytes_per_request": 4727.501333333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.449775833,
+          "requests_per_second": 333499.4657216276,
+          "ns_per_request": 2998.5055533333334,
+          "allocated_bytes": 709128352,
+          "bytes_per_request": 4727.522346666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r1.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 2,
+      "median_requests_per_second": 342698.9459738745,
+      "median_bytes_per_request": 4727.520426666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.441398709,
+          "requests_per_second": 339828.81449705374,
+          "ns_per_request": 2942.65806,
+          "allocated_bytes": 709131120,
+          "bytes_per_request": 4727.5408,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.436336041,
+          "requests_per_second": 343771.73990997457,
+          "ns_per_request": 2908.90694,
+          "allocated_bytes": 709122784,
+          "bytes_per_request": 4727.485226666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.437701959,
+          "requests_per_second": 342698.9459738745,
+          "ns_per_request": 2918.01306,
+          "allocated_bytes": 709128064,
+          "bytes_per_request": 4727.520426666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r2.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 2,
+      "median_requests_per_second": 330476.7292057157,
+      "median_bytes_per_request": 4775.504,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.470682125,
+          "requests_per_second": 318686.4170803172,
+          "ns_per_request": 3137.880833333333,
+          "allocated_bytes": 716328192,
+          "bytes_per_request": 4775.52128,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.453736083,
+          "requests_per_second": 330588.65190582606,
+          "ns_per_request": 3024.90722,
+          "allocated_bytes": 716322384,
+          "bytes_per_request": 4775.48256,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.45388975,
+          "requests_per_second": 330476.7292057157,
+          "ns_per_request": 3025.931666666667,
+          "allocated_bytes": 716325600,
+          "bytes_per_request": 4775.504,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r2.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 3,
+      "median_requests_per_second": 330245.44667210284,
+      "median_bytes_per_request": 4775.51072,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.454207625,
+          "requests_per_second": 330245.44667210284,
+          "ns_per_request": 3028.0508333333332,
+          "allocated_bytes": 716326608,
+          "bytes_per_request": 4775.51072,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.451208375,
+          "requests_per_second": 332440.63787601463,
+          "ns_per_request": 3008.0558333333333,
+          "allocated_bytes": 716326960,
+          "bytes_per_request": 4775.513066666666,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.454500166,
+          "requests_per_second": 330032.88276026724,
+          "ns_per_request": 3030.0011066666666,
+          "allocated_bytes": 716325600,
+          "bytes_per_request": 4775.504,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r3.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 3,
+      "median_requests_per_second": 322270.1569240818,
+      "median_bytes_per_request": 4727.5125333333335,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.446991959,
+          "requests_per_second": 335576.50642212114,
+          "ns_per_request": 2979.946393333333,
+          "allocated_bytes": 709124848,
+          "bytes_per_request": 4727.4989866666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.465448,
+          "requests_per_second": 322270.1569240818,
+          "ns_per_request": 3102.9866666666667,
+          "allocated_bytes": 709126880,
+          "bytes_per_request": 4727.5125333333335,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.480180209,
+          "requests_per_second": 312382.7204631834,
+          "ns_per_request": 3201.2013933333333,
+          "allocated_bytes": 709129664,
+          "bytes_per_request": 4727.531093333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r3.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 4,
+      "median_requests_per_second": 336678.1371037544,
+      "median_bytes_per_request": 4727.522133333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.450447542,
+          "requests_per_second": 333002.1501149628,
+          "ns_per_request": 3002.9836133333333,
+          "allocated_bytes": 709128320,
+          "bytes_per_request": 4727.522133333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.438155166,
+          "requests_per_second": 342344.4743773716,
+          "ns_per_request": 2921.03444,
+          "allocated_bytes": 709125376,
+          "bytes_per_request": 4727.502506666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.445529375,
+          "requests_per_second": 336678.1371037544,
+          "ns_per_request": 2970.195833333333,
+          "allocated_bytes": 709130368,
+          "bytes_per_request": 4727.535786666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r4.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 4,
+      "median_requests_per_second": 325266.9542873682,
+      "median_bytes_per_request": 4775.50688,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.461159666,
+          "requests_per_second": 325266.9542873682,
+          "ns_per_request": 3074.397773333333,
+          "allocated_bytes": 716326032,
+          "bytes_per_request": 4775.50688,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.456809583,
+          "requests_per_second": 328364.3898512523,
+          "ns_per_request": 3045.39722,
+          "allocated_bytes": 716327968,
+          "bytes_per_request": 4775.519786666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.48690175,
+          "requests_per_second": 308070.3653252427,
+          "ns_per_request": 3246.0116666666668,
+          "allocated_bytes": 716325600,
+          "bytes_per_request": 4775.504,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r4.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 5,
+      "median_requests_per_second": 331749.9035763376,
+      "median_bytes_per_request": 4775.509546666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.476084875,
+          "requests_per_second": 315069.87068219716,
+          "ns_per_request": 3173.8991666666666,
+          "allocated_bytes": 716334176,
+          "bytes_per_request": 4775.5611733333335,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.452147833,
+          "requests_per_second": 331749.9035763376,
+          "ns_per_request": 3014.3188866666665,
+          "allocated_bytes": 716326432,
+          "bytes_per_request": 4775.509546666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.451966667,
+          "requests_per_second": 331882.88197368325,
+          "ns_per_request": 3013.1111133333334,
+          "allocated_bytes": 716325456,
+          "bytes_per_request": 4775.50304,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r5.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 5,
+      "median_requests_per_second": 340767.5562025091,
+      "median_bytes_per_request": 4727.50816,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.44018275,
+          "requests_per_second": 340767.5562025091,
+          "ns_per_request": 2934.5516666666667,
+          "allocated_bytes": 709121312,
+          "bytes_per_request": 4727.475413333334,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.439127292,
+          "requests_per_second": 341586.60309366515,
+          "ns_per_request": 2927.51528,
+          "allocated_bytes": 709128000,
+          "bytes_per_request": 4727.52,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.449495459,
+          "requests_per_second": 333707.48690922814,
+          "ns_per_request": 2996.636393333333,
+          "allocated_bytes": 709126224,
+          "bytes_per_request": 4727.50816,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r5.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 6,
+      "median_requests_per_second": 318707.18224780256,
+      "median_bytes_per_request": 4727.50848,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.472899959,
+          "requests_per_second": 317191.8228058041,
+          "ns_per_request": 3152.6663933333334,
+          "allocated_bytes": 709126256,
+          "bytes_per_request": 4727.508373333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.470651458,
+          "requests_per_second": 318707.18224780256,
+          "ns_per_request": 3137.6763866666665,
+          "allocated_bytes": 709126272,
+          "bytes_per_request": 4727.50848,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.446022,
+          "requests_per_second": 336306.2808561013,
+          "ns_per_request": 2973.48,
+          "allocated_bytes": 709128464,
+          "bytes_per_request": 4727.523093333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r6.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 6,
+      "median_requests_per_second": 330872.31680528464,
+      "median_bytes_per_request": 4775.524693333334,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.453853625,
+          "requests_per_second": 330503.03388014145,
+          "ns_per_request": 3025.6908333333336,
+          "allocated_bytes": 716328784,
+          "bytes_per_request": 4775.525226666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.452409083,
+          "requests_per_second": 331558.3299197377,
+          "ns_per_request": 3016.0605533333332,
+          "allocated_bytes": 716320416,
+          "bytes_per_request": 4775.46944,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.453347084,
+          "requests_per_second": 330872.31680528464,
+          "ns_per_request": 3022.3138933333335,
+          "allocated_bytes": 716328704,
+          "bytes_per_request": 4775.524693333334,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r6.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 7,
+      "median_requests_per_second": 310464.3293747365,
+      "median_bytes_per_request": 4775.49088,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.472286,
+          "requests_per_second": 317604.1635788484,
+          "ns_per_request": 3148.5733333333333,
+          "allocated_bytes": 716328288,
+          "bytes_per_request": 4775.52192,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.486915875,
+          "requests_per_second": 308061.42847570946,
+          "ns_per_request": 3246.1058333333335,
+          "allocated_bytes": 716323632,
+          "bytes_per_request": 4775.49088,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.483147292,
+          "requests_per_second": 310464.3293747365,
+          "ns_per_request": 3220.9819466666668,
+          "allocated_bytes": 716323280,
+          "bytes_per_request": 4775.488533333333,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r7.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 7,
+      "median_requests_per_second": 339821.14809721214,
+      "median_bytes_per_request": 4727.51264,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.441408667,
+          "requests_per_second": 339821.14809721214,
+          "ns_per_request": 2942.7244466666666,
+          "allocated_bytes": 709125168,
+          "bytes_per_request": 4727.50112,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.4435755,
+          "requests_per_second": 338161.1473131406,
+          "ns_per_request": 2957.17,
+          "allocated_bytes": 709126896,
+          "bytes_per_request": 4727.51264,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.438568542,
+          "requests_per_second": 342021.79507895483,
+          "ns_per_request": 2923.79028,
+          "allocated_bytes": 709136496,
+          "bytes_per_request": 4727.57664,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r7.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 8,
+      "median_requests_per_second": 319275.34475160163,
+      "median_bytes_per_request": 4727.520426666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.446474333,
+          "requests_per_second": 335965.56154102593,
+          "ns_per_request": 2976.495553333333,
+          "allocated_bytes": 709145760,
+          "bytes_per_request": 4727.6384,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.471576667,
+          "requests_per_second": 318081.89526052185,
+          "ns_per_request": 3143.8444466666665,
+          "allocated_bytes": 709128000,
+          "bytes_per_request": 4727.52,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.469813916,
+          "requests_per_second": 319275.34475160163,
+          "ns_per_request": 3132.0927733333333,
+          "allocated_bytes": 709128064,
+          "bytes_per_request": 4727.520426666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r8.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 8,
+      "median_requests_per_second": 332128.0164057424,
+      "median_bytes_per_request": 4775.504,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.464386083,
+          "requests_per_second": 323007.09580050013,
+          "ns_per_request": 3095.90722,
+          "allocated_bytes": 716325184,
+          "bytes_per_request": 4775.501226666666,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.448350958,
+          "requests_per_second": 334559.33866879344,
+          "ns_per_request": 2989.0063866666665,
+          "allocated_bytes": 716327968,
+          "bytes_per_request": 4775.519786666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.451633083,
+          "requests_per_second": 332128.0164057424,
+          "ns_per_request": 3010.88722,
+          "allocated_bytes": 716325600,
+          "bytes_per_request": 4775.504,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r8.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 9,
+      "median_requests_per_second": 321892.2691983502,
+      "median_bytes_per_request": 4775.504,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.452604291,
+          "requests_per_second": 331415.32898105023,
+          "ns_per_request": 3017.36194,
+          "allocated_bytes": 716324128,
+          "bytes_per_request": 4775.494186666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.465994416,
+          "requests_per_second": 321892.2691983502,
+          "ns_per_request": 3106.62944,
+          "allocated_bytes": 716327968,
+          "bytes_per_request": 4775.519786666667,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.483944084,
+          "requests_per_second": 309953.1639279219,
+          "ns_per_request": 3226.2938933333335,
+          "allocated_bytes": 716325600,
+          "bytes_per_request": 4775.504,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r9.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 9,
+      "median_requests_per_second": 340674.68349902425,
+      "median_bytes_per_request": 4727.498346666666,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.470117958,
+          "requests_per_second": 319068.85803328536,
+          "ns_per_request": 3134.11972,
+          "allocated_bytes": 709124752,
+          "bytes_per_request": 4727.498346666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.437612542,
+          "requests_per_second": 342768.96935920086,
+          "ns_per_request": 2917.4169466666667,
+          "allocated_bytes": 709138800,
+          "bytes_per_request": 4727.592,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.44030275,
+          "requests_per_second": 340674.68349902425,
+          "ns_per_request": 2935.3516666666665,
+          "allocated_bytes": 709122464,
+          "bytes_per_request": 4727.483093333333,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r9.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 10,
+      "median_requests_per_second": 340430.779474279,
+      "median_bytes_per_request": 4727.526506666667,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.440618208,
+          "requests_per_second": 340430.779474279,
+          "ns_per_request": 2937.45472,
+          "allocated_bytes": 709133280,
+          "bytes_per_request": 4727.5552,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.440428542,
+          "requests_per_second": 340577.382471275,
+          "ns_per_request": 2936.19028,
+          "allocated_bytes": 709128976,
+          "bytes_per_request": 4727.526506666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.460149917,
+          "requests_per_second": 325980.71728001634,
+          "ns_per_request": 3067.666113333333,
+          "allocated_bytes": 709128064,
+          "bytes_per_request": 4727.520426666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r10.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 10,
+      "median_requests_per_second": 318447.70145818416,
+      "median_bytes_per_request": 4775.519573333333,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.484320125,
+          "requests_per_second": 309712.5067846396,
+          "ns_per_request": 3228.8008333333332,
+          "allocated_bytes": 716323504,
+          "bytes_per_request": 4775.490026666666,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.471034959,
+          "requests_per_second": 318447.70145818416,
+          "ns_per_request": 3140.23306,
+          "allocated_bytes": 716329952,
+          "bytes_per_request": 4775.533013333334,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.447325917,
+          "requests_per_second": 335325.97665249964,
+          "ns_per_request": 2982.17278,
+          "allocated_bytes": 716327936,
+          "bytes_per_request": 4775.519573333333,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r10.json"
+    },
+    {
+      "strategy": "legacy",
+      "repetition": 11,
+      "median_requests_per_second": 331501.48046240665,
+      "median_bytes_per_request": 4775.52096,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.452739291,
+          "requests_per_second": 331316.5059491159,
+          "ns_per_request": 3018.26194,
+          "allocated_bytes": 716332976,
+          "bytes_per_request": 4775.553173333334,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.452486667,
+          "requests_per_second": 331501.48046240665,
+          "ns_per_request": 3016.57778,
+          "allocated_bytes": 716328144,
+          "bytes_per_request": 4775.52096,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.451452375,
+          "requests_per_second": 332260.96108144295,
+          "ns_per_request": 3009.6825,
+          "allocated_bytes": 716317776,
+          "bytes_per_request": 4775.45184,
+          "response_bytes": 32599439,
+          "response_bytes_per_request": 217.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/legacy_r11.json"
+    },
+    {
+      "strategy": "no_policy_header",
+      "repetition": 11,
+      "median_requests_per_second": 322516.1994888002,
+      "median_bytes_per_request": 4727.515626666666,
+      "compiler": "Crystal 1.20.3 (2026-07-02)",
+      "measurements": [
+        {
+          "repetition": 1,
+          "operations": 150000,
+          "elapsed_seconds": 0.465092917,
+          "requests_per_second": 322516.1994888002,
+          "ns_per_request": 3100.6194466666666,
+          "allocated_bytes": 709127344,
+          "bytes_per_request": 4727.515626666666,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 2,
+          "operations": 150000,
+          "elapsed_seconds": 0.469294167,
+          "requests_per_second": 319628.94608063606,
+          "ns_per_request": 3128.62778,
+          "allocated_bytes": 709122256,
+          "bytes_per_request": 4727.4817066666665,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        },
+        {
+          "repetition": 3,
+          "operations": 150000,
+          "elapsed_seconds": 0.461974833,
+          "requests_per_second": 324693.01201089454,
+          "ns_per_request": 3079.83222,
+          "allocated_bytes": 709134784,
+          "bytes_per_request": 4727.565226666667,
+          "response_bytes": 27499439,
+          "response_bytes_per_request": 183.32959333333332
+        }
+      ],
+      "raw_result": "round22_workload_keepalive_header_ab_stock_raw/no_policy_header_r11.json"
+    }
+  ]
+}
