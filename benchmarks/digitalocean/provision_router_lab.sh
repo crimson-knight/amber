@@ -145,6 +145,7 @@ EOF
   - lld
   - pkg-config
   - ruby
+  - wrk
   - zlib1g-dev
 EOF
   fi
