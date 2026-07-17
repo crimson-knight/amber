@@ -1,0 +1,40 @@
+{
+  "generated_at_utc": "2026-07-16T23:55:46Z",
+  "source_commit": "dbca1a97147fb7736adee632af84a7b259cf1006",
+  "target": "x86_64-unknown-linux-gnu",
+  "mcpu": "x86-64-v2",
+  "stock_compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "fork_compiler": "Crystal 1.20.0-dev [6636853e8] (2026-06-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "variants": [
+    {
+      "name": "acrystal_release",
+      "object": "acrystal_release.o",
+      "bytes": 3366672,
+      "sha256": "cd6e161d5474efd43231700b0ff8209f53bc0bbae763efb9a97a4e4f19d0d955"
+    },
+    {
+      "name": "stock_default",
+      "object": "stock_default.o",
+      "bytes": 10119248,
+      "sha256": "e987c1db70948ee71db920d4d19484204bfda0f9d8ef58866c776150adb36a97"
+    },
+    {
+      "name": "stock_o3_multi",
+      "object": "stock_o3_multi.o",
+      "bytes": 3270440,
+      "sha256": "ea7d4e7c5e7355ad141b89ef887dcd2580eb9060ddd971491514cf432f5febec"
+    },
+    {
+      "name": "stock_release",
+      "object": "stock_release.o",
+      "bytes": 3270440,
+      "sha256": "ea7d4e7c5e7355ad141b89ef887dcd2580eb9060ddd971491514cf432f5febec"
+    },
+    {
+      "name": "stock_release_legacy",
+      "object": "stock_release_legacy.o",
+      "bytes": 3273952,
+      "sha256": "13c29375a45323c5773af3d93493ec2d7e9abab8aae180c16b15447b1e1dd897"
+    }
+  ]
+}
