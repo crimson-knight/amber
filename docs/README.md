@@ -19,3 +19,8 @@
 ## Migration
 
 - [Migration Guide](migration-guide.md) -- Migrating from Amber V1 to V2, covering all breaking changes with before/after code examples
+
+## Publications
+
+- [Performance research blog post](publications/amber-request-path-performance-blog.md) -- A public-facing explanation of Amber's router, typed JSON, MessagePack, and HTTP findings
+- [Request-path performance white paper](publications/amber-request-path-performance-white-paper.md) -- Methodology, results, CPU profiles, limitations, and an implementation roadmap
