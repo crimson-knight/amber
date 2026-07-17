@@ -1,0 +1,68 @@
+{
+  "generated_at_utc": "2026-07-17T12:28:33Z",
+  "source_commit": "deccb9358fd378a8d4e060cd13a19a35c609197e",
+  "source": "benchmarks/codec/framework_workload_http_cpu.cr",
+  "target": "x86_64-unknown-linux-gnu",
+  "mcpu": "x86-64-v2",
+  "stock_compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "fork_compiler": "Crystal 1.20.0-dev [6636853e8] (2026-06-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "comparison_invariant": "same source, route table, request sequence, target, release settings, and linker; only named codec/framework/compiler flags differ",
+  "variants": [
+    {
+      "name": "acrystal_json_optimized",
+      "object": "acrystal_json_optimized.o",
+      "bytes": 3475704,
+      "sha256": "eb7b633085250dcc5ba220bd4783944039452337dd7576bca7b9d93540c48d46",
+      "description": "round 22 default JSON path compiled by acrystal",
+      "link_command": "cc /tmp/amber-framework-r22-objects/acrystal_json_optimized.o -o /tmp/amber-framework-r22-objects/acrystal_json_optimized  -rdynamic -L/opt/homebrew/Cellar/agent-crystal/HEAD-6636853/libexec/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "acrystal_msgpack_map",
+      "object": "acrystal_msgpack_map.o",
+      "bytes": 3520944,
+      "sha256": "d90323855fdd449f2671e242a6e1997a59e21a01251dfee6db623e0f2c9c1470",
+      "description": "typed MessagePack map path compiled by acrystal",
+      "link_command": "cc /tmp/amber-framework-r22-objects/acrystal_msgpack_map.o -o /tmp/amber-framework-r22-objects/acrystal_msgpack_map  -rdynamic -L/opt/homebrew/Cellar/agent-crystal/HEAD-6636853/libexec/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_json_legacy",
+      "object": "stock_json_legacy.o",
+      "bytes": 3377032,
+      "sha256": "09ef294dc6881efd4f72d0a8cd1b76f0e947d216e30dd1b0da3f77e8cf4cc034",
+      "description": "legacy Amber JSON params, forced persistence headers, legacy POST method lookup",
+      "link_command": "cc /tmp/amber-framework-r22-objects/stock_json_legacy.o -o /tmp/amber-framework-r22-objects/stock_json_legacy  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_json_optimized",
+      "object": "stock_json_optimized.o",
+      "bytes": 3377480,
+      "sha256": "70268cdb58f3ae7ba1d92dbb34d8706600c05d56d03adb0afa3f7a1cb06d1356",
+      "description": "legacy Amber JSON params with round 22 default framework cleanups",
+      "link_command": "cc /tmp/amber-framework-r22-objects/stock_json_optimized.o -o /tmp/amber-framework-r22-objects/stock_json_optimized  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_msgpack_array",
+      "object": "stock_msgpack_array.o",
+      "bytes": 3415704,
+      "sha256": "c1589245a13aae0f51eb7909b9fa0ddf5988e5cdc0f1c96c7ea5b021f1e7361d",
+      "description": "buffered compact MessagePack array directly into a compile-time typed payload",
+      "link_command": "cc /tmp/amber-framework-r22-objects/stock_msgpack_array.o -o /tmp/amber-framework-r22-objects/stock_msgpack_array  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_msgpack_map",
+      "object": "stock_msgpack_map.o",
+      "bytes": 3420104,
+      "sha256": "9adff098d1d4b210562f9ad0cfb7cbd362cd8e613ae8186d789ca735f4d84a6f",
+      "description": "streaming MessagePack map directly into a compile-time typed payload",
+      "link_command": "cc /tmp/amber-framework-r22-objects/stock_msgpack_map.o -o /tmp/amber-framework-r22-objects/stock_msgpack_map  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_typed_json",
+      "object": "stock_typed_json.o",
+      "bytes": 3391904,
+      "sha256": "839f412a9d47335cf9ddb36330cadf67eab572a41809c0faae08c812c133486b",
+      "description": "buffered JSON directly into a compile-time typed payload",
+      "link_command": "cc /tmp/amber-framework-r22-objects/stock_typed_json.o -o /tmp/amber-framework-r22-objects/stock_typed_json  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    }
+  ]
+}

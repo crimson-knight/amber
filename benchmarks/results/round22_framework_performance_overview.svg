@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Amber round 22 realistic framework workload results</title>
+  <desc id="desc">Remote requests per second and local throughput gains for current JSON, typed JSON, MessagePack map, and MessagePack array processing.</desc>
+  <defs>
+    <pattern id="paper" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect width="24" height="24" fill="#f7f1e5"/>
+      <circle cx="2" cy="2" r="0.7" fill="#d9ccb5" opacity="0.45"/>
+    </pattern>
+    <linearGradient id="current" x1="0" x2="1">
+      <stop offset="0" stop-color="#897c6a"/>
+      <stop offset="1" stop-color="#a99a84"/>
+    </linearGradient>
+    <linearGradient id="typed" x1="0" x2="1">
+      <stop offset="0" stop-color="#16766f"/>
+      <stop offset="1" stop-color="#2aa49a"/>
+    </linearGradient>
+    <linearGradient id="map" x1="0" x2="1">
+      <stop offset="0" stop-color="#c35321"/>
+      <stop offset="1" stop-color="#ec7a32"/>
+    </linearGradient>
+    <linearGradient id="array" x1="0" x2="1">
+      <stop offset="0" stop-color="#9f351d"/>
+      <stop offset="1" stop-color="#d64f28"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#5f4931" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#paper)"/>
+  <path d="M0 0H1200V15H0Z" fill="#d9592b"/>
+  <circle cx="1090" cy="78" r="96" fill="#e98a3a" opacity="0.10"/>
+  <circle cx="1145" cy="42" r="38" fill="#16766f" opacity="0.10"/>
+
+  <text x="72" y="82" font-family="Georgia, serif" font-size="38" font-weight="700" fill="#2d2b27">A faster Amber request path</text>
+  <text x="72" y="116" font-family="Avenir Next, Trebuchet MS, sans-serif" font-size="18" fill="#665e53">Real sockets, 1,000 mixed routes, body decoding, field use, and response serialization</text>
+
+  <rect x="60" y="150" width="1080" height="405" rx="20" fill="#fffdfa" filter="url(#shadow)"/>
+  <text x="90" y="194" font-family="Avenir Next, Trebuchet MS, sans-serif" font-size="15" font-weight="700" letter-spacing="1.8" fill="#8a5b35">DIGITALOCEAN BASIC 1 VCPU</text>
+  <text x="90" y="224" font-family="Georgia, serif" font-size="25" font-weight="700" fill="#2d2b27">Median HTTP/1.1 requests per second</text>
+  <text x="1065" y="222" text-anchor="end" font-family="Avenir Next, Trebuchet MS, sans-serif" font-size="14" fill="#776f64">7 paired repetitions</text>
+
+  <g font-family="Avenir Next, Trebuchet MS, sans-serif">
+    <line x1="342" y1="252" x2="342" y2="500" stroke="#ded4c4" stroke-width="1"/>
+    <line x1="595" y1="252" x2="595" y2="500" stroke="#e9e1d4" stroke-width="1"/>
+    <line x1="848" y1="252" x2="848" y2="500" stroke="#e9e1d4" stroke-width="1"/>
+    <line x1="1100" y1="252" x2="1100" y2="500" stroke="#e9e1d4" stroke-width="1"/>
+    <text x="342" y="520" text-anchor="middle" font-size="12" fill="#8b8276">0</text>
+    <text x="595" y="520" text-anchor="middle" font-size="12" fill="#8b8276">10k</text>
+    <text x="848" y="520" text-anchor="middle" font-size="12" fill="#8b8276">20k</text>
+    <text x="1100" y="520" text-anchor="middle" font-size="12" fill="#8b8276">30k</text>
+
+    <text x="90" y="286" font-size="17" font-weight="700" fill="#3c3934">Current Amber JSON</text>
+    <rect x="342" y="263" width="551" height="34" rx="8" fill="url(#current)"/>
+    <text x="907" y="286" font-size="17" font-weight="700" fill="#3c3934">21,795</text>
+
+    <text x="90" y="350" font-size="17" font-weight="700" fill="#3c3934">Typed JSON schema</text>
+    <rect x="342" y="327" width="634" height="34" rx="8" fill="url(#typed)"/>
+    <text x="990" y="350" font-size="17" font-weight="700" fill="#16766f">25,072</text>
+    <text x="1090" y="375" text-anchor="end" font-size="14" font-weight="700" fill="#16766f">+15.0%</text>
+
+    <text x="90" y="414" font-size="17" font-weight="700" fill="#3c3934">MessagePack map</text>
+    <rect x="342" y="391" width="723" height="34" rx="8" fill="url(#map)"/>
+    <text x="1079" y="414" font-size="17" font-weight="700" fill="#a8451c">28,602</text>
+    <text x="1090" y="439" text-anchor="end" font-size="14" font-weight="700" fill="#a8451c">+31.2%</text>
+
+    <text x="90" y="478" font-size="17" font-weight="700" fill="#3c3934">MessagePack array</text>
+    <rect x="342" y="455" width="741" height="34" rx="8" fill="url(#array)"/>
+    <text x="1097" y="478" font-size="17" font-weight="700" fill="#8e2f1b">29,297</text>
+    <text x="1090" y="503" text-anchor="end" font-size="14" font-weight="700" fill="#8e2f1b">+34.4%</text>
+  </g>
+
+  <text x="72" y="602" font-family="Georgia, serif" font-size="25" font-weight="700" fill="#2d2b27">When writes become more common, codec work matters more</text>
+  <g font-family="Avenir Next, Trebuchet MS, sans-serif">
+    <rect x="60" y="630" width="340" height="112" rx="16" fill="#fffdfa" filter="url(#shadow)"/>
+    <text x="84" y="662" font-size="13" font-weight="700" letter-spacing="1.4" fill="#8a5b35">READ-HEAVY</text>
+    <text x="84" y="696" font-size="16" fill="#4f4a43">Typed JSON</text>
+    <text x="376" y="696" text-anchor="end" font-size="19" font-weight="700" fill="#16766f">+42.0%</text>
+    <text x="84" y="724" font-size="16" fill="#4f4a43">MessagePack map</text>
+    <text x="376" y="724" text-anchor="end" font-size="19" font-weight="700" fill="#c35321">+72.7%</text>
+
+    <rect x="430" y="630" width="340" height="112" rx="16" fill="#fffdfa" filter="url(#shadow)"/>
+    <text x="454" y="662" font-size="13" font-weight="700" letter-spacing="1.4" fill="#8a5b35">BALANCED</text>
+    <text x="454" y="696" font-size="16" fill="#4f4a43">Typed JSON</text>
+    <text x="746" y="696" text-anchor="end" font-size="19" font-weight="700" fill="#16766f">+44.9%</text>
+    <text x="454" y="724" font-size="16" fill="#4f4a43">MessagePack map</text>
+    <text x="746" y="724" text-anchor="end" font-size="19" font-weight="700" fill="#c35321">+93.8%</text>
+
+    <rect x="800" y="630" width="340" height="112" rx="16" fill="#fffdfa" filter="url(#shadow)"/>
+    <text x="824" y="662" font-size="13" font-weight="700" letter-spacing="1.4" fill="#8a5b35">WRITE-HEAVY</text>
+    <text x="824" y="696" font-size="16" fill="#4f4a43">Typed JSON</text>
+    <text x="1116" y="696" text-anchor="end" font-size="19" font-weight="700" fill="#16766f">+51.8%</text>
+    <text x="824" y="724" font-size="16" fill="#4f4a43">MessagePack map</text>
+    <text x="1116" y="724" text-anchor="end" font-size="19" font-weight="700" fill="#c35321">+121.7%</text>
+  </g>
+
+  <text x="60" y="780" font-family="Avenir Next, Trebuchet MS, sans-serif" font-size="12" fill="#776f64">Remote: separate 4-vCPU load generator over a private VPC, 16 connections, 15-second trials. Local: parsed HTTP plus full Amber pipeline, excluding sockets.</text>
+</svg>
