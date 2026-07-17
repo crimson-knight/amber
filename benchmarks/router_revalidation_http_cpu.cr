@@ -197,9 +197,16 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
     }
   end
 
-  def run(route_count : Int32, operations : Int32, warmup_operations : Int32, repetitions : Int32, output_path : String) : Nil
+  def run(
+    route_count : Int32,
+    operations : Int32,
+    warmup_operations : Int32,
+    repetitions : Int32,
+    output_path : String,
+    traffic_profile : Symbol,
+  ) : Nil
     definitions = install_routes(route_count)
-    traffic = RouterRevalidation.generate_traffic(definitions, include_misses: false)
+    traffic = RouterRevalidation.generate_profile_traffic(definitions, traffic_profile)
     pipeline = Amber::Pipe::Pipeline.new
     pipeline.prepare_pipelines
     verify(pipeline, traffic)
@@ -224,10 +231,12 @@ module Amber::Benchmarks::RouterRevalidationHTTPCPU
         generated_at_utc:       Time.utc.to_s("%Y-%m-%dT%H:%M:%SZ"),
         route_count:            route_count,
         traffic_entries:        traffic.size,
+        traffic_profile:        traffic_profile,
         operations:             operations,
         warmup_operations:      warmup_operations,
         repetitions:            repetitions,
-        traffic_mix:            "45% static, 40% variable, 5% nested, 5% constrained, 3% glob; 70% hot-set; 20% query strings",
+        traffic_mix:            RouterRevalidation.profile_description(traffic_profile),
+        traffic_locality:       "70% hot-set; 20% query strings",
         request_headers:        ["Host", "Accept", "User-Agent"],
         optional_param_lookups: OPTIONAL_PARAM_LOOKUPS,
         response_mode:          RESPONSE_MODE,
@@ -250,6 +259,7 @@ operations = 100_000
 warmup_operations = 10_000
 repetitions = 5
 output_path = "benchmarks/results/router_revalidation_http_cpu.json"
+traffic_profile = :mixed
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: router_revalidation_http_cpu [options]"
@@ -257,7 +267,17 @@ OptionParser.parse do |parser|
   parser.on("--operations=COUNT", "Parsed requests per repetition") { |value| operations = value.to_i }
   parser.on("--warmup=COUNT", "Warmup requests") { |value| warmup_operations = value.to_i }
   parser.on("--repetitions=COUNT", "Measured repetitions") { |value| repetitions = value.to_i }
+  parser.on("--profile=NAME", "Traffic profile") do |value|
+    traffic_profile = Amber::Benchmarks::RouterRevalidation.profile_from_string(value)
+  end
   parser.on("--output=PATH", "JSON output path") { |value| output_path = value }
 end
 
-Amber::Benchmarks::RouterRevalidationHTTPCPU.run(route_count, operations, warmup_operations, repetitions, output_path)
+Amber::Benchmarks::RouterRevalidationHTTPCPU.run(
+  route_count,
+  operations,
+  warmup_operations,
+  repetitions,
+  output_path,
+  traffic_profile
+)
