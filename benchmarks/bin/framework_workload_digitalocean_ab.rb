@@ -218,7 +218,7 @@ FileUtils.mkdir_p(raw_dir)
 options[:variants].each do |variant|
   ssh_capture(target.fetch("public_ip"), ssh_options, "test -x #{Shellwords.escape(variant.remote_path)}")
 end
-ssh_capture(loadgen.fetch("public_ip"), ssh_options, "command -v wrk && wrk --version")
+ssh_capture(loadgen.fetch("public_ip"), ssh_options, "command -v wrk")
 ssh_capture(loadgen.fetch("public_ip"), ssh_options, "mkdir -p /opt/amber-router/workloads")
 
 remote_scripts = {}
@@ -248,7 +248,7 @@ hardware = {
     "cpu" => ssh_capture(loadgen.fetch("public_ip"), ssh_options, "lscpu -J"),
     "memory_bytes" => ssh_capture(loadgen.fetch("public_ip"), ssh_options, "awk '/MemTotal/ {print $2 * 1024}' /proc/meminfo").to_i,
     "kernel" => ssh_capture(loadgen.fetch("public_ip"), ssh_options, "uname -a").strip,
-    "wrk" => ssh_capture(loadgen.fetch("public_ip"), ssh_options, "wrk --version 2>&1").strip,
+    "wrk" => ssh_capture(loadgen.fetch("public_ip"), ssh_options, "wrk -v 2>&1 || true").lines.first.to_s.strip,
   },
 }
 

@@ -1,0 +1,48 @@
+{
+  "generated_at_utc": "2026-07-17T12:34:25Z",
+  "host": "Linux amber-framework-r22-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+  "binaries": [
+    {
+      "name": "acrystal_json_optimized",
+      "bytes": 2740840,
+      "sha256": "cd7cade501c048323d750fb19b0898a5a11d2aa9c40c174228e9c8a76b2254af",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fff83bf1000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007b567e1df000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007b567dffd000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007b567dfe1000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007b567df37000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007b567da00000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007b567d966000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007b567d87d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007b567d812000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007b567d7e4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007b567d400000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007b567e48f000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007b567d000000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007b567d7b2000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007b567b200000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007b567ae00000)\n"
+    },
+    {
+      "name": "acrystal_msgpack_map",
+      "bytes": 2772880,
+      "sha256": "6f518381c9d93e049efe68d7e33131f17c58b409182150b765899eddc0dc743a",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fffefd54000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007354bfc0b000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007354bf61e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007354bfbef000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007354bfb45000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007354bf000000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007354bfaa9000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007354bf535000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007354bef95000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007354bfa7b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007354bec00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007354bfc35000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007354be800000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007354bef63000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007354bca00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007354bc600000)\n"
+    },
+    {
+      "name": "stock_json_legacy",
+      "bytes": 2753800,
+      "sha256": "b10f83ab8d6e83e3498bd0a6b65d86bef16dd6f24e39987d74049051fc5cd4ab",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fffff5d7000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007662b4d4e000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007662b481e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007662b4d32000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007662b4c88000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007662b4200000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007662b4784000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007662b4117000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007662b4719000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007662b40e9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007662b3e00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007662b4d78000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007662b3a00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007662b40b7000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007662b1c00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007662b1800000)\n"
+    },
+    {
+      "name": "stock_json_optimized",
+      "bytes": 2754056,
+      "sha256": "50b31cd70a65e9e175c147bdeff81ae966bdba4e13916a67fc72b9e6ab5f6035",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffd24b45000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007e94a4f16000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007e94a4a1e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007e94a4efa000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007e94a4974000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007e94a4400000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007e94a4366000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007e94a427d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007e94a4e8d000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007e94a4946000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e94a4000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e94a4f40000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007e94a3c00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007e94a4914000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007e94a1e00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007e94a1a00000)\n"
+    },
+    {
+      "name": "stock_msgpack_array",
+      "bytes": 2783280,
+      "sha256": "23257e7ea2a3c4fa064dca7e73790783ee8c129193503368ae743e6019f4935e",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fff4a1f6000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x000075c4250fe000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x000075c424c1e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000075c4250e2000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000075c424b74000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000075c424600000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x000075c424566000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000075c42447d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x000075c424412000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000075c4250b2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075c424200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075c425128000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x000075c423e00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x000075c42507e000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x000075c422000000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x000075c421c00000)\n"
+    },
+    {
+      "name": "stock_msgpack_map",
+      "bytes": 2786240,
+      "sha256": "b4b9525d7220a0a3169defc0ce63727cddaf3bb6593a58670a2bda243282ae09",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffec0148000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x000075c6709df000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x000075c6707fd000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000075c670c77000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000075c670753000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000075c670200000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x000075c670166000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000075c67007d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x000075c670012000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000075c670723000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000075c66fe00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000075c670c9c000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x000075c66fa00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x000075c66fdce000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x000075c66dc00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x000075c66d800000)\n"
+    },
+    {
+      "name": "stock_typed_json",
+      "bytes": 2765760,
+      "sha256": "0bcf52988b6e5cc6b6c503efeea668194b7dd19a2b67e6b7d8d964fc21c0fdca",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fff0a0c7000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007771b9b8e000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007771b961e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007771b9b72000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007771b9ac8000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007771b9000000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007771b9584000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007771b8f17000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007771b9519000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007771b9a98000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007771b8c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007771b9bb8000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007771b8800000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007771b8ee5000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007771b6a00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007771b6600000)\n"
+    }
+  ]
+}
