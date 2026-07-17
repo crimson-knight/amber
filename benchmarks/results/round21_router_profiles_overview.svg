@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Amber legacy router versus optimized byte-span router</title>
+  <desc id="desc">The optimized router is 3.19 times faster in mixed matcher isolation, raises parsed HTTP throughput by 21.0 to 29.8 percent across route shapes, and raises hosted mixed throughput from 24,640 to 27,361 requests per second on the smallest DigitalOcean Droplet.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f1df"/>
+      <stop offset="1" stop-color="#e8dfca"/>
+    </linearGradient>
+    <pattern id="grain" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="5" r="0.8" fill="#183e39" opacity="0.08"/>
+      <circle cx="16" cy="15" r="0.7" fill="#c8752b" opacity="0.08"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#173c38" flood-opacity="0.11"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#background)"/>
+  <rect width="1600" height="1000" fill="url(#grain)"/>
+  <path d="M0 0H1600V90C1320 145 1080 90 820 50C510 2 270 155 0 96Z" fill="#173f3b"/>
+  <circle cx="1505" cy="25" r="185" fill="#d17a2d" opacity="0.92"/>
+
+  <g font-family="Avenir Next, Avenir, sans-serif" fill="#1d322f">
+    <text x="70" y="145" font-size="23" font-weight="600" letter-spacing="3.2" fill="#a85d1f">ROUTER-ONLY REVALIDATION / ROUND 21</text>
+    <text x="70" y="205" font-family="Avenir Next Condensed, Avenir Next, sans-serif" font-size="58" font-weight="700" letter-spacing="-1.2">Old matcher vs byte-span matcher</text>
+    <text x="72" y="246" font-size="21" fill="#5f6f6a">Same Amber source, compiler, route table, response path, and release flags. Only routing changes.</text>
+
+    <g transform="translate(70 298)">
+      <rect width="940" height="616" rx="30" fill="#fffaf0" filter="url(#shadow)"/>
+      <text x="34" y="44" font-size="18" font-weight="700" letter-spacing="1.8" fill="#53645f">PARSED HTTP + FULL AMBER REQUEST</text>
+      <text x="906" y="44" text-anchor="end" font-size="16" fill="#6c7975">requests / second</text>
+
+      <g transform="translate(34 68)" font-size="15" fill="#5e6d68">
+        <rect width="16" height="16" rx="4" fill="#aab4ae"/>
+        <text x="25" y="14">legacy router</text>
+        <rect x="132" width="16" height="16" rx="4" fill="#d17a2d"/>
+        <text x="157" y="14">optimized router</text>
+      </g>
+
+      <g transform="translate(34 112)">
+        <line x1="150" y1="0" x2="780" y2="0" stroke="#71817b" stroke-opacity="0.28"/>
+        <line x1="150" y1="0" x2="150" y2="450" stroke="#71817b" stroke-opacity="0.24"/>
+        <line x1="360" y1="0" x2="360" y2="450" stroke="#71817b" stroke-opacity="0.14"/>
+        <line x1="570" y1="0" x2="570" y2="450" stroke="#71817b" stroke-opacity="0.14"/>
+        <line x1="780" y1="0" x2="780" y2="450" stroke="#71817b" stroke-opacity="0.14"/>
+        <g font-size="14" fill="#71807b">
+          <text x="150" y="474" text-anchor="middle">0</text>
+          <text x="360" y="474" text-anchor="middle">300k</text>
+          <text x="570" y="474" text-anchor="middle">600k</text>
+          <text x="780" y="474" text-anchor="middle">900k</text>
+        </g>
+
+        <g font-size="17" font-weight="600" fill="#344a46">
+          <text x="0" y="31">mixed</text>
+          <text x="0" y="83">static</text>
+          <text x="0" y="135">REST integer</text>
+          <text x="0" y="187">REST UUID</text>
+          <text x="0" y="239">REST ULID</text>
+          <text x="0" y="291">REST slug</text>
+          <text x="0" y="343">nested UUIDs</text>
+          <text x="0" y="395">constrained UUID</text>
+          <text x="0" y="447">glob</text>
+        </g>
+
+        <g>
+          <rect x="150" y="10" width="415" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="27" width="520" height="13" rx="5" fill="#d17a2d"/><text x="804" y="33" font-size="16" font-weight="700" fill="#157268">+25.3%</text>
+          <rect x="150" y="62" width="477" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="79" width="609" height="13" rx="5" fill="#d17a2d"/><text x="804" y="85" font-size="16" font-weight="700" fill="#157268">+27.7%</text>
+          <rect x="150" y="114" width="438" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="131" width="537" height="13" rx="5" fill="#d17a2d"/><text x="804" y="137" font-size="16" font-weight="700" fill="#157268">+22.6%</text>
+          <rect x="150" y="166" width="406" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="183" width="503" height="13" rx="5" fill="#d17a2d"/><text x="804" y="189" font-size="16" font-weight="700" fill="#157268">+23.8%</text>
+          <rect x="150" y="218" width="411" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="235" width="504" height="13" rx="5" fill="#d17a2d"/><text x="804" y="241" font-size="16" font-weight="700" fill="#157268">+22.7%</text>
+          <rect x="150" y="270" width="413" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="287" width="504" height="13" rx="5" fill="#d17a2d"/><text x="804" y="293" font-size="16" font-weight="700" fill="#157268">+22.2%</text>
+          <rect x="150" y="322" width="318" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="339" width="412" height="13" rx="5" fill="#d17a2d"/><text x="804" y="345" font-size="16" font-weight="700" fill="#157268">+29.8%</text>
+          <rect x="150" y="374" width="388" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="391" width="476" height="13" rx="5" fill="#d17a2d"/><text x="804" y="397" font-size="16" font-weight="700" fill="#157268">+22.7%</text>
+          <rect x="150" y="426" width="395" height="13" rx="5" fill="#aab4ae"/><rect x="150" y="443" width="481" height="13" rx="5" fill="#d17a2d"/><text x="804" y="449" font-size="16" font-weight="700" fill="#157268">+21.8%</text>
+        </g>
+      </g>
+    </g>
+
+    <g transform="translate(1040 298)">
+      <rect width="490" height="188" rx="28" fill="#173f3b" filter="url(#shadow)"/>
+      <text x="30" y="40" font-size="17" font-weight="700" letter-spacing="1.6" fill="#e5b36f">ROUTER LOOKUP / MIXED</text>
+      <text x="30" y="105" font-family="Avenir Next Condensed, Avenir Next, sans-serif" font-size="62" font-weight="700" fill="#fff7e7">3.19x</text>
+      <text x="250" y="86" font-size="17" fill="#d9e2de">1.70M -&gt; 5.43M matches/s</text>
+      <text x="250" y="116" font-size="17" fill="#d9e2de">925 -&gt; 143 B/match</text>
+      <text x="30" y="155" font-size="17" font-weight="600" fill="#e5b36f">Static routes reach 3.89x and -88.8% allocation</text>
+    </g>
+
+    <g transform="translate(1040 512)">
+      <rect width="490" height="220" rx="28" fill="#fffaf0" filter="url(#shadow)"/>
+      <text x="30" y="40" font-size="17" font-weight="700" letter-spacing="1.6" fill="#9b571d">PRIVATE-VPC HTTP / $4 TARGET</text>
+      <text x="30" y="108" font-family="Avenir Next Condensed, Avenir Next, sans-serif" font-size="62" font-weight="700" fill="#173f3b">+11.0%</text>
+      <text x="30" y="143" font-size="18" fill="#53645f">24,640 -&gt; 27,361 req/s / 8 of 11 paired wins</text>
+      <line x1="30" y1="163" x2="458" y2="163" stroke="#798883" stroke-opacity="0.30"/>
+      <text x="30" y="194" font-size="17" font-weight="600" fill="#157268">p99 3.30 -&gt; 2.65 ms / -19.6%</text>
+    </g>
+
+    <g transform="translate(1040 758)">
+      <rect width="490" height="156" rx="28" fill="#dce8e2" filter="url(#shadow)"/>
+      <text x="30" y="40" font-size="17" font-weight="700" letter-spacing="1.6" fill="#53645f">VALIDATION</text>
+      <text x="30" y="88" font-family="Avenir Next Condensed, Avenir Next, sans-serif" font-size="40" font-weight="700" fill="#173f3b">120 / 120 wins</text>
+      <text x="30" y="114" font-size="15" fill="#53645f">parsed profile pairs across stock Crystal and acrystal</text>
+      <text x="30" y="139" font-size="15" font-weight="600" fill="#157268">63.9M hosted HTTP 200s / benchmark lab destroyed</text>
+    </g>
+
+    <text x="72" y="964" font-size="16" fill="#687772">Both binaries use --release --no-debug. This is not a compile-mode comparison.</text>
+    <text x="1528" y="964" text-anchor="end" font-size="16" font-weight="700" letter-spacing="1.2" fill="#94521b">AMBER V2 / JUL 2026</text>
+  </g>
+</svg>

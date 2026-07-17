@@ -1,0 +1,27 @@
+{
+  "generated_at_utc": "2026-07-17T01:36:46Z",
+  "source_commit": "ec068990b7ee22ae89583dcf43e8fae6168b5c4d",
+  "source": "benchmarks/router_revalidation_http_server.cr",
+  "target": "x86_64-unknown-linux-gnu",
+  "mcpu": "x86-64-v2",
+  "compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "comparison_invariant": "same source, compiler, target, release flags, and linker; only amber_router_legacy_match differs",
+  "variants": [
+    {
+      "name": "router_legacy",
+      "object": "router_legacy.o",
+      "bytes": 3283896,
+      "sha256": "cb3f66cb27d011c1ada3ca7f15e9432bcb43e9f34652d465d3f48fce9d0502a3",
+      "router": "legacy split matcher",
+      "compile_flags": "--release --no-debug -Damber_router_legacy_match"
+    },
+    {
+      "name": "router_optimized",
+      "object": "router_optimized.o",
+      "bytes": 3280584,
+      "sha256": "4a3306af2b2917aacf19a5c6f732ccf0628b69259771f187970b07f8d27ab68a",
+      "router": "optimized byte-span matcher",
+      "compile_flags": "--release --no-debug"
+    }
+  ]
+}

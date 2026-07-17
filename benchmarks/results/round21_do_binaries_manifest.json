@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-07-17T01:38:55Z",
+  "host": "Linux amber-router-r21-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+  "binaries": [
+    {
+      "name": "router_legacy",
+      "bytes": 2677904,
+      "sha256": "876e059bdcd7c068d4545afeba663a17457beff225fdb83a77b0986980968956",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffeac882000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x000079606bbf7000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x000079606b61e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000079606bbdb000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000079606bb31000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000079606b000000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x000079606ba95000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000079606b535000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x000079606af95000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000079606ba67000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000079606ac00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079606bc21000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x000079606a800000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x000079606af63000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x0000796068a00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000796068600000)\n"
+    },
+    {
+      "name": "router_optimized",
+      "bytes": 2675456,
+      "sha256": "0a078fa439f97d58194527b41ca540ca68df87a3375bdee617827798f98ba991",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fff51def000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007cb3b1edc000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007cb3b1a1e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007cb3b1ec0000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007cb3b1974000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007cb3b1400000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007cb3b1366000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007cb3b127d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007cb3b1212000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007cb3b1e90000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cb3b1000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cb3b1f06000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007cb3b0c00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007cb3b1942000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007cb3aee00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007cb3aea00000)\n"
+    }
+  ]
+}
