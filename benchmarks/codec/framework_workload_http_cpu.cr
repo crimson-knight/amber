@@ -246,7 +246,7 @@ module Amber::Benchmarks::FrameworkWorkload
     end
   end
 
-  def install_routes(count : Int32) : Array(WorkloadRoute)
+  def workload_routes(count : Int32) : Array(WorkloadRoute)
     definitions = RouterRevalidation.generate_routes(count)
     totals = definitions.each_with_object(Hash(Symbol, Int32).new(0)) { |definition, result| result[definition.kind] += 1 }
     indexes = Hash(Symbol, Int32).new(0)
@@ -256,6 +256,15 @@ module Amber::Benchmarks::FrameworkWorkload
       indexes[definition.kind] += 1
       percentile = shape_index * 100 // totals[definition.kind]
       method = method_for_percentile(percentile)
+      WorkloadRoute.new(definition, method)
+    end
+  end
+
+  def install_routes(count : Int32) : Array(WorkloadRoute)
+    routes = workload_routes(count)
+    routes.each do |route|
+      definition = route.definition
+      method = route.method
       Amber::Server.router.add(
         Amber::Route.new(
           method,
@@ -268,8 +277,8 @@ module Amber::Benchmarks::FrameworkWorkload
           definition.constraints
         )
       )
-      WorkloadRoute.new(definition, method)
     end
+    routes
   end
 
   def requested_method(profile : Symbol, percentile : Int32) : String
@@ -424,6 +433,58 @@ module Amber::Benchmarks::FrameworkWorkload
     end
   end
 
+  def lua_binary(bytes : Bytes) : String
+    String.build(bytes.size * 4) do |io|
+      bytes.each do |byte|
+        io << '\\' << byte.to_s.rjust(3, '0')
+      end
+    end
+  end
+
+  def emit_wrk_script(path : String, route_count : Int32, profile : Symbol, traffic_size : Int32) : Nil
+    routes = workload_routes(route_count)
+    traffic = generate_traffic(routes, profile, traffic_size)
+    body = request_body
+    script = String.build(traffic.size * 128 + body.bytesize * 4 + 1024) do |io|
+      io << "local payload = \"" << lua_binary(body.to_slice) << "\"\n"
+      io << "local read_headers = { [\"Accept\"] = \"application/json\" }\n"
+      io << "local write_headers = { [\"Accept\"] = \"application/json\", [\"Content-Type\"] = \"" << request_content_type << "\" }\n"
+      io << "local requests = {\n"
+      traffic.each do |request|
+        has_body = request.route.method.in?("POST", "PUT", "PATCH")
+        io << "  { " << request.route.method.to_json << ", " << request.resource.to_json << ", " << has_body << " },\n"
+      end
+      io << "}\n"
+      io << <<-'LUA'
+local index = 0
+
+request = function()
+  index = (index % #requests) + 1
+  local entry = requests[index]
+  if entry[3] then
+    return wrk.format(entry[1], entry[2], write_headers, payload)
+  end
+  return wrk.format(entry[1], entry[2], read_headers)
+end
+LUA
+    end
+    File.write(path, script)
+    puts "Wrote #{path} (#{traffic.size} requests, #{body.bytesize}-byte #{CODEC_MODE} payload)"
+  end
+
+  def serve(host : String, port : Int32, route_count : Int32) : Nil
+    install_routes(route_count)
+    pipeline = Amber::Pipe::Pipeline.new
+    pipeline.prepare_pipelines
+    server = HTTP::Server.new(pipeline)
+    address = server.bind_tcp(host, port)
+    Signal::INT.trap { server.close }
+    Signal::TERM.trap { server.close }
+    puts "READY #{address} routes=#{route_count} codec=#{CODEC_MODE}"
+    STDOUT.flush
+    server.listen
+  end
+
   def run(
     route_count : Int32,
     operations : Int32,
@@ -497,6 +558,10 @@ repetitions = 7
 traffic_size = 4096
 profile = :read_heavy
 output_path = "../results/round22_framework_workload.json"
+server_mode = false
+host = "127.0.0.1"
+port = 8080
+wrk_script_path = nil
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: framework_workload_http_cpu [options]"
@@ -507,14 +572,24 @@ OptionParser.parse do |parser|
   parser.on("--traffic-size=COUNT", "Deterministic traffic entries") { |value| traffic_size = value.to_i }
   parser.on("--profile=NAME", "read_heavy, balanced, or write_heavy") { |value| profile = Amber::Benchmarks::FrameworkWorkload.profile_from_string(value) }
   parser.on("--output=PATH", "JSON result path") { |value| output_path = value }
+  parser.on("--server", "Run the socket server instead of the CPU benchmark") { server_mode = true }
+  parser.on("--host=HOST", "Server bind host") { |value| host = value }
+  parser.on("--port=PORT", "Server bind port") { |value| port = value.to_i }
+  parser.on("--emit-wrk-script=PATH", "Write the deterministic mixed-request wrk script") { |value| wrk_script_path = value }
 end
 
-Amber::Benchmarks::FrameworkWorkload.run(
-  route_count,
-  operations,
-  warmup_operations,
-  repetitions,
-  traffic_size,
-  profile,
-  output_path
-)
+if script_path = wrk_script_path
+  Amber::Benchmarks::FrameworkWorkload.emit_wrk_script(script_path, route_count, profile, traffic_size)
+elsif server_mode
+  Amber::Benchmarks::FrameworkWorkload.serve(host, port, route_count)
+else
+  Amber::Benchmarks::FrameworkWorkload.run(
+    route_count,
+    operations,
+    warmup_operations,
+    repetitions,
+    traffic_size,
+    profile,
+    output_path
+  )
+end
