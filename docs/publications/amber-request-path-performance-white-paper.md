@@ -10,6 +10,8 @@
 
 **Experiment branch:** [`experiment/framework-performance-protocol-codec-round22`](https://github.com/crimson-knight/amber/tree/experiment/framework-performance-protocol-codec-round22)
 
+**Standalone router branch:** [`experiment/v2-byte-span-router`](https://github.com/crimson-knight/amber-router/tree/experiment/v2-byte-span-router)
+
 ![Amber request-path performance results](../../benchmarks/results/round22_framework_performance_overview.svg)
 
 ## Executive summary
@@ -374,6 +376,8 @@ The branch stores:
 
 Primary evidence:
 
+- [Standalone router extraction and benchmark](https://github.com/crimson-knight/amber-router/tree/experiment/v2-byte-span-router)
+- [Standalone router results](https://github.com/crimson-knight/amber-router/blob/experiment/v2-byte-span-router/benchmarks/RESULTS.md)
 - [Round 22 technical report](../../benchmarks/DIGITALOCEAN_FRAMEWORK_ROUND22.md)
 - [Hosted 49-trial matrix](../../benchmarks/results/round22_digitalocean_framework_workload.json)
 - [Focused default-path confirmation](../../benchmarks/results/round22_digitalocean_default_cleanup_confirm.json)

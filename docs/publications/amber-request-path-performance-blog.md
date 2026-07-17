@@ -125,6 +125,8 @@ That is an ambitious target. It is also now a measurable engineering program rat
 The complete branch is available for review:
 
 - [Experiment branch](https://github.com/crimson-knight/amber/tree/experiment/framework-performance-protocol-codec-round22)
+- [Standalone optimized router](https://github.com/crimson-knight/amber-router/tree/experiment/v2-byte-span-router)
+- [Standalone router results and 55.7x explanation](https://github.com/crimson-knight/amber-router/blob/experiment/v2-byte-span-router/benchmarks/RESULTS.md)
 - [Full technical report](https://github.com/crimson-knight/amber/blob/experiment/framework-performance-protocol-codec-round22/benchmarks/DIGITALOCEAN_FRAMEWORK_ROUND22.md)
 - [Remote result matrix](https://github.com/crimson-knight/amber/blob/experiment/framework-performance-protocol-codec-round22/benchmarks/results/round22_digitalocean_framework_workload.json)
 - [Compiler and object provenance](https://github.com/crimson-knight/amber/blob/experiment/framework-performance-protocol-codec-round22/benchmarks/results/round22_do_objects_manifest.json)

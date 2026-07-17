@@ -24,3 +24,4 @@
 
 - [Performance research blog post](publications/amber-request-path-performance-blog.md) -- A public-facing explanation of Amber's router, typed JSON, MessagePack, and HTTP findings
 - [Request-path performance white paper](publications/amber-request-path-performance-white-paper.md) -- Methodology, results, CPU profiles, limitations, and an implementation roadmap
+- [Standalone router extraction](https://github.com/crimson-knight/amber-router/tree/experiment/v2-byte-span-router) -- The optimized Amber V2 router, compatibility specs, benchmark harness, and raw stock/fork compiler results in the original shard repository
