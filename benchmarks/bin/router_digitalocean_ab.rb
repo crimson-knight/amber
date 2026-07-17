@@ -13,6 +13,7 @@ Binary = Struct.new(:name, :remote_path, keyword_init: true)
 
 options = {
   binaries: [],
+  binary_source_commit: nil,
   connections: [1, 16, 64, 256],
   duration: "10s",
   inventory: nil,
@@ -32,6 +33,7 @@ OptionParser.new do |parser|
     raise OptionParser::InvalidArgument, value unless name && path
     options[:binaries] << Binary.new(name: name, remote_path: path)
   end
+  parser.on("--binary-source-commit=SHA", "Commit used to compile the deployed binaries") { |value| options[:binary_source_commit] = value }
   parser.on("--connections=LIST", "Comma-separated connection counts") { |value| options[:connections] = value.split(",").map(&:to_i) }
   parser.on("--duration=TIME", "Measured duration per trial") { |value| options[:duration] = value }
   parser.on("--warmup=TIME", "Warmup duration per trial") { |value| options[:warmup] = value }
@@ -227,11 +229,15 @@ binaries = options[:binaries].map do |binary|
 end
 
 trials = []
+trial_sequence = 0
 
+# Keep each A/B pair temporally close while rotating both binary and load order.
 options[:repetitions].times do |repetition_index|
   repetition = repetition_index + 1
-  options[:binaries].rotate(repetition_index % options[:binaries].size).each do |binary|
-    options[:connections].each do |connections|
+  options[:connections].rotate(repetition_index % options[:connections].size).each_with_index do |connections, connection_index|
+    rotation = (repetition_index + connection_index) % options[:binaries].size
+    options[:binaries].rotate(rotation).each do |binary|
+      trial_sequence += 1
       unit = safe_unit_name(binary.name, repetition, connections)
       stem = "#{binary.name}_r#{repetition}_c#{connections}"
 
@@ -261,6 +267,7 @@ options[:repetitions].times do |repetition_index|
           "strategy" => binary.name,
           "repetition" => repetition,
           "connections" => connections,
+          "trial_sequence" => trial_sequence,
           "requests_per_second" => summary.fetch("requestsPerSec"),
           "average_seconds" => summary.fetch("average"),
           "p50_seconds" => result.fetch("latencyPercentiles").fetch("p50"),
@@ -269,6 +276,7 @@ options[:repetitions].times do |repetition_index|
           "successful_responses" => statuses.fetch("200"),
           "success_rate" => summary.fetch("successRate"),
           "server_cpu_cores" => server_cpu_cores,
+          "requests_per_cpu_second" => summary.fetch("requestsPerSec") / server_cpu_cores,
           "server_memory_current_bytes" => after.fetch("MemoryCurrent", "0").to_i,
           "server_memory_peak_bytes" => after.fetch("MemoryPeak", "0").to_i,
           "server_tasks" => after.fetch("TasksCurrent", "0").to_i,
@@ -310,6 +318,7 @@ options[:connections].each do |connections|
       "p50_seconds" => summarize(rows.map { |row| row["p50_seconds"] }),
       "p99_seconds" => summarize(rows.map { |row| row["p99_seconds"] }),
       "server_cpu_cores" => summarize(rows.map { |row| row["server_cpu_cores"] }),
+      "requests_per_cpu_second" => summarize(rows.map { |row| row["requests_per_cpu_second"] }),
       "server_memory_peak_bytes" => summarize(rows.map { |row| row["server_memory_peak_bytes"] }),
       "loadgen_cpu_percent" => summarize(rows.map { |row| row["loadgen_cpu_percent"] }),
       "median_rps_ratio_vs_first_binary" => baseline_median ? rps["median"] / baseline_median : 1.0,
@@ -317,10 +326,43 @@ options[:connections].each do |connections|
   end
 end
 
+paired_comparisons = {}
+baseline = options[:binaries].first
+options[:connections].each do |connections|
+  baseline_rows = trials
+    .select { |trial| trial["strategy"] == baseline.name && trial["connections"] == connections }
+    .to_h { |trial| [trial["repetition"], trial] }
+
+  paired_comparisons[connections.to_s] = {}
+  options[:binaries].drop(1).each do |binary|
+    candidate_rows = trials
+      .select { |trial| trial["strategy"] == binary.name && trial["connections"] == connections }
+      .to_h { |trial| [trial["repetition"], trial] }
+    repetitions = baseline_rows.keys & candidate_rows.keys
+    rps_ratios = repetitions.map do |repetition|
+      candidate_rows.fetch(repetition).fetch("requests_per_second") /
+        baseline_rows.fetch(repetition).fetch("requests_per_second")
+    end
+    efficiency_ratios = repetitions.map do |repetition|
+      candidate_rows.fetch(repetition).fetch("requests_per_cpu_second") /
+        baseline_rows.fetch(repetition).fetch("requests_per_cpu_second")
+    end
+
+    paired_comparisons[connections.to_s][binary.name] = {
+      "baseline" => baseline.name,
+      "rps_ratio" => summarize(rps_ratios),
+      "requests_per_cpu_second_ratio" => summarize(efficiency_ratios),
+      "rps_wins" => rps_ratios.count { |ratio| ratio > 1.0 },
+      "pair_count" => repetitions.size,
+    }
+  end
+end
+
 payload = {
   "metadata" => {
     "generated_at_utc" => Time.now.utc.iso8601,
-    "source_commit" => `git rev-parse HEAD`.strip,
+    "runner_source_commit" => `git rev-parse HEAD`.strip,
+    "binary_source_commit" => options[:binary_source_commit] || `git rev-parse HEAD`.strip,
     "region" => inventory.fetch("region"),
     "vpc_ip_range" => inventory.fetch("vpc").fetch("ip_range"),
     "routes" => options[:routes],
@@ -330,11 +372,13 @@ payload = {
     "duration" => options[:duration],
     "warmup" => options[:warmup],
     "repetitions" => options[:repetitions],
+    "trial_schedule" => "paired interleaving with rotating binary and connection order",
     "scope" => "separate DigitalOcean load generator and smallest target Droplet over a private VPC",
     "hardware" => hardware,
     "binaries" => binaries,
   },
   "aggregates" => aggregates,
+  "paired_comparisons_vs_first_binary" => paired_comparisons,
   "trials" => trials,
 }
 
