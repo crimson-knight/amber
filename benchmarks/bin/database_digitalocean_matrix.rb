@@ -192,7 +192,7 @@ def unit_stats(host, ssh_options, unit)
 end
 
 def proc_snapshot(host, ssh_options)
-  output = ssh_capture(host, ssh_options, <<~SHELL)
+  output = ssh_capture(host, ssh_options, <<~'SHELL')
     root_source=$(findmnt -no SOURCE /)
     device=${root_source##*/}
     printf 'device=%s\n' "$device"
