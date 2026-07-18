@@ -44,7 +44,7 @@ wait_for_host() {
     # DigitalOcean can inherit a first-login expiry when cloud-init updates
     # root. The locked bootstrap account can clear it without a password.
     if ssh "${SSH_OPTIONS[@]}" "${BOOTSTRAP_USER}@${host}" \
-      'sudo -n chage -d -1 -E -1 root' >/dev/null 2>&1 && \
+      'sudo -n chage -d "$(date -I)" -E -1 root' >/dev/null 2>&1 && \
       ssh "${SSH_OPTIONS[@]}" "root@${host}" true >/dev/null 2>&1; then
       return 0
     fi
