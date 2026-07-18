@@ -15,6 +15,7 @@ ROOT_DIR = File.expand_path("../..", __dir__)
 DATABASE_DIR = File.join(ROOT_DIR, "benchmarks", "database")
 
 options = {
+  cold_cache: false,
   compiler: "stock",
   connections: [16],
   duration: "12s",
@@ -32,6 +33,7 @@ options = {
 
 OptionParser.new do |parser|
   parser.banner = "Usage: database_digitalocean_matrix.rb --inventory=PATH [options]"
+  parser.on("--cold-cache", "Drop database and OS caches and skip warmup") { options[:cold_cache] = true }
   parser.on("--inventory=PATH", "Provisioned database-lab inventory") { |value| options[:inventory] = File.expand_path(value) }
   parser.on("--compiler=NAME", "stock or acrystal") { |value| options[:compiler] = value }
   parser.on("--connections=LIST", "Comma-separated connection counts") { |value| options[:connections] = value.split(",").map(&:to_i) }
@@ -247,6 +249,14 @@ def prepare_variant(target, ssh_options, variant, postgres_unit)
   end
 end
 
+def prepare_cold_cache(target, ssh_options, variant, postgres_unit)
+  host = target.fetch("public_ip")
+  if variant.database == "postgresql"
+    ssh_capture(host, ssh_options, "systemctl restart #{Shellwords.escape(postgres_unit)}.service && pg_isready -h 127.0.0.1 -d amber_bench")
+  end
+  ssh_capture(host, ssh_options, "sync; echo 3 > /proc/sys/vm/drop_caches")
+end
+
 def reset_mutable_data(target, ssh_options, variant)
   host = target.fetch("public_ip")
   seed_hash = "7b529f08962dc96604dc0a21320eaa5f971f3a4ee36369569246bd13e9ff8133"
@@ -387,7 +397,8 @@ payload = {
     "resource_rows" => 1_000_000,
     "bcrypt_cost" => 10,
     "session_behavior" => "bearer token SHA-256 plus indexed database session lookup on every authenticated request",
-    "warmup" => options[:warmup],
+    "cache_mode" => options[:cold_cache] ? "cold start with database and OS caches reset before every trial" : "warm steady state",
+    "warmup" => options[:cold_cache] ? "none" : options[:warmup],
     "duration" => options[:duration],
     "request_timeout" => options[:timeout],
     "repetitions" => options[:repetitions],
@@ -417,9 +428,14 @@ options[:repetitions].times do |repetition_index|
         begin
           prepare_variant(target, ssh_options, variant, postgres_unit)
           reset_mutable_data(target, ssh_options, variant)
-          start_server(target, loadgen, ssh_options, variant, unit, options)
-          run_wrk(loadgen, target, ssh_options, scenario, connections, options[:warmup], options[:port], options[:timeout], measured: false)
-          reset_mutable_data(target, ssh_options, variant)
+          if options[:cold_cache]
+            prepare_cold_cache(target, ssh_options, variant, postgres_unit)
+            start_server(target, loadgen, ssh_options, variant, unit, options)
+          else
+            start_server(target, loadgen, ssh_options, variant, unit, options)
+            run_wrk(loadgen, target, ssh_options, scenario, connections, options[:warmup], options[:port], options[:timeout], measured: false)
+            reset_mutable_data(target, ssh_options, variant)
+          end
 
           app_before = unit_stats(target.fetch("public_ip"), ssh_options, unit)
           pg_before = variant.database == "postgresql" ? unit_stats(target.fetch("public_ip"), ssh_options, postgres_unit) : {}
