@@ -5,8 +5,10 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 if [[ "$(awk '/SwapTotal/ {print $2}' /proc/meminfo)" == "0" ]]; then
-  echo "Setup swap must be active before installing target packages" >&2
-  exit 1
+  fallocate -l 1G /swapfile
+  chmod 0600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
 fi
 
 apt-get update

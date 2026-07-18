@@ -148,18 +148,6 @@ EOF
 EOF
   fi
 
-  if [[ "${role}" == "target" ]]; then
-    cat <<'EOF'
-bootcmd:
-  # Package installation on the 512 MB target needs setup-only swap. The
-  # preparation script disables and removes it before any measurement.
-  - test -f /swapfile || fallocate -l 1G /swapfile
-  - chmod 0600 /swapfile
-  - mkswap /swapfile
-  - swapon /swapfile
-EOF
-  fi
-
   cat <<EOF
 runcmd:
   # Re-declaring root can inherit DigitalOcean's first-login password expiry.
@@ -173,11 +161,6 @@ runcmd:
   - ufw --force enable
 EOF
 
-  if [[ "${role}" == "target" ]]; then
-    cat <<'EOF'
-  - swapon --show
-EOF
-  fi
 }
 
 create_droplet() {
