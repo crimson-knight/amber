@@ -12,7 +12,7 @@ require_relative "demo_density_round24_support"
 ROOT_DIR = File.expand_path("../..", __dir__)
 
 options = {
-  densities: [1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32],
+  densities: [1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 56, 64],
   inventory: nil,
   memory_high: "192M",
   memory_max: "256M",

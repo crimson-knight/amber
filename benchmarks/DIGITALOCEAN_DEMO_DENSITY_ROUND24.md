@@ -44,8 +44,10 @@ allowing measured memory pressure to determine density.
 
 ## Traffic and pass criteria
 
-The runner checks densities `1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32`
-until a target fails. Each tested density runs twice in rotated phase order.
+The runner checks densities `1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32,
+36, 40, 44, 48, 56, 64` until a target fails. Each tested density runs twice in
+rotated phase order. The larger range makes storage exhaustion, CPU saturation,
+or latency failure visible instead of reporting only a lower capacity bound.
 
 | Phase | Offered traffic | Duration | Required p99 | Required attainment |
 | --- | ---: | ---: | ---: | ---: |
