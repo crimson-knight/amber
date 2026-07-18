@@ -131,22 +131,7 @@ packages:
   - ufw
 EOF
 
-  if [[ "${role}" == "target" ]]; then
-    cat <<'EOF'
-  - fio
-  - libgc1
-  - libpcre2-8-0
-  - libpq5
-  - libsqlite3-0
-  - libssl3t64
-  - libxml2
-  - libyaml-0-2
-  - postgresql
-  - postgresql-client
-  - sqlite3
-  - zlib1g
-EOF
-  else
+  if [[ "${role}" != "target" ]]; then
     cat <<'EOF'
   - build-essential
   - libgc-dev

@@ -59,6 +59,12 @@ wait_for_host "${LOADGEN_PUBLIC_IP}" "load generator"
 ssh "${SSH_OPTIONS[@]}" "root@${TARGET_PUBLIC_IP}" cloud-init status --wait
 ssh "${SSH_OPTIONS[@]}" "root@${LOADGEN_PUBLIC_IP}" cloud-init status --wait
 
+scp "${SSH_OPTIONS[@]}" \
+  "${SCRIPT_DIR}/install_database_target_dependencies.sh" \
+  "root@${TARGET_PUBLIC_IP}:/tmp/install_database_target_dependencies.sh"
+ssh "${SSH_OPTIONS[@]}" "root@${TARGET_PUBLIC_IP}" \
+  'bash /tmp/install_database_target_dependencies.sh'
+
 OBJECT_ARCHIVE="/tmp/${PREFIX}-objects.tar.gz"
 BINARY_ARCHIVE="/tmp/${PREFIX}-binaries.tar.gz"
 tar -czf "${OBJECT_ARCHIVE}" -C "${OBJECT_DIR}" .
