@@ -5,6 +5,7 @@ module Amber::Benchmarks::DatabaseWorkload
   extend self
 
   def serve(host : String, port : Int32, route_count : Int32) : Nil
+    Log.setup(:error)
     install_routes(route_count)
     pipeline = Amber::Pipe::Pipeline.new
     pipeline.prepare_pipelines
