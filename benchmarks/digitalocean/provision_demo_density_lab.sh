@@ -163,7 +163,7 @@ runcmd:
   - ufw default deny incoming
   - ufw default allow outgoing
   - ufw allow 22/tcp
-  - ufw allow from ${VPC_RANGE} to any port 42000:42063 proto tcp
+  - ufw allow from ${VPC_RANGE} to any port 42000:42127 proto tcp
   - ufw --force enable
 EOF
 }

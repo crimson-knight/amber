@@ -12,7 +12,7 @@ require_relative "demo_density_round24_support"
 ROOT_DIR = File.expand_path("../..", __dir__)
 
 options = {
-  densities: [1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 56, 64],
+  densities: [1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 56, 64, 80, 96, 112, 128],
   inventory: nil,
   memory_high: "192M",
   memory_max: "256M",
@@ -45,7 +45,7 @@ abort "Inventory not found: #{options[:inventory]}" unless File.file?(options[:i
 abort "SSH key not found: #{options[:ssh_key]}" unless File.file?(options[:ssh_key])
 abort "Densities must be positive and unique" unless options[:densities].all?(&:positive?) && options[:densities].uniq.length == options[:densities].length
 abort "At least one repetition is required" unless options[:repetitions].positive?
-abort "At most 64 ports are available" if options[:densities].max > 64
+abort "At most 128 ports are available" if options[:densities].max > 128
 
 phases = [
   {
