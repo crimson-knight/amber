@@ -1,0 +1,41 @@
+{
+  "generated_at_utc": "2026-07-18T16:21:39Z",
+  "source_commit": "49520796f5edd81fa8060e3a7e707fda76ff85c6",
+  "source": "benchmarks/database/src/server.cr",
+  "shard_lock_sha256": "755c478e93afb0f2d34bf42f0c6a617afd911ef1229762c9a7dbe296116c0d43",
+  "target": "x86_64-unknown-linux-gnu",
+  "mcpu": "x86-64-v2",
+  "stock_compiler": "Crystal 1.20.3 (2026-07-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "fork_compiler": "Crystal 1.20.0-dev [6636853e8] (2026-06-02)\n\nLLVM: 22.1.8\nDefault target: aarch64-apple-darwin25.5.0\n",
+  "comparison_invariant": "same Amber and Grant source, schemas, routes, release settings, target, and linker; only compiler and database adapter flags differ",
+  "variants": [
+    {
+      "name": "acrystal_postgres",
+      "object": "acrystal_postgres.o",
+      "bytes": 4772000,
+      "sha256": "c3501cfd671762432f1d4e2e51a34919650cb4c87385ea8bd43d6e76c35c12fa",
+      "link_command": "cc /tmp/amber-database-r23-objects/acrystal_postgres.o -o /tmp/amber-database-r23-objects/acrystal_postgres  -rdynamic -L/opt/homebrew/Cellar/agent-crystal/HEAD-6636853/libexec/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "acrystal_sqlite",
+      "object": "acrystal_sqlite.o",
+      "bytes": 4476672,
+      "sha256": "c8fae4f6510463402893a9aca1ef56fe41327b49b5b7a05e765f11123a777e2b",
+      "link_command": "cc /tmp/amber-database-r23-objects/acrystal_sqlite.o -o /tmp/amber-database-r23-objects/acrystal_sqlite  -rdynamic -L/opt/homebrew/Cellar/agent-crystal/HEAD-6636853/libexec/../../../../lib -lsqlite3 -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_postgres",
+      "object": "stock_postgres.o",
+      "bytes": 4615904,
+      "sha256": "c84fa2ffc63a851c04f58ba84d19b740d6eca9ea26078537bac7c09f4618db95",
+      "link_command": "cc /tmp/amber-database-r23-objects/stock_postgres.o -o /tmp/amber-database-r23-objects/stock_postgres  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    },
+    {
+      "name": "stock_sqlite",
+      "object": "stock_sqlite.o",
+      "bytes": 4333488,
+      "sha256": "e7dcc6768126a9dd9ba369b93758ed30c1550d63daf9f68b3e523c5cca943237",
+      "link_command": "cc /tmp/amber-database-r23-objects/stock_sqlite.o -o /tmp/amber-database-r23-objects/stock_sqlite  -rdynamic -fuse-ld=lld -L/opt/homebrew/Cellar/crystal/1.20.3/bin/../../../../lib -lsqlite3 -L/opt/homebrew/Cellar/libyaml/0.2.5/lib -lyaml -lxml2 -lz `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libssl || printf %s '-lssl -lcrypto'` `command -v pkg-config > /dev/null && pkg-config --libs --silence-errors libcrypto || printf %s '-lcrypto'` -L/opt/homebrew/Cellar/pcre2/10.47_1/lib -lpcre2-8 -lm -L/opt/homebrew/Cellar/bdw-gc/8.2.12/lib -lgc -lpthread -lpthread -ldl"
+    }
+  ]
+}

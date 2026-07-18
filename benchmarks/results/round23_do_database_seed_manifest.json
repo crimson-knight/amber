@@ -1,0 +1,12 @@
+{
+  "generated_at_utc": "2026-07-18T16:24:07Z",
+  "postgres_version": "16",
+  "postgres_unit": "postgresql@16-main.service",
+  "postgres_database_bytes": 614292503,
+  "sqlite_database_bytes": 483098624,
+  "postgres_resource_rows": 1000000,
+  "sqlite_resource_rows": 1000000,
+  "user_rows": 10000,
+  "expected_resource_rows": 1000000,
+  "bcrypt_cost": 10
+}

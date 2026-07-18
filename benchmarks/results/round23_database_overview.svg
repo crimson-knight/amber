@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1030" viewBox="0 0 1440 1030" role="img" aria-labelledby="title desc">
+<title id="title">Amber V2 same-host PostgreSQL and SQLite throughput comparison</title>
+<desc id="desc">Median requests per second normalized to PostgreSQL across login, indexed reads, broad million-row reads, a mixed application journey, and a CRUD write cycle.</desc>
+<style>
+  .title { font: 500 42px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #182824; }
+  .subtitle { font: 400 21px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #596762; }
+  .label { font: 500 20px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #182824; }
+  .small { font: 400 16px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #596762; }
+  .value { font: 500 16px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #182824; }
+  .legend { font: 400 17px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #344641; }
+  .callout-title { font: 500 18px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #182824; }
+  .callout { font: 400 16px 'Avenir Next', 'Trebuchet MS', sans-serif; fill: #4f5f5a; }
+</style>
+
+<rect width="1440" height="1030" rx="28" fill="#f3eee2"/>
+<path d="M0 0 H1440 V112 C1100 154 820 78 510 126 C300 158 140 144 0 112 Z" fill="#e8dcc5" opacity="0.72"/>
+<text x="64" y="64" class="title">One small host, two very different database tradeoffs</text>
+<text x="64" y="101" class="subtitle">Amber V2, 1,000 routes, 1M resources, 16 clients, seven rotated repetitions</text>
+<rect x="830" y="132" width="18" height="18" rx="5" fill="#173f3a"/>
+<text x="858" y="147" class="legend">PostgreSQL</text>
+<rect x="1010" y="132" width="18" height="18" rx="5" fill="#c65f2f"/>
+<text x="1038" y="147" class="legend">SQLite FULL</text>
+<rect x="1190" y="132" width="18" height="18" rx="5" fill="#d59b2d"/>
+<text x="1218" y="147" class="legend">SQLite NORMAL*</text>
+<line x1="310.0" y1="170" x2="310.0" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="310.0" y="160" text-anchor="middle" class="small">0x</text>
+<line x1="451.7" y1="170" x2="451.7" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="451.7" y="160" text-anchor="middle" class="small">1x</text>
+<line x1="593.3" y1="170" x2="593.3" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="593.3" y="160" text-anchor="middle" class="small">2x</text>
+<line x1="735.0" y1="170" x2="735.0" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="735.0" y="160" text-anchor="middle" class="small">3x</text>
+<line x1="876.7" y1="170" x2="876.7" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="876.7" y="160" text-anchor="middle" class="small">4x</text>
+<line x1="1018.3" y1="170" x2="1018.3" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="1018.3" y="160" text-anchor="middle" class="small">5x</text>
+<line x1="1160.0" y1="170" x2="1160.0" y2="842" stroke="#d8cfbd" stroke-width="1"/>
+<text x="1160.0" y="160" text-anchor="middle" class="small">6x</text>
+<line x1="451.66666666666663" y1="170" x2="451.66666666666663" y2="842" stroke="#173f3a" stroke-width="2" opacity="0.45"/>
+<text x="64" y="221" class="label">Login + bcrypt</text>
+<text x="64" y="245" class="small">median requests/sec</text>
+<rect x="310" y="190" width="141.7" height="24" rx="7" fill="#173f3a"/>
+<text x="463.7" y="208" class="value">1.00x  12.1 RPS</text>
+<rect x="310" y="222" width="141.7" height="24" rx="7" fill="#c65f2f"/>
+<text x="463.7" y="240" class="value">1.00x  12.1 RPS</text>
+<rect x="310" y="254" width="148.5" height="24" rx="7" fill="#d59b2d"/>
+<text x="470.5" y="272" class="value">1.05x  12.6 RPS</text>
+<text x="64" y="355" class="label">Hot indexed reads</text>
+<text x="64" y="379" class="small">median requests/sec</text>
+<rect x="310" y="324" width="141.7" height="24" rx="7" fill="#173f3a"/>
+<text x="463.7" y="342" class="value">1.00x  816 RPS</text>
+<rect x="310" y="356" width="316.4" height="24" rx="7" fill="#c65f2f"/>
+<text x="638.4" y="374" class="value">2.23x  1824 RPS</text>
+<rect x="310" y="388" width="404.5" height="24" rx="7" fill="#d59b2d"/>
+<text x="726.5" y="406" class="value">2.86x  2331 RPS</text>
+<text x="64" y="489" class="label">Million-row reads</text>
+<text x="64" y="513" class="small">median requests/sec</text>
+<rect x="310" y="458" width="141.7" height="24" rx="7" fill="#173f3a"/>
+<text x="463.7" y="476" class="value">1.00x  802 RPS</text>
+<rect x="310" y="490" width="354.5" height="24" rx="7" fill="#c65f2f"/>
+<text x="676.5" y="508" class="value">2.50x  2006 RPS</text>
+<rect x="310" y="522" width="378.4" height="24" rx="7" fill="#d59b2d"/>
+<text x="700.4" y="540" class="value">2.67x  2142 RPS</text>
+<text x="64" y="623" class="label">Mixed app journey</text>
+<text x="64" y="647" class="small">median requests/sec</text>
+<rect x="310" y="592" width="141.7" height="24" rx="7" fill="#173f3a"/>
+<text x="463.7" y="610" class="value">1.00x  344 RPS</text>
+<rect x="310" y="624" width="164.5" height="24" rx="7" fill="#c65f2f"/>
+<text x="486.5" y="642" class="value">1.16x  399 RPS</text>
+<rect x="310" y="656" width="219.0" height="24" rx="7" fill="#d59b2d"/>
+<text x="541.0" y="674" class="value">1.55x  531 RPS</text>
+<text x="64" y="757" class="label">CRUD write cycle</text>
+<text x="64" y="781" class="small">median requests/sec</text>
+<rect x="310" y="726" width="141.7" height="24" rx="7" fill="#173f3a"/>
+<text x="463.7" y="744" class="value">1.00x  240 RPS</text>
+<rect x="310" y="758" width="79.3" height="24" rx="7" fill="#c65f2f"/>
+<text x="401.3" y="776" class="value">0.56x  134 RPS</text>
+<rect x="310" y="790" width="822.5" height="24" rx="7" fill="#d59b2d"/>
+<text x="1144.5" y="808" class="value">5.81x  1392 RPS</text>
+<rect x="64" y="885" width="414" height="105" rx="18" fill="#fffaf0" stroke="#d8cfbd"/>
+<text x="86" y="912" class="small">READ-HEAVY</text>
+<text x="86" y="940" class="callout-title">SQLite FULL is 2.23x to 2.50x PostgreSQL</text>
+<text x="86" y="967" class="callout">Lower p99 and memory at FULL durability.</text>
+<rect x="506" y="885" width="414" height="105" rx="18" fill="#fffaf0" stroke="#d8cfbd"/>
+<text x="528" y="912" class="small">STRICT WRITES</text>
+<text x="528" y="940" class="callout-title">PostgreSQL is 1.79x SQLite FULL</text>
+<text x="528" y="967" class="callout">FULL is storage-latency bound on this disk.</text>
+<rect x="948" y="885" width="414" height="105" rx="18" fill="#fffaf0" stroke="#d8cfbd"/>
+<text x="970" y="912" class="small">LOGIN</text>
+<text x="970" y="940" class="callout-title">All engines stop near 12 to 13 logins/sec</text>
+<text x="970" y="967" class="callout">Bcrypt cost 10 sets this ceiling.</text>
+<text x="64" y="1015" class="small">* SQLite NORMAL is a deliberate weaker power-loss durability lane, not an apples-to-apples replacement for FULL.</text>
+</svg>

@@ -68,3 +68,6 @@ as `postgres://amber_bench@127.0.0.1:5432/amber_bench?...`.
 The hosted lifecycle is managed by the Round 23 scripts under
 `benchmarks/digitalocean/`. Provisioning and destruction remain dry-run by
 default and refuse to operate outside the `agentc` doctl context.
+
+The completed DigitalOcean experiment, decision guidance, and evidence index
+are in [`DIGITALOCEAN_DATABASE_ROUND23.md`](../DIGITALOCEAN_DATABASE_ROUND23.md).

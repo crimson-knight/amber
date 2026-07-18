@@ -461,7 +461,17 @@ options[:repetitions].times do |repetition_index|
           sizes = database_sizes(target, ssh_options, variant)
           raw_path = File.join(raw_dir, "#{unit}.txt")
           File.write(raw_path, raw_output)
-          journal = ssh_capture(target.fetch("public_ip"), ssh_options, "journalctl -u #{Shellwords.escape(unit)}.service --no-pager -n 30")
+          invocation_id = ssh_capture(
+            target.fetch("public_ip"),
+            ssh_options,
+            "systemctl show #{Shellwords.escape(unit)}.service --property=InvocationID --value"
+          ).strip
+          raise "Missing systemd invocation ID for #{unit}" if invocation_id.empty?
+          journal = ssh_capture(
+            target.fetch("public_ip"),
+            ssh_options,
+            "journalctl --no-pager -n 30 _SYSTEMD_INVOCATION_ID=#{Shellwords.escape(invocation_id)}"
+          )
 
           trial = result.merge(system_delta).merge(sizes).merge(
             "variant" => variant.name,

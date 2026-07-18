@@ -1,0 +1,40 @@
+Round 23 million-row index plan validation
+==========================================
+
+PostgreSQL 16.14
+----------------
+
+Integer primary key:
+  Index Only Scan using benchmark_resources_pkey on benchmark_resources
+    Index Cond: (id = 789123)
+
+UUID:
+  Index Scan using benchmark_resources_public_id_key on benchmark_resources
+    Index Cond: (public_id = '10000000-0000-4000-8000-0000000c0a83')
+
+ULID:
+  Index Scan using benchmark_resources_ulid_key on benchmark_resources
+    Index Cond: (ulid = '01J8Z3M5N70000000000789123')
+
+Owner list:
+  Limit
+    -> Index Only Scan using benchmark_resources_user_id_id_idx
+         Index Cond: (user_id = 9123)
+
+SQLite 3.45.1
+-------------
+
+Integer primary key:
+  SEARCH benchmark_resources USING INTEGER PRIMARY KEY (rowid=?)
+
+UUID:
+  SEARCH benchmark_resources USING COVERING INDEX
+    sqlite_autoindex_benchmark_resources_1 (public_id=?)
+
+ULID:
+  SEARCH benchmark_resources USING COVERING INDEX
+    sqlite_autoindex_benchmark_resources_2 (ulid=?)
+
+Owner list:
+  SEARCH benchmark_resources USING COVERING INDEX
+    benchmark_resources_user_id_id_idx (user_id=?)

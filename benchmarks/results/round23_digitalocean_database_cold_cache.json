@@ -1,0 +1,893 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-18T17:29:06Z",
+    "source_commit": "b87a4c17116d7edf60a24fc064a84a9cd2bb0154",
+    "compiler_lane": "stock",
+    "route_count": 1000,
+    "user_rows": 10000,
+    "resource_rows": 1000000,
+    "bcrypt_cost": 10,
+    "session_behavior": "bearer token SHA-256 plus indexed database session lookup on every authenticated request",
+    "cache_mode": "cold start with database and OS caches reset before every trial",
+    "warmup": "none",
+    "duration": "8s",
+    "request_timeout": "10s",
+    "repetitions": 3,
+    "connections": [
+      16
+    ],
+    "variant_order": [
+      "postgres",
+      "sqlite_full"
+    ],
+    "scenario_order": [
+      "read_broad"
+    ],
+    "postgres_durability": "fsync=on, full_page_writes=on, synchronous_commit=on",
+    "sqlite_durability": "WAL with separately labeled FULL and NORMAL synchronous lanes",
+    "swap_policy": "temporary setup swap disabled before all trials",
+    "hardware": {
+      "target": {
+        "size": "s-1vcpu-512mb-10gb",
+        "cpu": {
+          "lscpu": [
+            {
+              "field": "Architecture:",
+              "data": "x86_64"
+            },
+            {
+              "field": "CPU op-mode(s):",
+              "data": "32-bit, 64-bit"
+            },
+            {
+              "field": "Address sizes:",
+              "data": "40 bits physical, 48 bits virtual"
+            },
+            {
+              "field": "Byte Order:",
+              "data": "Little Endian"
+            },
+            {
+              "field": "CPU(s):",
+              "data": "1"
+            },
+            {
+              "field": "On-line CPU(s) list:",
+              "data": "0"
+            },
+            {
+              "field": "Vendor ID:",
+              "data": "GenuineIntel"
+            },
+            {
+              "field": "BIOS Vendor ID:",
+              "data": "QEMU"
+            },
+            {
+              "field": "Model name:",
+              "data": "DO-Regular"
+            },
+            {
+              "field": "BIOS Model name:",
+              "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+            },
+            {
+              "field": "BIOS CPU family:",
+              "data": "1"
+            },
+            {
+              "field": "CPU family:",
+              "data": "6"
+            },
+            {
+              "field": "Model:",
+              "data": "79"
+            },
+            {
+              "field": "Thread(s) per core:",
+              "data": "1"
+            },
+            {
+              "field": "Core(s) per socket:",
+              "data": "1"
+            },
+            {
+              "field": "Socket(s):",
+              "data": "1"
+            },
+            {
+              "field": "Stepping:",
+              "data": "1"
+            },
+            {
+              "field": "BogoMIPS:",
+              "data": "4589.21"
+            },
+            {
+              "field": "Flags:",
+              "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap xsaveopt arat vnmi md_clear"
+            },
+            {
+              "field": "Virtualization:",
+              "data": "VT-x"
+            },
+            {
+              "field": "Hypervisor vendor:",
+              "data": "KVM"
+            },
+            {
+              "field": "Virtualization type:",
+              "data": "full"
+            },
+            {
+              "field": "L1d cache:",
+              "data": "32 KiB (1 instance)"
+            },
+            {
+              "field": "L1i cache:",
+              "data": "32 KiB (1 instance)"
+            },
+            {
+              "field": "L2 cache:",
+              "data": "4 MiB (1 instance)"
+            },
+            {
+              "field": "NUMA node(s):",
+              "data": "1"
+            },
+            {
+              "field": "NUMA node0 CPU(s):",
+              "data": "0"
+            },
+            {
+              "field": "Vulnerability Gather data sampling:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Indirect target selection:",
+              "data": "Mitigation; Aligned branch/return thunks"
+            },
+            {
+              "field": "Vulnerability Itlb multihit:",
+              "data": "KVM: Mitigation: VMX disabled"
+            },
+            {
+              "field": "Vulnerability L1tf:",
+              "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+            },
+            {
+              "field": "Vulnerability Mds:",
+              "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+            },
+            {
+              "field": "Vulnerability Meltdown:",
+              "data": "Mitigation; PTI"
+            },
+            {
+              "field": "Vulnerability Mmio stale data:",
+              "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+            },
+            {
+              "field": "Vulnerability Reg file data sampling:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Retbleed:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Spec rstack overflow:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Spec store bypass:",
+              "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+            },
+            {
+              "field": "Vulnerability Spectre v1:",
+              "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+            },
+            {
+              "field": "Vulnerability Spectre v2:",
+              "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline"
+            },
+            {
+              "field": "Vulnerability Srbds:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Tsa:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Tsx async abort:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Vmscape:",
+              "data": "Not affected"
+            }
+          ]
+        },
+        "memory_bytes": 480493568,
+        "swap_bytes": 0,
+        "kernel": "Linux amber-db-r23-target 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+        "disk": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"vda\",\n         \"size\": 10737418240,\n         \"type\": \"disk\",\n         \"mountpoints\": [\n             null\n         ],\n         \"rota\": true,\n         \"model\": null,\n         \"children\": [\n            {\n               \"name\": \"vda1\",\n               \"size\": 9662610944,\n               \"type\": \"part\",\n               \"mountpoints\": [\n                   \"/\"\n               ],\n               \"rota\": true,\n               \"model\": null\n            },{\n               \"name\": \"vda14\",\n               \"size\": 4194304,\n               \"type\": \"part\",\n               \"mountpoints\": [\n                   null\n               ],\n               \"rota\": true,\n               \"model\": null\n            },{\n               \"name\": \"vda15\",\n               \"size\": 111149056,\n               \"type\": \"part\",\n               \"mountpoints\": [\n                   \"/boot/efi\"\n               ],\n               \"rota\": true,\n               \"model\": null\n            },{\n               \"name\": \"vda16\",\n               \"size\": 957350400,\n               \"type\": \"part\",\n               \"mountpoints\": [\n                   \"/boot\"\n               ],\n               \"rota\": true,\n               \"model\": null\n            }\n         ]\n      },{\n         \"name\": \"vdb\",\n         \"size\": 499712,\n         \"type\": \"disk\",\n         \"mountpoints\": [\n             null\n         ],\n         \"rota\": true,\n         \"model\": null\n      }\n   ]\n}\n",
+        "postgres": "psql (PostgreSQL) 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)",
+        "sqlite": "3.45.1 2024-01-30 16:01:20 e876e51a0ed5c5b3126f52e532044363a014bc594cfefa87ffb5b82257ccalt1 (64-bit)",
+        "postgres_unit": "postgresql@16-main"
+      },
+      "loadgen": {
+        "size": "c-4",
+        "cpu": {
+          "lscpu": [
+            {
+              "field": "Architecture:",
+              "data": "x86_64"
+            },
+            {
+              "field": "CPU op-mode(s):",
+              "data": "32-bit, 64-bit"
+            },
+            {
+              "field": "Address sizes:",
+              "data": "40 bits physical, 48 bits virtual"
+            },
+            {
+              "field": "Byte Order:",
+              "data": "Little Endian"
+            },
+            {
+              "field": "CPU(s):",
+              "data": "4"
+            },
+            {
+              "field": "On-line CPU(s) list:",
+              "data": "0-3"
+            },
+            {
+              "field": "Vendor ID:",
+              "data": "GenuineIntel"
+            },
+            {
+              "field": "BIOS Vendor ID:",
+              "data": "QEMU"
+            },
+            {
+              "field": "Model name:",
+              "data": "Intel(R) Xeon(R) Platinum 8358 CPU @ 2.60GHz"
+            },
+            {
+              "field": "BIOS Model name:",
+              "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+            },
+            {
+              "field": "BIOS CPU family:",
+              "data": "1"
+            },
+            {
+              "field": "CPU family:",
+              "data": "6"
+            },
+            {
+              "field": "Model:",
+              "data": "106"
+            },
+            {
+              "field": "Thread(s) per core:",
+              "data": "1"
+            },
+            {
+              "field": "Core(s) per socket:",
+              "data": "4"
+            },
+            {
+              "field": "Socket(s):",
+              "data": "1"
+            },
+            {
+              "field": "Stepping:",
+              "data": "6"
+            },
+            {
+              "field": "BogoMIPS:",
+              "data": "5187.80"
+            },
+            {
+              "field": "Flags:",
+              "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 wbnoinvd arat vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq"
+            },
+            {
+              "field": "Virtualization:",
+              "data": "VT-x"
+            },
+            {
+              "field": "Hypervisor vendor:",
+              "data": "KVM"
+            },
+            {
+              "field": "Virtualization type:",
+              "data": "full"
+            },
+            {
+              "field": "L1d cache:",
+              "data": "128 KiB (4 instances)"
+            },
+            {
+              "field": "L1i cache:",
+              "data": "128 KiB (4 instances)"
+            },
+            {
+              "field": "L2 cache:",
+              "data": "16 MiB (4 instances)"
+            },
+            {
+              "field": "NUMA node(s):",
+              "data": "1"
+            },
+            {
+              "field": "NUMA node0 CPU(s):",
+              "data": "0-3"
+            },
+            {
+              "field": "Vulnerability Gather data sampling:",
+              "data": "Unknown: Dependent on hypervisor status"
+            },
+            {
+              "field": "Vulnerability Indirect target selection:",
+              "data": "Mitigation; Aligned branch/return thunks"
+            },
+            {
+              "field": "Vulnerability Itlb multihit:",
+              "data": "KVM: Mitigation: VMX disabled"
+            },
+            {
+              "field": "Vulnerability L1tf:",
+              "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+            },
+            {
+              "field": "Vulnerability Mds:",
+              "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+            },
+            {
+              "field": "Vulnerability Meltdown:",
+              "data": "Mitigation; PTI"
+            },
+            {
+              "field": "Vulnerability Mmio stale data:",
+              "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+            },
+            {
+              "field": "Vulnerability Reg file data sampling:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Retbleed:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Spec rstack overflow:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Spec store bypass:",
+              "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+            },
+            {
+              "field": "Vulnerability Spectre v1:",
+              "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+            },
+            {
+              "field": "Vulnerability Spectre v2:",
+              "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline"
+            },
+            {
+              "field": "Vulnerability Srbds:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Tsa:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Tsx async abort:",
+              "data": "Not affected"
+            },
+            {
+              "field": "Vulnerability Vmscape:",
+              "data": "Not affected"
+            }
+          ]
+        },
+        "kernel": "Linux amber-db-r23-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+        "wrk": "wrk debian/4.1.0-4build2 [epoll] Copyright (C) 2012 Will Glozer"
+      }
+    },
+    "binaries": [
+      {
+        "variant": "postgres",
+        "binary": "stock_postgres",
+        "bytes": 3733736,
+        "sha256": "5850e39606c8ef0b6f838a018ce4c011a548f668c8e358823a0a3506ab380866",
+        "database": "postgresql",
+        "sqlite_synchronous": null
+      },
+      {
+        "variant": "sqlite_full",
+        "binary": "stock_sqlite",
+        "bytes": 3525832,
+        "sha256": "74317c8ab08c9e118a272403193b1de0f00bbd9926698db16d083bbc0d66f189",
+        "database": "sqlite",
+        "sqlite_synchronous": "FULL"
+      }
+    ],
+    "fio_raw_result": "round23_digitalocean_database_cold_cache_raw/fio.json",
+    "completed_at_utc": "2026-07-18T17:30:47Z"
+  },
+  "trials": [
+    {
+      "requests_per_second": 593.05,
+      "total_requests": 4804,
+      "elapsed_seconds": 8.1,
+      "p50_seconds": 0.01585,
+      "p99_seconds": 0.23257,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.9354473386183465,
+      "target_iowait_fraction": 0.0,
+      "disk_read_bytes": 48984064,
+      "disk_write_bytes": 16384,
+      "disk_busy_seconds": 1.628,
+      "disk_utilization": 0.20098765432098764,
+      "page_faults": 31325,
+      "major_page_faults": 1,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 614595607,
+      "wal_bytes": 0,
+      "variant": "postgres",
+      "database": "postgresql",
+      "sqlite_synchronous": null,
+      "scenario": "read_broad",
+      "repetition": 1,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 1,
+      "amber_cpu_cores": 0.4011717283950617,
+      "database_cpu_cores": 0.5932701234567901,
+      "combined_cpu_cores": 0.9944418518518519,
+      "requests_per_combined_cpu_second": 596.3646832598819,
+      "amber_memory_current_bytes": 28725248,
+      "amber_memory_peak_bytes": 29089792,
+      "database_memory_current_bytes": 135041024,
+      "database_memory_peak_bytes": 135274496,
+      "combined_memory_current_bytes": 163766272,
+      "amber_io_read_bytes": 0,
+      "amber_io_write_bytes": 0,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-postgres-read_broad-r1-c16.txt",
+      "server_log": [
+        "Jul 18 17:29:11 amber-db-r23-target systemd[1]: Started amber-db-postgres-read_broad-r1-c16.service - /opt/amber-database/bin/stock_postgres --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:29:11 amber-db-r23-target stock_postgres[116872]: READY 10.141.0.2:41023 database=postgresql routes=1000 sqlite_sync=FULL"
+      ]
+    },
+    {
+      "requests_per_second": 1176.34,
+      "total_requests": 9419,
+      "elapsed_seconds": 8.01,
+      "p50_seconds": 0.00936,
+      "p99_seconds": 0.047060000000000005,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.5952941176470589,
+      "target_iowait_fraction": 0.33647058823529413,
+      "disk_read_bytes": 53526528,
+      "disk_write_bytes": 49152,
+      "disk_busy_seconds": 3.166,
+      "disk_utilization": 0.39525593008739074,
+      "page_faults": 9790,
+      "major_page_faults": 0,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 483131392,
+      "wal_bytes": 0,
+      "variant": "sqlite_full",
+      "database": "sqlite",
+      "sqlite_synchronous": "FULL",
+      "scenario": "read_broad",
+      "repetition": 1,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 2,
+      "amber_cpu_cores": 0.6236749063670411,
+      "database_cpu_cores": 0.0,
+      "combined_cpu_cores": 0.6236749063670411,
+      "requests_per_combined_cpu_second": 1886.1429055279448,
+      "amber_memory_current_bytes": 82706432,
+      "amber_memory_peak_bytes": 83324928,
+      "database_memory_current_bytes": 0,
+      "database_memory_peak_bytes": 0,
+      "combined_memory_current_bytes": 82706432,
+      "amber_io_read_bytes": 53510144,
+      "amber_io_write_bytes": 32768,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-sqlite_full-read_broad-r1-c16.txt",
+      "server_log": [
+        "Jul 18 17:29:26 amber-db-r23-target systemd[1]: Started amber-db-sqlite_full-read_broad-r1-c16.service - /opt/amber-database/bin/stock_sqlite --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:29:26 amber-db-r23-target stock_sqlite[117461]: READY 10.141.0.2:41023 database=sqlite routes=1000 sqlite_sync=FULL"
+      ]
+    },
+    {
+      "requests_per_second": 1190.31,
+      "total_requests": 9527,
+      "elapsed_seconds": 8.0,
+      "p50_seconds": 0.00911,
+      "p99_seconds": 0.04598,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.6021003500583431,
+      "target_iowait_fraction": 0.33255542590431736,
+      "disk_read_bytes": 54607872,
+      "disk_write_bytes": 1056768,
+      "disk_busy_seconds": 3.137,
+      "disk_utilization": 0.392125,
+      "page_faults": 10563,
+      "major_page_faults": 1,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 483131392,
+      "wal_bytes": 0,
+      "variant": "sqlite_full",
+      "database": "sqlite",
+      "sqlite_synchronous": "FULL",
+      "scenario": "read_broad",
+      "repetition": 2,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 3,
+      "amber_cpu_cores": 0.628042875,
+      "database_cpu_cores": 0.0,
+      "combined_cpu_cores": 0.628042875,
+      "requests_per_combined_cpu_second": 1895.2686948323392,
+      "amber_memory_current_bytes": 83709952,
+      "amber_memory_peak_bytes": 84189184,
+      "database_memory_current_bytes": 0,
+      "database_memory_peak_bytes": 0,
+      "combined_memory_current_bytes": 83709952,
+      "amber_io_read_bytes": 54513664,
+      "amber_io_write_bytes": 32768,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-sqlite_full-read_broad-r2-c16.txt",
+      "server_log": [
+        "Jul 18 17:29:40 amber-db-r23-target systemd[1]: Started amber-db-sqlite_full-read_broad-r2-c16.service - /opt/amber-database/bin/stock_sqlite --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:29:40 amber-db-r23-target stock_sqlite[117949]: READY 10.141.0.2:41023 database=sqlite routes=1000 sqlite_sync=FULL"
+      ]
+    },
+    {
+      "requests_per_second": 527.64,
+      "total_requests": 4225,
+      "elapsed_seconds": 8.01,
+      "p50_seconds": 0.01769,
+      "p99_seconds": 0.32489999999999997,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.9293044469783353,
+      "target_iowait_fraction": 0.002280501710376283,
+      "disk_read_bytes": 43372544,
+      "disk_write_bytes": 1253376,
+      "disk_busy_seconds": 1.886,
+      "disk_utilization": 0.23545568039950063,
+      "page_faults": 29469,
+      "major_page_faults": 1,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 614595607,
+      "wal_bytes": 0,
+      "variant": "postgres",
+      "database": "postgresql",
+      "sqlite_synchronous": null,
+      "scenario": "read_broad",
+      "repetition": 2,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 4,
+      "amber_cpu_cores": 0.3996670411985019,
+      "database_cpu_cores": 0.5930340823970037,
+      "combined_cpu_cores": 0.9927011235955057,
+      "requests_per_combined_cpu_second": 531.5194951013237,
+      "amber_memory_current_bytes": 28696576,
+      "amber_memory_peak_bytes": 29065216,
+      "database_memory_current_bytes": 124022784,
+      "database_memory_peak_bytes": 124297216,
+      "combined_memory_current_bytes": 152719360,
+      "amber_io_read_bytes": 0,
+      "amber_io_write_bytes": 0,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-postgres-read_broad-r2-c16.txt",
+      "server_log": [
+        "Jul 18 17:30:01 amber-db-r23-target systemd[1]: Started amber-db-postgres-read_broad-r2-c16.service - /opt/amber-database/bin/stock_postgres --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:30:01 amber-db-r23-target stock_postgres[118584]: READY 10.141.0.2:41023 database=postgresql routes=1000 sqlite_sync=FULL"
+      ]
+    },
+    {
+      "requests_per_second": 646.74,
+      "total_requests": 5179,
+      "elapsed_seconds": 8.01,
+      "p50_seconds": 0.01446,
+      "p99_seconds": 0.22779,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.9347826086956522,
+      "target_iowait_fraction": 0.0011441647597254005,
+      "disk_read_bytes": 52109312,
+      "disk_write_bytes": 180224,
+      "disk_busy_seconds": 1.562,
+      "disk_utilization": 0.19500624219725343,
+      "page_faults": 31663,
+      "major_page_faults": 1,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 614595607,
+      "wal_bytes": 0,
+      "variant": "postgres",
+      "database": "postgresql",
+      "sqlite_synchronous": null,
+      "scenario": "read_broad",
+      "repetition": 3,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 5,
+      "amber_cpu_cores": 0.4083016229712859,
+      "database_cpu_cores": 0.592414606741573,
+      "combined_cpu_cores": 1.000716229712859,
+      "requests_per_combined_cpu_second": 646.2771171259736,
+      "amber_memory_current_bytes": 28729344,
+      "amber_memory_peak_bytes": 29315072,
+      "database_memory_current_bytes": 141500416,
+      "database_memory_peak_bytes": 141754368,
+      "combined_memory_current_bytes": 170229760,
+      "amber_io_read_bytes": 0,
+      "amber_io_write_bytes": 0,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-postgres-read_broad-r3-c16.txt",
+      "server_log": [
+        "Jul 18 17:30:20 amber-db-r23-target systemd[1]: Started amber-db-postgres-read_broad-r3-c16.service - /opt/amber-database/bin/stock_postgres --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:30:20 amber-db-r23-target stock_postgres[119242]: READY 10.141.0.2:41023 database=postgresql routes=1000 sqlite_sync=FULL"
+      ]
+    },
+    {
+      "requests_per_second": 1191.62,
+      "total_requests": 9539,
+      "elapsed_seconds": 8.01,
+      "p50_seconds": 0.00931,
+      "p99_seconds": 0.04455,
+      "socket_errors": 0,
+      "non_2xx_responses": 0,
+      "application_errors": 0,
+      "target_cpu_utilization": 0.5885111371629543,
+      "target_iowait_fraction": 0.3481828839390387,
+      "disk_read_bytes": 55308288,
+      "disk_write_bytes": 16384,
+      "disk_busy_seconds": 3.171,
+      "disk_utilization": 0.39588014981273406,
+      "page_faults": 9740,
+      "major_page_faults": 0,
+      "swap_in_pages": 0,
+      "swap_out_pages": 0,
+      "memory_available_bytes": 0,
+      "swap_total_bytes": 0,
+      "database_bytes": 483131392,
+      "wal_bytes": 0,
+      "variant": "sqlite_full",
+      "database": "sqlite",
+      "sqlite_synchronous": "FULL",
+      "scenario": "read_broad",
+      "repetition": 3,
+      "connections": 16,
+      "loadgen_threads": 4,
+      "trial_sequence": 6,
+      "amber_cpu_cores": 0.6131443196004994,
+      "database_cpu_cores": 0.0,
+      "combined_cpu_cores": 0.6131443196004994,
+      "requests_per_combined_cpu_second": 1943.4576198576092,
+      "amber_memory_current_bytes": 84533248,
+      "amber_memory_peak_bytes": 84992000,
+      "database_memory_current_bytes": 0,
+      "database_memory_peak_bytes": 0,
+      "combined_memory_current_bytes": 84533248,
+      "amber_io_read_bytes": 55308288,
+      "amber_io_write_bytes": 32768,
+      "raw_result": "round23_digitalocean_database_cold_cache_raw/amber-db-sqlite_full-read_broad-r3-c16.txt",
+      "server_log": [
+        "Jul 18 17:30:36 amber-db-r23-target systemd[1]: Started amber-db-sqlite_full-read_broad-r3-c16.service - /opt/amber-database/bin/stock_sqlite --host=10.141.0.2 --port=41023 --routes=1000.",
+        "Jul 18 17:30:36 amber-db-r23-target stock_sqlite[119829]: READY 10.141.0.2:41023 database=sqlite routes=1000 sqlite_sync=FULL"
+      ]
+    }
+  ],
+  "aggregates": {
+    "read_broad": {
+      "16": {
+        "postgres": {
+          "requests_per_second": {
+            "count": 3,
+            "min": 527.64,
+            "median": 593.05,
+            "mean": 589.1433333333333,
+            "max": 646.74,
+            "stddev": 48.700780509374006,
+            "coefficient_of_variation": 0.08266372163430633
+          },
+          "p50_seconds": {
+            "count": 3,
+            "min": 0.01446,
+            "median": 0.01585,
+            "mean": 0.016,
+            "max": 0.01769,
+            "stddev": 0.0013229008529238564,
+            "coefficient_of_variation": 0.08268130330774102
+          },
+          "p99_seconds": {
+            "count": 3,
+            "min": 0.22779,
+            "median": 0.23257,
+            "mean": 0.26175333333333334,
+            "max": 0.32489999999999997,
+            "stddev": 0.0446940580191844,
+            "coefficient_of_variation": 0.1707487635401691
+          },
+          "combined_cpu_cores": {
+            "count": 3,
+            "min": 0.9927011235955057,
+            "median": 0.9944418518518519,
+            "mean": 0.9959530683867387,
+            "max": 1.000716229712859,
+            "stddev": 0.003442219543607979,
+            "coefficient_of_variation": 0.003456206575259358
+          },
+          "requests_per_combined_cpu_second": {
+            "count": 3,
+            "min": 531.5194951013237,
+            "median": 596.3646832598819,
+            "mean": 591.3870984957265,
+            "max": 646.2771171259736,
+            "stddev": 46.981629145524295,
+            "coefficient_of_variation": 0.07944310801677693
+          },
+          "combined_memory_current_bytes": {
+            "count": 3,
+            "min": 152719360,
+            "median": 163766272,
+            "mean": 162238464.0,
+            "max": 170229760,
+            "stddev": 7229761.407019736,
+            "coefficient_of_variation": 0.044562560744039935
+          },
+          "disk_read_bytes": {
+            "count": 3,
+            "min": 43372544,
+            "median": 48984064,
+            "mean": 48155306.666666664,
+            "max": 52109312,
+            "stddev": 3614591.5222997037,
+            "coefficient_of_variation": 0.07506112560594991
+          },
+          "disk_write_bytes": {
+            "count": 3,
+            "min": 16384,
+            "median": 180224,
+            "mean": 483328.0,
+            "max": 1253376,
+            "stddev": 548599.0206140244,
+            "coefficient_of_variation": 1.135044981077083
+          },
+          "major_page_faults": {
+            "count": 3,
+            "min": 1,
+            "median": 1,
+            "mean": 1.0,
+            "max": 1,
+            "stddev": 0.0,
+            "coefficient_of_variation": 0.0
+          },
+          "pair_wins_vs_postgres": null,
+          "median_rps_ratio_vs_postgres": 1.0
+        },
+        "sqlite_full": {
+          "requests_per_second": {
+            "count": 3,
+            "min": 1176.34,
+            "median": 1190.31,
+            "mean": 1186.09,
+            "max": 1191.62,
+            "stddev": 6.9150030127735045,
+            "coefficient_of_variation": 0.005830082888122743
+          },
+          "p50_seconds": {
+            "count": 3,
+            "min": 0.00911,
+            "median": 0.00931,
+            "mean": 0.00926,
+            "max": 0.00936,
+            "stddev": 0.00010801234497346449,
+            "coefficient_of_variation": 0.011664400105125755
+          },
+          "p99_seconds": {
+            "count": 3,
+            "min": 0.04455,
+            "median": 0.04598,
+            "mean": 0.04586333333333333,
+            "max": 0.047060000000000005,
+            "stddev": 0.001028018590406918,
+            "coefficient_of_variation": 0.022414824996153455
+          },
+          "combined_cpu_cores": {
+            "count": 3,
+            "min": 0.6131443196004994,
+            "median": 0.6236749063670411,
+            "mean": 0.6216207003225135,
+            "max": 0.628042875,
+            "stddev": 0.006253348974910822,
+            "coefficient_of_variation": 0.010059750216919123
+          },
+          "requests_per_combined_cpu_second": {
+            "count": 3,
+            "min": 1886.1429055279448,
+            "median": 1895.2686948323392,
+            "mean": 1908.2897400726313,
+            "max": 1943.4576198576092,
+            "stddev": 25.1449774180989,
+            "coefficient_of_variation": 0.013176708384514953
+          },
+          "combined_memory_current_bytes": {
+            "count": 3,
+            "min": 82706432,
+            "median": 83709952,
+            "mean": 83649877.33333333,
+            "max": 84533248,
+            "stddev": 747003.3014854903,
+            "coefficient_of_variation": 0.008930118313369238
+          },
+          "disk_read_bytes": {
+            "count": 3,
+            "min": 53526528,
+            "median": 54607872,
+            "mean": 54480896.0,
+            "max": 55308288,
+            "stddev": 732920.8019206441,
+            "coefficient_of_variation": 0.013452803748320221
+          },
+          "disk_write_bytes": {
+            "count": 3,
+            "min": 16384,
+            "median": 49152,
+            "mean": 374101.3333333333,
+            "max": 1056768,
+            "stddev": 482903.55751387414,
+            "coefficient_of_variation": 1.2908362373667228
+          },
+          "major_page_faults": {
+            "count": 3,
+            "min": 0,
+            "median": 0,
+            "mean": 0.3333333333333333,
+            "max": 1,
+            "stddev": 0.4714045207910317,
+            "coefficient_of_variation": 1.4142135623730951
+          },
+          "pair_wins_vs_postgres": 3,
+          "median_rps_ratio_vs_postgres": 2.0070988955400053
+        }
+      }
+    }
+  }
+}

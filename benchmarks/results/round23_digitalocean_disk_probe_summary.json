@@ -1,0 +1,26 @@
+{
+  "source": "round23_digitalocean_database_matrix_raw/fio.json",
+  "target": "amber-db-r23-target",
+  "target_size": "s-1vcpu-512mb-10gb",
+  "configuration": {
+    "size_bytes": 134217728,
+    "direct_io": true,
+    "engine": "libaio",
+    "pattern": "70 percent random read, 30 percent random write",
+    "block_size_bytes": 4096,
+    "queue_depth": 16,
+    "duration_seconds": 10
+  },
+  "read": {
+    "iops": 24335.366463,
+    "bytes_per_second": 99677661,
+    "completion_latency_p50_ns": 403456,
+    "completion_latency_p99_ns": 1695744
+  },
+  "write": {
+    "iops": 10442.155784,
+    "bytes_per_second": 42771070,
+    "completion_latency_p50_ns": 337920,
+    "completion_latency_p99_ns": 1761280
+  }
+}
