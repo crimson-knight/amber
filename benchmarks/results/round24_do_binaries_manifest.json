@@ -1,0 +1,30 @@
+{
+  "generated_at_utc": "2026-07-18T20:00:43Z",
+  "host": "Linux amber-density-r24-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+  "binaries": [
+    {
+      "name": "acrystal_postgres",
+      "bytes": 3729064,
+      "sha256": "691b48f696b8d2a722cde0115833955aa77eecd3d344afddebf508eaa2165fac",
+      "ldd": "\tlinux-vdso.so.1 (0x00007fffe71fe000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007488daa1b000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007488da41e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007488da9ff000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007488da955000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007488d9e00000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007488da384000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007488d9d17000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007488da319000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007488d9ce9000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007488d9a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007488daa45000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007488d9600000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007488d9cb7000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007488d7800000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007488d7400000)\n"
+    },
+    {
+      "name": "acrystal_sqlite",
+      "bytes": 3520960,
+      "sha256": "0ce3829471237a2a7389a00705889b5fc66ca676474dbbc62099fb600e6f9a2e",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffe0e915000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007e88aaff4000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007e88aaa1e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007e88aafd8000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007e88aaf2e000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007e88aa400000)\n\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007e88aa298000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007e88aa984000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007e88aa1af000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007e88aa919000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007e88aa181000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e88a9e00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e88ab01e000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007e88a9a00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007e88aa14f000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007e88a7c00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007e88a7800000)\n"
+    },
+    {
+      "name": "stock_postgres",
+      "bytes": 3733736,
+      "sha256": "5850e39606c8ef0b6f838a018ce4c011a548f668c8e358823a0a3506ab380866",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffc798ac000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x0000755bb75df000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x0000755bb73fd000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x0000755bb73e1000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x0000755bb7337000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x0000755bb6e00000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x0000755bb6d66000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x0000755bb6c7d000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x0000755bb6c12000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x0000755bb6be4000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x0000755bb6800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x0000755bb7959000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x0000755bb6400000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x0000755bb6bb2000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x0000755bb4600000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x0000755bb4200000)\n"
+    },
+    {
+      "name": "stock_sqlite",
+      "bytes": 3525832,
+      "sha256": "74317c8ab08c9e118a272403193b1de0f00bbd9926698db16d083bbc0d66f189",
+      "ldd": "\tlinux-vdso.so.1 (0x00007ffd089dc000)\n\tlibyaml-0.so.2 => /lib/x86_64-linux-gnu/libyaml-0.so.2 (0x00007fb2f31e7000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007fb2f2c1e000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fb2f31cb000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fb2f3121000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fb2f2600000)\n\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007fb2f2498000)\n\tlibpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007fb2f2b84000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fb2f23af000)\n\tlibgc.so.1 => /lib/x86_64-linux-gnu/libgc.so.1 (0x00007fb2f2b19000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fb2f2381000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb2f2000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fb2f3211000)\n\tlibicuuc.so.74 => /lib/x86_64-linux-gnu/libicuuc.so.74 (0x00007fb2f1c00000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007fb2f234f000)\n\tlibicudata.so.74 => /lib/x86_64-linux-gnu/libicudata.so.74 (0x00007fb2efe00000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fb2efa00000)\n"
+    }
+  ]
+}

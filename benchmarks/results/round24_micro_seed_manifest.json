@@ -1,0 +1,10 @@
+{
+  "generated_at_utc": "2026-07-18T20:01:52Z",
+  "sqlite_version": "3.45.1 2024-01-30 16:01:20 e876e51a0ed5c5b3126f52e532044363a014bc594cfefa87ffb5b82257ccalt1 (64-bit)",
+  "sqlite_database_bytes": 483098624,
+  "sqlite_resource_rows": 1000000,
+  "sqlite_user_rows": 10000,
+  "sqlite_synchronous": "FULL",
+  "sqlite_journal_mode": "WAL",
+  "bcrypt_cost": 10
+}

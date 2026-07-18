@@ -1,0 +1,3051 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-18T20:07:08Z",
+    "source_commit": "1620f6700b63ccf8039fd70c1f6a0198a0c354ac",
+    "inventory": "amber-density-r24-inventory.json",
+    "region": "nyc3",
+    "route_count_per_app": 1000,
+    "users_per_app": 10000,
+    "resources_per_app": 1000000,
+    "database": "one private SQLite WAL database per app with synchronous=FULL",
+    "database_pool": "Grant pool capped at 8 connections and opened on demand",
+    "systemd_isolation": {
+      "CPUWeight": 100,
+      "CPUQuota": "100%",
+      "IOWeight": 100,
+      "MemoryHigh": "192M",
+      "MemoryMax": "256M",
+      "TasksMax": 128
+    },
+    "densities": [
+      1
+    ],
+    "repetitions": 1,
+    "phases": [
+      {
+        "name": "steady",
+        "rate_per_app": 2.0,
+        "warmup_seconds": 5.0,
+        "duration_seconds": 30.0,
+        "request_timeout_seconds": 5.0,
+        "minimum_attainment": 0.95,
+        "maximum_p99_seconds": 0.25,
+        "minimum_fairness": 0.95,
+        "minimum_memory_available_fraction": 0.05
+      },
+      {
+        "name": "burst",
+        "rate_per_app": 10.0,
+        "warmup_seconds": 5.0,
+        "duration_seconds": 20.0,
+        "request_timeout_seconds": 5.0,
+        "minimum_attainment": 0.95,
+        "maximum_p99_seconds": 1.0,
+        "minimum_fairness": 0.9,
+        "minimum_memory_available_fraction": 0.05
+      }
+    ],
+    "capacity_definition": "all phase repetitions pass request, latency, fairness, process, OOM, swap, and memory-reserve gates",
+    "load_generator": {
+      "size": "c-4",
+      "region": "nyc3",
+      "cpu": {
+        "lscpu": [
+          {
+            "field": "Architecture:",
+            "data": "x86_64"
+          },
+          {
+            "field": "CPU op-mode(s):",
+            "data": "32-bit, 64-bit"
+          },
+          {
+            "field": "Address sizes:",
+            "data": "40 bits physical, 48 bits virtual"
+          },
+          {
+            "field": "Byte Order:",
+            "data": "Little Endian"
+          },
+          {
+            "field": "CPU(s):",
+            "data": "4"
+          },
+          {
+            "field": "On-line CPU(s) list:",
+            "data": "0-3"
+          },
+          {
+            "field": "Vendor ID:",
+            "data": "GenuineIntel"
+          },
+          {
+            "field": "BIOS Vendor ID:",
+            "data": "QEMU"
+          },
+          {
+            "field": "Model name:",
+            "data": "Intel(R) Xeon(R) Platinum 8168 CPU @ 2.70GHz"
+          },
+          {
+            "field": "BIOS Model name:",
+            "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+          },
+          {
+            "field": "BIOS CPU family:",
+            "data": "1"
+          },
+          {
+            "field": "CPU family:",
+            "data": "6"
+          },
+          {
+            "field": "Model:",
+            "data": "85"
+          },
+          {
+            "field": "Thread(s) per core:",
+            "data": "1"
+          },
+          {
+            "field": "Core(s) per socket:",
+            "data": "4"
+          },
+          {
+            "field": "Socket(s):",
+            "data": "1"
+          },
+          {
+            "field": "Stepping:",
+            "data": "4"
+          },
+          {
+            "field": "BogoMIPS:",
+            "data": "5387.33"
+          },
+          {
+            "field": "Flags:",
+            "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 arat vnmi pku ospke md_clear"
+          },
+          {
+            "field": "Virtualization:",
+            "data": "VT-x"
+          },
+          {
+            "field": "Hypervisor vendor:",
+            "data": "KVM"
+          },
+          {
+            "field": "Virtualization type:",
+            "data": "full"
+          },
+          {
+            "field": "L1d cache:",
+            "data": "128 KiB (4 instances)"
+          },
+          {
+            "field": "L1i cache:",
+            "data": "128 KiB (4 instances)"
+          },
+          {
+            "field": "L2 cache:",
+            "data": "16 MiB (4 instances)"
+          },
+          {
+            "field": "NUMA node(s):",
+            "data": "1"
+          },
+          {
+            "field": "NUMA node0 CPU(s):",
+            "data": "0-3"
+          },
+          {
+            "field": "Vulnerability Gather data sampling:",
+            "data": "Unknown: Dependent on hypervisor status"
+          },
+          {
+            "field": "Vulnerability Indirect target selection:",
+            "data": "Mitigation; Aligned branch/return thunks"
+          },
+          {
+            "field": "Vulnerability Itlb multihit:",
+            "data": "KVM: Mitigation: VMX disabled"
+          },
+          {
+            "field": "Vulnerability L1tf:",
+            "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+          },
+          {
+            "field": "Vulnerability Mds:",
+            "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+          },
+          {
+            "field": "Vulnerability Meltdown:",
+            "data": "Mitigation; PTI"
+          },
+          {
+            "field": "Vulnerability Mmio stale data:",
+            "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+          },
+          {
+            "field": "Vulnerability Reg file data sampling:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Retbleed:",
+            "data": "Mitigation; IBRS"
+          },
+          {
+            "field": "Vulnerability Spec rstack overflow:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Spec store bypass:",
+            "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+          },
+          {
+            "field": "Vulnerability Spectre v1:",
+            "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+          },
+          {
+            "field": "Vulnerability Spectre v2:",
+            "data": "Mitigation; IBRS; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI SW loop, KVM SW loop"
+          },
+          {
+            "field": "Vulnerability Srbds:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Tsa:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Tsx async abort:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Vmscape:",
+            "data": "Not affected"
+          }
+        ]
+      },
+      "kernel": "Linux amber-density-r24-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux"
+    },
+    "targets": [
+      {
+        "label": "micro",
+        "cpu_class": "shared",
+        "size": "s-1vcpu-512mb-10gb",
+        "vcpus": 1,
+        "memory_mb": 512,
+        "disk_gb": 10,
+        "price_monthly": 4,
+        "price_hourly": 0.00595,
+        "hardware": {
+          "cpu": {
+            "lscpu": [
+              {
+                "field": "Architecture:",
+                "data": "x86_64"
+              },
+              {
+                "field": "CPU op-mode(s):",
+                "data": "32-bit, 64-bit"
+              },
+              {
+                "field": "Address sizes:",
+                "data": "40 bits physical, 48 bits virtual"
+              },
+              {
+                "field": "Byte Order:",
+                "data": "Little Endian"
+              },
+              {
+                "field": "CPU(s):",
+                "data": "1"
+              },
+              {
+                "field": "On-line CPU(s) list:",
+                "data": "0"
+              },
+              {
+                "field": "Vendor ID:",
+                "data": "GenuineIntel"
+              },
+              {
+                "field": "BIOS Vendor ID:",
+                "data": "QEMU"
+              },
+              {
+                "field": "Model name:",
+                "data": "DO-Regular"
+              },
+              {
+                "field": "BIOS Model name:",
+                "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+              },
+              {
+                "field": "BIOS CPU family:",
+                "data": "1"
+              },
+              {
+                "field": "CPU family:",
+                "data": "6"
+              },
+              {
+                "field": "Model:",
+                "data": "79"
+              },
+              {
+                "field": "Thread(s) per core:",
+                "data": "1"
+              },
+              {
+                "field": "Core(s) per socket:",
+                "data": "1"
+              },
+              {
+                "field": "Socket(s):",
+                "data": "1"
+              },
+              {
+                "field": "Stepping:",
+                "data": "1"
+              },
+              {
+                "field": "BogoMIPS:",
+                "data": "4589.21"
+              },
+              {
+                "field": "Flags:",
+                "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap xsaveopt arat vnmi md_clear"
+              },
+              {
+                "field": "Virtualization:",
+                "data": "VT-x"
+              },
+              {
+                "field": "Hypervisor vendor:",
+                "data": "KVM"
+              },
+              {
+                "field": "Virtualization type:",
+                "data": "full"
+              },
+              {
+                "field": "L1d cache:",
+                "data": "32 KiB (1 instance)"
+              },
+              {
+                "field": "L1i cache:",
+                "data": "32 KiB (1 instance)"
+              },
+              {
+                "field": "L2 cache:",
+                "data": "4 MiB (1 instance)"
+              },
+              {
+                "field": "NUMA node(s):",
+                "data": "1"
+              },
+              {
+                "field": "NUMA node0 CPU(s):",
+                "data": "0"
+              },
+              {
+                "field": "Vulnerability Gather data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Indirect target selection:",
+                "data": "Mitigation; Aligned branch/return thunks"
+              },
+              {
+                "field": "Vulnerability Itlb multihit:",
+                "data": "KVM: Mitigation: VMX disabled"
+              },
+              {
+                "field": "Vulnerability L1tf:",
+                "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+              },
+              {
+                "field": "Vulnerability Mds:",
+                "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Meltdown:",
+                "data": "Mitigation; PTI"
+              },
+              {
+                "field": "Vulnerability Mmio stale data:",
+                "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Reg file data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Retbleed:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec rstack overflow:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec store bypass:",
+                "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+              },
+              {
+                "field": "Vulnerability Spectre v1:",
+                "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+              },
+              {
+                "field": "Vulnerability Spectre v2:",
+                "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline"
+              },
+              {
+                "field": "Vulnerability Srbds:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsa:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsx async abort:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Vmscape:",
+                "data": "Not affected"
+              }
+            ]
+          },
+          "memory_bytes": 480497664,
+          "swap_bytes": 0,
+          "kernel": "Linux amber-density-r24-micro 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+          "disk": {
+            "blockdevices": [
+              {
+                "name": "vda",
+                "size": 10737418240,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null,
+                "children": [
+                  {
+                    "name": "vda1",
+                    "size": 9662610944,
+                    "type": "part",
+                    "mountpoints": [
+                      "/"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda14",
+                    "size": 4194304,
+                    "type": "part",
+                    "mountpoints": [
+                      null
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda15",
+                    "size": 111149056,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot/efi"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda16",
+                    "size": 957350400,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot"
+                    ],
+                    "rota": true,
+                    "model": null
+                  }
+                ]
+              },
+              {
+                "name": "vdb",
+                "size": 499712,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null
+              }
+            ]
+          },
+          "fio": {
+            "fio version": "fio-3.36",
+            "timestamp": 1784405198,
+            "timestamp_ms": 1784405198809,
+            "time": "Sat Jul 18 20:06:38 2026",
+            "jobs": [
+              {
+                "jobname": "amber-r24-disk",
+                "groupid": 0,
+                "job_start": 1784405188792,
+                "error": 0,
+                "eta": 0,
+                "elapsed": 11,
+                "job options": {
+                  "name": "amber-r24-disk",
+                  "filename": "/opt/amber-density/seed/fio-probe.bin",
+                  "size": "128m",
+                  "direct": "1",
+                  "ioengine": "libaio",
+                  "rw": "randrw",
+                  "rwmixread": "70",
+                  "bs": "4k",
+                  "iodepth": "16",
+                  "runtime": "10"
+                },
+                "read": {
+                  "io_bytes": 1392820224,
+                  "io_kbytes": 1360176,
+                  "bw_bytes": 139268095,
+                  "bw": 136003,
+                  "iops": 34000.9999,
+                  "runtime": 10001,
+                  "total_ios": 340044,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 2890,
+                    "max": 1220233,
+                    "mean": 6483.805872,
+                    "stddev": 6678.129343,
+                    "N": 340044
+                  },
+                  "clat_ns": {
+                    "min": 80913,
+                    "max": 24684985,
+                    "mean": 336826.852907,
+                    "stddev": 209048.410016,
+                    "N": 340044,
+                    "percentile": {
+                      "1.000000": 177152,
+                      "5.000000": 205824,
+                      "10.000000": 222208,
+                      "20.000000": 244736,
+                      "30.000000": 264192,
+                      "40.000000": 280576,
+                      "50.000000": 301056,
+                      "60.000000": 325632,
+                      "70.000000": 358400,
+                      "80.000000": 403456,
+                      "90.000000": 477184,
+                      "95.000000": 552960,
+                      "99.000000": 880640,
+                      "99.500000": 1122304,
+                      "99.900000": 1810432,
+                      "99.950000": 2244608,
+                      "99.990000": 4046848
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 85669,
+                    "max": 24699938,
+                    "mean": 343310.658779,
+                    "stddev": 209097.914867,
+                    "N": 340044
+                  },
+                  "bw_min": 118992,
+                  "bw_max": 160120,
+                  "bw_agg": 100.0,
+                  "bw_mean": 137117.947368,
+                  "bw_dev": 11688.042553,
+                  "bw_samples": 19,
+                  "iops_min": 29748,
+                  "iops_max": 40030,
+                  "iops_mean": 34279.473684,
+                  "iops_stddev": 2922.013145,
+                  "iops_samples": 19
+                },
+                "write": {
+                  "io_bytes": 598573056,
+                  "io_kbytes": 584544,
+                  "bw_bytes": 59851320,
+                  "bw": 58448,
+                  "iops": 14612.138786,
+                  "runtime": 10001,
+                  "total_ios": 146136,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 3195,
+                    "max": 427133,
+                    "mean": 7201.857455,
+                    "stddev": 6579.100195,
+                    "N": 146136
+                  },
+                  "clat_ns": {
+                    "min": 67039,
+                    "max": 25054777,
+                    "mean": 285737.65838,
+                    "stddev": 268725.514273,
+                    "N": 146136,
+                    "percentile": {
+                      "1.000000": 130560,
+                      "5.000000": 156672,
+                      "10.000000": 173056,
+                      "20.000000": 193536,
+                      "30.000000": 207872,
+                      "40.000000": 224256,
+                      "50.000000": 242688,
+                      "60.000000": 264192,
+                      "70.000000": 296960,
+                      "80.000000": 342016,
+                      "90.000000": 419840,
+                      "95.000000": 505856,
+                      "99.000000": 888832,
+                      "99.500000": 1204224,
+                      "99.900000": 2834432,
+                      "99.950000": 3981312,
+                      "99.990000": 6979584
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 80490,
+                    "max": 25060660,
+                    "mean": 292939.515835,
+                    "stddev": 268890.101656,
+                    "N": 146136
+                  },
+                  "bw_min": 51336,
+                  "bw_max": 69128,
+                  "bw_agg": 100.0,
+                  "bw_mean": 58857.736842,
+                  "bw_dev": 5089.066579,
+                  "bw_samples": 19,
+                  "iops_min": 12834,
+                  "iops_max": 17282,
+                  "iops_mean": 14714.421053,
+                  "iops_stddev": 1272.265273,
+                  "iops_samples": 19
+                },
+                "trim": {
+                  "io_bytes": 0,
+                  "io_kbytes": 0,
+                  "bw_bytes": 0,
+                  "bw": 0,
+                  "iops": 0.0,
+                  "runtime": 0,
+                  "total_ios": 0,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "clat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "bw_min": 0,
+                  "bw_max": 0,
+                  "bw_agg": 0.0,
+                  "bw_mean": 0.0,
+                  "bw_dev": 0.0,
+                  "bw_samples": 0,
+                  "iops_min": 0,
+                  "iops_max": 0,
+                  "iops_mean": 0.0,
+                  "iops_stddev": 0.0,
+                  "iops_samples": 0
+                },
+                "sync": {
+                  "total_ios": 0,
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  }
+                },
+                "job_runtime": 10000,
+                "usr_cpu": 13.55,
+                "sys_cpu": 34.45,
+                "ctx": 112586,
+                "majf": 0,
+                "minf": 34,
+                "iodepth_level": {
+                  "1": 0.1,
+                  "2": 0.1,
+                  "4": 0.1,
+                  "8": 0.1,
+                  "16": 99.996915,
+                  "32": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_submit": {
+                  "0": 0.0,
+                  "4": 100.0,
+                  "8": 0.0,
+                  "16": 0.0,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_complete": {
+                  "0": 0.0,
+                  "4": 99.999794,
+                  "8": 0.0,
+                  "16": 0.1,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "latency_ns": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0
+                },
+                "latency_us": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.032087,
+                  "250": 32.049652,
+                  "500": 60.671768,
+                  "750": 5.703237,
+                  "1000": 0.795384
+                },
+                "latency_ms": {
+                  "2": 0.645646,
+                  "4": 0.079806,
+                  "10": 0.015838,
+                  "20": 0.01,
+                  "50": 0.01,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0,
+                  "2000": 0.0,
+                  ">=2000": 0.0
+                },
+                "latency_depth": 16,
+                "latency_target": 0,
+                "latency_percentile": 100.0,
+                "latency_window": 0
+              }
+            ],
+            "disk_util": [
+              {
+                "name": "vda",
+                "read_ios": 333355,
+                "write_ios": 143292,
+                "read_sectors": 2666840,
+                "write_sectors": 1147016,
+                "read_merges": 0,
+                "write_merges": 3,
+                "read_ticks": 102338,
+                "write_ticks": 33618,
+                "in_queue": 135956,
+                "util": 55.171018
+              }
+            ]
+          }
+        }
+      },
+      {
+        "label": "shared2x4",
+        "cpu_class": "shared",
+        "size": "s-2vcpu-4gb",
+        "vcpus": 2,
+        "memory_mb": 4096,
+        "disk_gb": 80,
+        "price_monthly": 24,
+        "price_hourly": 0.03571,
+        "hardware": {
+          "cpu": {
+            "lscpu": [
+              {
+                "field": "Architecture:",
+                "data": "x86_64"
+              },
+              {
+                "field": "CPU op-mode(s):",
+                "data": "32-bit, 64-bit"
+              },
+              {
+                "field": "Address sizes:",
+                "data": "40 bits physical, 48 bits virtual"
+              },
+              {
+                "field": "Byte Order:",
+                "data": "Little Endian"
+              },
+              {
+                "field": "CPU(s):",
+                "data": "2"
+              },
+              {
+                "field": "On-line CPU(s) list:",
+                "data": "0,1"
+              },
+              {
+                "field": "Vendor ID:",
+                "data": "GenuineIntel"
+              },
+              {
+                "field": "BIOS Vendor ID:",
+                "data": "QEMU"
+              },
+              {
+                "field": "Model name:",
+                "data": "DO-Regular"
+              },
+              {
+                "field": "BIOS Model name:",
+                "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+              },
+              {
+                "field": "BIOS CPU family:",
+                "data": "1"
+              },
+              {
+                "field": "CPU family:",
+                "data": "6"
+              },
+              {
+                "field": "Model:",
+                "data": "79"
+              },
+              {
+                "field": "Thread(s) per core:",
+                "data": "1"
+              },
+              {
+                "field": "Core(s) per socket:",
+                "data": "2"
+              },
+              {
+                "field": "Socket(s):",
+                "data": "1"
+              },
+              {
+                "field": "Stepping:",
+                "data": "1"
+              },
+              {
+                "field": "BogoMIPS:",
+                "data": "4589.21"
+              },
+              {
+                "field": "Flags:",
+                "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap xsaveopt arat vnmi md_clear"
+              },
+              {
+                "field": "Virtualization:",
+                "data": "VT-x"
+              },
+              {
+                "field": "Hypervisor vendor:",
+                "data": "KVM"
+              },
+              {
+                "field": "Virtualization type:",
+                "data": "full"
+              },
+              {
+                "field": "L1d cache:",
+                "data": "64 KiB (2 instances)"
+              },
+              {
+                "field": "L1i cache:",
+                "data": "64 KiB (2 instances)"
+              },
+              {
+                "field": "L2 cache:",
+                "data": "8 MiB (2 instances)"
+              },
+              {
+                "field": "NUMA node(s):",
+                "data": "1"
+              },
+              {
+                "field": "NUMA node0 CPU(s):",
+                "data": "0,1"
+              },
+              {
+                "field": "Vulnerability Gather data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Indirect target selection:",
+                "data": "Mitigation; Aligned branch/return thunks"
+              },
+              {
+                "field": "Vulnerability Itlb multihit:",
+                "data": "KVM: Mitigation: VMX disabled"
+              },
+              {
+                "field": "Vulnerability L1tf:",
+                "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+              },
+              {
+                "field": "Vulnerability Mds:",
+                "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Meltdown:",
+                "data": "Mitigation; PTI"
+              },
+              {
+                "field": "Vulnerability Mmio stale data:",
+                "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Reg file data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Retbleed:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec rstack overflow:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec store bypass:",
+                "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+              },
+              {
+                "field": "Vulnerability Spectre v1:",
+                "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+              },
+              {
+                "field": "Vulnerability Spectre v2:",
+                "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline"
+              },
+              {
+                "field": "Vulnerability Srbds:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsa:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsx async abort:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Vmscape:",
+                "data": "Not affected"
+              }
+            ]
+          },
+          "memory_bytes": 4106100736,
+          "swap_bytes": 0,
+          "kernel": "Linux amber-density-r24-shared2x4 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+          "disk": {
+            "blockdevices": [
+              {
+                "name": "vda",
+                "size": 85899345920,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null,
+                "children": [
+                  {
+                    "name": "vda1",
+                    "size": 84824538624,
+                    "type": "part",
+                    "mountpoints": [
+                      "/"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda14",
+                    "size": 4194304,
+                    "type": "part",
+                    "mountpoints": [
+                      null
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda15",
+                    "size": 111149056,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot/efi"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda16",
+                    "size": 957350400,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot"
+                    ],
+                    "rota": true,
+                    "model": null
+                  }
+                ]
+              },
+              {
+                "name": "vdb",
+                "size": 499712,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null
+              }
+            ]
+          },
+          "fio": {
+            "fio version": "fio-3.36",
+            "timestamp": 1784405212,
+            "timestamp_ms": 1784405212961,
+            "time": "Sat Jul 18 20:06:52 2026",
+            "jobs": [
+              {
+                "jobname": "amber-r24-disk",
+                "groupid": 0,
+                "job_start": 1784405202935,
+                "error": 0,
+                "eta": 0,
+                "elapsed": 11,
+                "job options": {
+                  "name": "amber-r24-disk",
+                  "filename": "/opt/amber-density/seed/fio-probe.bin",
+                  "size": "128m",
+                  "direct": "1",
+                  "ioengine": "libaio",
+                  "rw": "randrw",
+                  "rwmixread": "70",
+                  "bs": "4k",
+                  "iodepth": "16",
+                  "runtime": "10"
+                },
+                "read": {
+                  "io_bytes": 1251840000,
+                  "io_kbytes": 1222500,
+                  "bw_bytes": 125158968,
+                  "bw": 122225,
+                  "iops": 30556.388722,
+                  "runtime": 10002,
+                  "total_ios": 305625,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 2993,
+                    "max": 3119930,
+                    "mean": 7422.291259,
+                    "stddev": 9945.540126,
+                    "N": 305625
+                  },
+                  "clat_ns": {
+                    "min": 77342,
+                    "max": 19660202,
+                    "mean": 372376.839696,
+                    "stddev": 227506.135562,
+                    "N": 305625,
+                    "percentile": {
+                      "1.000000": 183296,
+                      "5.000000": 216064,
+                      "10.000000": 236544,
+                      "20.000000": 264192,
+                      "30.000000": 288768,
+                      "40.000000": 313344,
+                      "50.000000": 337920,
+                      "60.000000": 366592,
+                      "70.000000": 399360,
+                      "80.000000": 444416,
+                      "90.000000": 514048,
+                      "95.000000": 593920,
+                      "99.000000": 1011712,
+                      "99.500000": 1335296,
+                      "99.900000": 2277376,
+                      "99.950000": 3489792,
+                      "99.990000": 9240576
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 96591,
+                    "max": 19666545,
+                    "mean": 379799.130955,
+                    "stddev": 227535.960121,
+                    "N": 305625
+                  },
+                  "bw_min": 110576,
+                  "bw_max": 148271,
+                  "bw_agg": 100.0,
+                  "bw_mean": 122647.947368,
+                  "bw_dev": 8624.799646,
+                  "bw_samples": 19,
+                  "iops_min": 27644,
+                  "iops_max": 37067,
+                  "iops_mean": 30661.947368,
+                  "iops_stddev": 2156.076129,
+                  "iops_samples": 19
+                },
+                "write": {
+                  "io_bytes": 537591808,
+                  "io_kbytes": 524992,
+                  "bw_bytes": 53748431,
+                  "bw": 52488,
+                  "iops": 13122.175565,
+                  "runtime": 10002,
+                  "total_ios": 131248,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 3293,
+                    "max": 12678906,
+                    "mean": 8341.149846,
+                    "stddev": 35855.256609,
+                    "N": 131248
+                  },
+                  "clat_ns": {
+                    "min": 70557,
+                    "max": 21449424,
+                    "mean": 322852.074462,
+                    "stddev": 306869.598399,
+                    "N": 131248,
+                    "percentile": {
+                      "1.000000": 136192,
+                      "5.000000": 166912,
+                      "10.000000": 187392,
+                      "20.000000": 216064,
+                      "30.000000": 238592,
+                      "40.000000": 261120,
+                      "50.000000": 284672,
+                      "60.000000": 313344,
+                      "70.000000": 342016,
+                      "80.000000": 387072,
+                      "90.000000": 456704,
+                      "95.000000": 536576,
+                      "99.000000": 1036288,
+                      "99.500000": 1368064,
+                      "99.900000": 2637824,
+                      "99.950000": 4947968,
+                      "99.990000": 14221312
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 75581,
+                    "max": 21530211,
+                    "mean": 331193.224308,
+                    "stddev": 309088.637032,
+                    "N": 131248
+                  },
+                  "bw_min": 46280,
+                  "bw_max": 63049,
+                  "bw_agg": 100.0,
+                  "bw_mean": 52686.789474,
+                  "bw_dev": 3652.998686,
+                  "bw_samples": 19,
+                  "iops_min": 11570,
+                  "iops_max": 15762,
+                  "iops_mean": 13171.684211,
+                  "iops_stddev": 913.210275,
+                  "iops_samples": 19
+                },
+                "trim": {
+                  "io_bytes": 0,
+                  "io_kbytes": 0,
+                  "bw_bytes": 0,
+                  "bw": 0,
+                  "iops": 0.0,
+                  "runtime": 0,
+                  "total_ios": 0,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "clat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "bw_min": 0,
+                  "bw_max": 0,
+                  "bw_agg": 0.0,
+                  "bw_mean": 0.0,
+                  "bw_dev": 0.0,
+                  "bw_samples": 0,
+                  "iops_min": 0,
+                  "iops_max": 0,
+                  "iops_mean": 0.0,
+                  "iops_stddev": 0.0,
+                  "iops_samples": 0
+                },
+                "sync": {
+                  "total_ios": 0,
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  }
+                },
+                "job_runtime": 10001,
+                "usr_cpu": 12.518748,
+                "sys_cpu": 35.356464,
+                "ctx": 93140,
+                "majf": 0,
+                "minf": 13,
+                "iodepth_level": {
+                  "1": 0.1,
+                  "2": 0.1,
+                  "4": 0.1,
+                  "8": 0.1,
+                  "16": 99.996567,
+                  "32": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_submit": {
+                  "0": 0.0,
+                  "4": 100.0,
+                  "8": 0.0,
+                  "16": 0.0,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_complete": {
+                  "0": 0.0,
+                  "4": 99.999771,
+                  "8": 0.0,
+                  "16": 0.1,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "latency_ns": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0
+                },
+                "latency_us": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.020372,
+                  "250": 20.411653,
+                  "500": 69.556599,
+                  "750": 8.019951,
+                  "1000": 0.958173
+                },
+                "latency_ms": {
+                  "2": 0.885841,
+                  "4": 0.104607,
+                  "10": 0.02907,
+                  "20": 0.013505,
+                  "50": 0.01,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0,
+                  "2000": 0.0,
+                  ">=2000": 0.0
+                },
+                "latency_depth": 16,
+                "latency_target": 0,
+                "latency_percentile": 100.0,
+                "latency_window": 0
+              }
+            ],
+            "disk_util": [
+              {
+                "name": "vda",
+                "read_ios": 304214,
+                "write_ios": 130631,
+                "read_sectors": 2433712,
+                "write_sectors": 1045056,
+                "read_merges": 0,
+                "write_merges": 1,
+                "read_ticks": 101551,
+                "write_ticks": 33197,
+                "in_queue": 134748,
+                "util": 68.736297
+              }
+            ]
+          }
+        }
+      },
+      {
+        "label": "dedicated2x4",
+        "cpu_class": "dedicated",
+        "size": "c-2",
+        "vcpus": 2,
+        "memory_mb": 4096,
+        "disk_gb": 25,
+        "price_monthly": 42,
+        "price_hourly": 0.0625,
+        "hardware": {
+          "cpu": {
+            "lscpu": [
+              {
+                "field": "Architecture:",
+                "data": "x86_64"
+              },
+              {
+                "field": "CPU op-mode(s):",
+                "data": "32-bit, 64-bit"
+              },
+              {
+                "field": "Address sizes:",
+                "data": "40 bits physical, 48 bits virtual"
+              },
+              {
+                "field": "Byte Order:",
+                "data": "Little Endian"
+              },
+              {
+                "field": "CPU(s):",
+                "data": "2"
+              },
+              {
+                "field": "On-line CPU(s) list:",
+                "data": "0,1"
+              },
+              {
+                "field": "Vendor ID:",
+                "data": "GenuineIntel"
+              },
+              {
+                "field": "BIOS Vendor ID:",
+                "data": "QEMU"
+              },
+              {
+                "field": "Model name:",
+                "data": "Intel(R) Xeon(R) Platinum 8168 CPU @ 2.70GHz"
+              },
+              {
+                "field": "BIOS Model name:",
+                "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+              },
+              {
+                "field": "BIOS CPU family:",
+                "data": "1"
+              },
+              {
+                "field": "CPU family:",
+                "data": "6"
+              },
+              {
+                "field": "Model:",
+                "data": "85"
+              },
+              {
+                "field": "Thread(s) per core:",
+                "data": "1"
+              },
+              {
+                "field": "Core(s) per socket:",
+                "data": "2"
+              },
+              {
+                "field": "Socket(s):",
+                "data": "1"
+              },
+              {
+                "field": "Stepping:",
+                "data": "4"
+              },
+              {
+                "field": "BogoMIPS:",
+                "data": "5387.34"
+              },
+              {
+                "field": "Flags:",
+                "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 arat vnmi pku ospke md_clear"
+              },
+              {
+                "field": "Virtualization:",
+                "data": "VT-x"
+              },
+              {
+                "field": "Hypervisor vendor:",
+                "data": "KVM"
+              },
+              {
+                "field": "Virtualization type:",
+                "data": "full"
+              },
+              {
+                "field": "L1d cache:",
+                "data": "64 KiB (2 instances)"
+              },
+              {
+                "field": "L1i cache:",
+                "data": "64 KiB (2 instances)"
+              },
+              {
+                "field": "L2 cache:",
+                "data": "8 MiB (2 instances)"
+              },
+              {
+                "field": "NUMA node(s):",
+                "data": "1"
+              },
+              {
+                "field": "NUMA node0 CPU(s):",
+                "data": "0,1"
+              },
+              {
+                "field": "Vulnerability Gather data sampling:",
+                "data": "Unknown: Dependent on hypervisor status"
+              },
+              {
+                "field": "Vulnerability Indirect target selection:",
+                "data": "Mitigation; Aligned branch/return thunks"
+              },
+              {
+                "field": "Vulnerability Itlb multihit:",
+                "data": "KVM: Mitigation: VMX disabled"
+              },
+              {
+                "field": "Vulnerability L1tf:",
+                "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+              },
+              {
+                "field": "Vulnerability Mds:",
+                "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Meltdown:",
+                "data": "Mitigation; PTI"
+              },
+              {
+                "field": "Vulnerability Mmio stale data:",
+                "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Reg file data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Retbleed:",
+                "data": "Mitigation; IBRS"
+              },
+              {
+                "field": "Vulnerability Spec rstack overflow:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec store bypass:",
+                "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+              },
+              {
+                "field": "Vulnerability Spectre v1:",
+                "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+              },
+              {
+                "field": "Vulnerability Spectre v2:",
+                "data": "Mitigation; IBRS; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI SW loop, KVM SW loop"
+              },
+              {
+                "field": "Vulnerability Srbds:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsa:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsx async abort:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Vmscape:",
+                "data": "Not affected"
+              }
+            ]
+          },
+          "memory_bytes": 4106104832,
+          "swap_bytes": 0,
+          "kernel": "Linux amber-density-r24-dedicated2x4 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+          "disk": {
+            "blockdevices": [
+              {
+                "name": "vda",
+                "size": 26843545600,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null,
+                "children": [
+                  {
+                    "name": "vda1",
+                    "size": 25768738304,
+                    "type": "part",
+                    "mountpoints": [
+                      "/"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda14",
+                    "size": 4194304,
+                    "type": "part",
+                    "mountpoints": [
+                      null
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda15",
+                    "size": 111149056,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot/efi"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda16",
+                    "size": 957350400,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot"
+                    ],
+                    "rota": true,
+                    "model": null
+                  }
+                ]
+              },
+              {
+                "name": "vdb",
+                "size": 499712,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null
+              }
+            ]
+          },
+          "fio": {
+            "fio version": "fio-3.36",
+            "timestamp": 1784405226,
+            "timestamp_ms": 1784405226728,
+            "time": "Sat Jul 18 20:07:06 2026",
+            "jobs": [
+              {
+                "jobname": "amber-r24-disk",
+                "groupid": 0,
+                "job_start": 1784405216699,
+                "error": 0,
+                "eta": 0,
+                "elapsed": 11,
+                "job options": {
+                  "name": "amber-r24-disk",
+                  "filename": "/opt/amber-density/seed/fio-probe.bin",
+                  "size": "128m",
+                  "direct": "1",
+                  "ioengine": "libaio",
+                  "rw": "randrw",
+                  "rwmixread": "70",
+                  "bs": "4k",
+                  "iodepth": "16",
+                  "runtime": "10"
+                },
+                "read": {
+                  "io_bytes": 1786429440,
+                  "io_kbytes": 1744560,
+                  "bw_bytes": 178589367,
+                  "bw": 174403,
+                  "iops": 43600.919724,
+                  "runtime": 10003,
+                  "total_ios": 436140,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 3631,
+                    "max": 166658,
+                    "mean": 6038.788323,
+                    "stddev": 3283.577507,
+                    "N": 436140
+                  },
+                  "clat_ns": {
+                    "min": 73473,
+                    "max": 6042211,
+                    "mean": 289596.635268,
+                    "stddev": 313666.190131,
+                    "N": 436140,
+                    "percentile": {
+                      "1.000000": 146432,
+                      "5.000000": 164864,
+                      "10.000000": 177152,
+                      "20.000000": 191488,
+                      "30.000000": 203776,
+                      "40.000000": 214016,
+                      "50.000000": 224256,
+                      "60.000000": 236544,
+                      "70.000000": 250880,
+                      "80.000000": 272384,
+                      "90.000000": 329728,
+                      "95.000000": 634880,
+                      "99.000000": 2244608,
+                      "99.500000": 2670592,
+                      "99.900000": 3063808,
+                      "99.950000": 3260416,
+                      "99.990000": 4046848
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 90041,
+                    "max": 6047427,
+                    "mean": 295635.423591,
+                    "stddev": 313633.739457,
+                    "N": 436140
+                  },
+                  "bw_min": 168936,
+                  "bw_max": 180224,
+                  "bw_agg": 100.0,
+                  "bw_mean": 174639.578947,
+                  "bw_dev": 3282.621688,
+                  "bw_samples": 19,
+                  "iops_min": 42234,
+                  "iops_max": 45056,
+                  "iops_mean": 43659.894737,
+                  "iops_stddev": 820.655422,
+                  "iops_samples": 19
+                },
+                "write": {
+                  "io_bytes": 766656512,
+                  "io_kbytes": 748688,
+                  "bw_bytes": 76642658,
+                  "bw": 74846,
+                  "iops": 18711.586524,
+                  "runtime": 10003,
+                  "total_ios": 187172,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 3887,
+                    "max": 94822,
+                    "mean": 6441.687598,
+                    "stddev": 3318.551408,
+                    "N": 187172
+                  },
+                  "clat_ns": {
+                    "min": 46918,
+                    "max": 6366605,
+                    "mean": 157411.482599,
+                    "stddev": 112853.731936,
+                    "N": 187172,
+                    "percentile": {
+                      "1.000000": 72192,
+                      "5.000000": 89600,
+                      "10.000000": 99840,
+                      "20.000000": 115200,
+                      "30.000000": 126464,
+                      "40.000000": 136192,
+                      "50.000000": 146432,
+                      "60.000000": 158720,
+                      "70.000000": 168960,
+                      "80.000000": 185344,
+                      "90.000000": 209920,
+                      "95.000000": 236544,
+                      "99.000000": 313344,
+                      "99.500000": 391168,
+                      "99.900000": 1908736,
+                      "99.950000": 2670592,
+                      "99.990000": 4227072
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 57389,
+                    "max": 6374295,
+                    "mean": 163853.170196,
+                    "stddev": 112789.328599,
+                    "N": 187172
+                  },
+                  "bw_min": 71704,
+                  "bw_max": 77376,
+                  "bw_agg": 100.0,
+                  "bw_mean": 75034.526316,
+                  "bw_dev": 1491.482311,
+                  "bw_samples": 19,
+                  "iops_min": 17926,
+                  "iops_max": 19344,
+                  "iops_mean": 18758.631579,
+                  "iops_stddev": 372.870578,
+                  "iops_samples": 19
+                },
+                "trim": {
+                  "io_bytes": 0,
+                  "io_kbytes": 0,
+                  "bw_bytes": 0,
+                  "bw": 0,
+                  "iops": 0.0,
+                  "runtime": 0,
+                  "total_ios": 0,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "clat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "bw_min": 0,
+                  "bw_max": 0,
+                  "bw_agg": 0.0,
+                  "bw_mean": 0.0,
+                  "bw_dev": 0.0,
+                  "bw_samples": 0,
+                  "iops_min": 0,
+                  "iops_max": 0,
+                  "iops_mean": 0.0,
+                  "iops_stddev": 0.0,
+                  "iops_samples": 0
+                },
+                "sync": {
+                  "total_ios": 0,
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  }
+                },
+                "job_runtime": 10002,
+                "usr_cpu": 13.517297,
+                "sys_cpu": 42.211558,
+                "ctx": 189707,
+                "majf": 0,
+                "minf": 13,
+                "iodepth_level": {
+                  "1": 0.1,
+                  "2": 0.1,
+                  "4": 0.1,
+                  "8": 0.1,
+                  "16": 99.997594,
+                  "32": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_submit": {
+                  "0": 0.0,
+                  "4": 100.0,
+                  "8": 0.0,
+                  "16": 0.0,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_complete": {
+                  "0": 0.0,
+                  "4": 99.99984,
+                  "8": 0.0,
+                  "16": 0.1,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "latency_ns": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0
+                },
+                "latency_us": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.01,
+                  "100": 2.952775,
+                  "250": 74.745071,
+                  "500": 18.18335,
+                  "750": 1.5923,
+                  "1000": 0.75901
+                },
+                "latency_ms": {
+                  "2": 0.849334,
+                  "4": 0.904202,
+                  "10": 0.012995,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0,
+                  "2000": 0.0,
+                  ">=2000": 0.0
+                },
+                "latency_depth": 16,
+                "latency_target": 0,
+                "latency_percentile": 100.0,
+                "latency_window": 0
+              }
+            ],
+            "disk_util": [
+              {
+                "name": "vda",
+                "read_ios": 429706,
+                "write_ios": 184621,
+                "read_sectors": 3437648,
+                "write_sectors": 1477504,
+                "read_merges": 0,
+                "write_merges": 3,
+                "read_ticks": 117250,
+                "write_ticks": 23477,
+                "in_queue": 140726,
+                "util": 64.357531
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "integrity_checks": {
+      "micro": {
+        "checked": 1,
+        "failures": 0
+      },
+      "shared2x4": {
+        "checked": 1,
+        "failures": 0
+      },
+      "dedicated2x4": {
+        "checked": 1,
+        "failures": 0
+      }
+    },
+    "completed_at_utc": "2026-07-18T20:11:10Z"
+  },
+  "capacity_events": [
+    {
+      "target": "micro",
+      "density": 1,
+      "status": "passed",
+      "failure_reasons": [
+
+      ]
+    },
+    {
+      "target": "shared2x4",
+      "density": 1,
+      "status": "passed",
+      "failure_reasons": [
+
+      ]
+    },
+    {
+      "target": "dedicated2x4",
+      "density": 1,
+      "status": "passed",
+      "failure_reasons": [
+
+      ]
+    }
+  ],
+  "trials": [
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 1,
+      "phase": "steady",
+      "repetition": 1,
+      "sequence": 1,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:07:48Z",
+          "hosts": [
+            "http://10.142.0.2:42000"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 2.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 60,
+          "successes": 60,
+          "errors": 0,
+          "success_rps": 2.0,
+          "target_rps": 2.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.0027673179999965214,
+          "p95_seconds": 0.009964396999976088,
+          "p99_seconds": 0.010590535999995154,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00023770500001774053,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0027673179999965214,
+            "p95_seconds": 0.009964396999976088,
+            "p99_seconds": 0.010590535999995154,
+            "max_latency_seconds": 0.012027572000022246
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.04078912290055985,
+        "cpu_iowait_fraction": 0.007731271660890429,
+        "cpu_steal_fraction": 0.0,
+        "application_cpu_cores": 0.004307900345565858,
+        "disk_read_bytes": 22351872,
+        "disk_write_bytes": 1449984,
+        "disk_busy_seconds": 0.322,
+        "disk_utilization": 0.00903217851041299,
+        "page_faults": 34265,
+        "major_page_faults": 101,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 277123072,
+        "memory_available_fraction": 0.5767417674688217,
+        "application_memory_current_bytes": 22687744,
+        "application_memory_peak_bytes": 22786048,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22687744",
+            "MemoryPeak": "22786048",
+            "CPUUsageNSec": "192920000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "9945088",
+            "IOWriteBytes": "155648",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.03 0.20 0.16 1/121 10336"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 1,
+      "phase": "burst",
+      "repetition": 1,
+      "sequence": 2,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:08:16Z",
+          "hosts": [
+            "http://10.142.0.2:42000"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 10.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 200,
+          "successes": 200,
+          "errors": 0,
+          "success_rps": 10.0,
+          "target_rps": 10.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.002062837000039508,
+          "p95_seconds": 0.008981190000042716,
+          "p99_seconds": 0.07956139999998868,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00024954599507509556,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.002062837000039508,
+            "p95_seconds": 0.008981190000042716,
+            "p99_seconds": 0.07956139999998868,
+            "max_latency_seconds": 0.08038470799999686
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.043510324483775814,
+        "cpu_iowait_fraction": 0.008112094395280236,
+        "cpu_steal_fraction": 0.0003687315634218289,
+        "application_cpu_cores": 0.021796442630965383,
+        "disk_read_bytes": 2609152,
+        "disk_write_bytes": 2891776,
+        "disk_busy_seconds": 0.257,
+        "disk_utilization": 0.009791958599748464,
+        "page_faults": 25143,
+        "major_page_faults": 4,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 305750016,
+        "memory_available_fraction": 0.6363194639797458,
+        "application_memory_current_bytes": 28999680,
+        "application_memory_peak_bytes": 29151232,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "28999680",
+            "MemoryPeak": "29151232",
+            "CPUUsageNSec": "764990000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "12386304",
+            "IOWriteBytes": "700416",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.17 0.21 0.16 1/121 10544"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "shared2x4",
+      "cpu_class": "shared",
+      "size": "s-2vcpu-4gb",
+      "density": 1,
+      "phase": "steady",
+      "repetition": 1,
+      "sequence": 3,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:09:00Z",
+          "hosts": [
+            "http://10.142.0.3:42000"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 2.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 60,
+          "successes": 60,
+          "errors": 0,
+          "success_rps": 2.0,
+          "target_rps": 2.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.0018904339999608055,
+          "p95_seconds": 0.00455038399991281,
+          "p99_seconds": 0.0057546020000245335,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00026813900001343427,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.3:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0018904339999608055,
+            "p95_seconds": 0.00455038399991281,
+            "p99_seconds": 0.0057546020000245335,
+            "max_latency_seconds": 0.006982680999954027
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.015280594996619337,
+        "cpu_iowait_fraction": 0.00040567951318458417,
+        "cpu_steal_fraction": 0.002028397565922921,
+        "application_cpu_cores": 0.004019942432316561,
+        "disk_read_bytes": 77824,
+        "disk_write_bytes": 1531904,
+        "disk_busy_seconds": 0.024,
+        "disk_utilization": 0.0006747794652016217,
+        "page_faults": 24644,
+        "major_page_faults": 0,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 3708833792,
+        "memory_available_fraction": 0.9032495865196426,
+        "application_memory_current_bytes": 17031168,
+        "application_memory_peak_bytes": 17297408,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-shared2x4-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "17031168",
+            "MemoryPeak": "17297408",
+            "CPUUsageNSec": "194742000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4567040",
+            "IOWriteBytes": "155648",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.37 0.25 0.19 1/139 9907"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "shared2x4",
+      "cpu_class": "shared",
+      "size": "s-2vcpu-4gb",
+      "density": 1,
+      "phase": "burst",
+      "repetition": 1,
+      "sequence": 4,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:09:29Z",
+          "hosts": [
+            "http://10.142.0.3:42000"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 10.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 200,
+          "successes": 200,
+          "errors": 0,
+          "success_rps": 10.0,
+          "target_rps": 10.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.001704448000054981,
+          "p95_seconds": 0.01058847899992088,
+          "p99_seconds": 0.08035336499995083,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00026814499688043725,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.3:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.001704448000054981,
+            "p95_seconds": 0.01058847899992088,
+            "p99_seconds": 0.08035336499995083,
+            "max_latency_seconds": 0.082927838000046
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.039647577092511016,
+        "cpu_iowait_fraction": 0.0022907488986784142,
+        "cpu_steal_fraction": 0.01039647577092511,
+        "application_cpu_cores": 0.02314358200818424,
+        "disk_read_bytes": 0,
+        "disk_write_bytes": 3186688,
+        "disk_busy_seconds": 0.16,
+        "disk_utilization": 0.006087012396537263,
+        "page_faults": 32989,
+        "major_page_faults": 0,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 3667042304,
+        "memory_available_fraction": 0.8930716852242371,
+        "application_memory_current_bytes": 20791296,
+        "application_memory_peak_bytes": 21311488,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-shared2x4-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20791296",
+            "MemoryPeak": "21311488",
+            "CPUUsageNSec": "803082000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4567040",
+            "IOWriteBytes": "700416",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.30 0.24 0.19 1/140 10124"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "dedicated2x4",
+      "cpu_class": "dedicated",
+      "size": "c-2",
+      "density": 1,
+      "phase": "steady",
+      "repetition": 1,
+      "sequence": 5,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:10:11Z",
+          "hosts": [
+            "http://10.142.0.4:42000"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 2.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 60,
+          "successes": 60,
+          "errors": 0,
+          "success_rps": 2.0,
+          "target_rps": 2.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.0014837379999335099,
+          "p95_seconds": 0.004011912000009943,
+          "p99_seconds": 0.004559739000001173,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0002541080000355578,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.4:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0014837379999335099,
+            "p95_seconds": 0.004011912000009943,
+            "p99_seconds": 0.004559739000001173,
+            "max_latency_seconds": 0.004600028000027123
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.008793624622148942,
+        "cpu_iowait_fraction": 0.00041220115416323167,
+        "cpu_steal_fraction": 0.0,
+        "application_cpu_cores": 0.0030159969649308045,
+        "disk_read_bytes": 397312,
+        "disk_write_bytes": 1716224,
+        "disk_busy_seconds": 0.033,
+        "disk_utilization": 0.0009283453021426784,
+        "page_faults": 25894,
+        "major_page_faults": 3,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 3688792064,
+        "memory_available_fraction": 0.8983677268179402,
+        "application_memory_current_bytes": 17080320,
+        "application_memory_peak_bytes": 17489920,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-dedicated2x4-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "17080320",
+            "MemoryPeak": "17489920",
+            "CPUUsageNSec": "137768000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4567040",
+            "IOWriteBytes": "155648",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.44 0.18 0.08 1/138 9908"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "dedicated2x4",
+      "cpu_class": "dedicated",
+      "size": "c-2",
+      "density": 1,
+      "phase": "burst",
+      "repetition": 1,
+      "sequence": 6,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T20:10:39Z",
+          "hosts": [
+            "http://10.142.0.4:42000"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 10.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 25024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 200,
+          "successes": 200,
+          "errors": 0,
+          "success_rps": 10.0,
+          "target_rps": 10.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.0012701569999080675,
+          "p95_seconds": 0.006659313999989536,
+          "p99_seconds": 0.06802155899993068,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00024004899842111627,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.4:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0012701569999080675,
+            "p95_seconds": 0.006659313999989536,
+            "p99_seconds": 0.06802155899993068,
+            "max_latency_seconds": 0.06857611899999938
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.024004364429896344,
+        "cpu_iowait_fraction": 0.0014548099654482633,
+        "cpu_steal_fraction": 0.0001818512456810329,
+        "application_cpu_cores": 0.01708122218999277,
+        "disk_read_bytes": 0,
+        "disk_write_bytes": 3219456,
+        "disk_busy_seconds": 0.085,
+        "disk_utilization": 0.0032325302371778624,
+        "page_faults": 33214,
+        "major_page_faults": 1,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 3660734464,
+        "memory_available_fraction": 0.8915345841808259,
+        "application_memory_current_bytes": 20799488,
+        "application_memory_peak_bytes": 21291008,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-dedicated2x4-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20799488",
+            "MemoryPeak": "21291008",
+            "CPUUsageNSec": "586922000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4567040",
+            "IOWriteBytes": "700416",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.29 0.16 0.08 1/139 10124"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "micro": {
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "price_monthly": 4.0,
+      "price_hourly": 0.00595,
+      "highest_healthy_density": 1,
+      "monthly_cost_per_healthy_app": 4.0,
+      "hourly_cost_per_healthy_app": 0.00595,
+      "densities": {
+        "1": {
+          "passed": true,
+          "trial_count": 2,
+          "expected_trial_count": 2,
+          "failure_reasons": [
+
+          ],
+          "phases": {
+            "steady": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 2.0,
+                "median": 2.0,
+                "mean": 2.0,
+                "max": 2.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.010590535999995154,
+                "median": 0.010590535999995154,
+                "mean": 0.010590535999995154,
+                "max": 0.010590535999995154,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.0,
+                "median": 0.0,
+                "mean": 0.0,
+                "max": 0.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 277123072,
+                "median": 277123072,
+                "mean": 277123072.0,
+                "max": 277123072,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            },
+            "burst": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 10.0,
+                "median": 10.0,
+                "mean": 10.0,
+                "max": 10.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.07956139999998868,
+                "median": 0.07956139999998868,
+                "mean": 0.07956139999998868,
+                "max": 0.07956139999998868,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.0003687315634218289,
+                "median": 0.0003687315634218289,
+                "mean": 0.0003687315634218289,
+                "max": 0.0003687315634218289,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 305750016,
+                "median": 305750016,
+                "mean": 305750016.0,
+                "max": 305750016,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "shared2x4": {
+      "cpu_class": "shared",
+      "size": "s-2vcpu-4gb",
+      "price_monthly": 24.0,
+      "price_hourly": 0.03571,
+      "highest_healthy_density": 1,
+      "monthly_cost_per_healthy_app": 24.0,
+      "hourly_cost_per_healthy_app": 0.03571,
+      "densities": {
+        "1": {
+          "passed": true,
+          "trial_count": 2,
+          "expected_trial_count": 2,
+          "failure_reasons": [
+
+          ],
+          "phases": {
+            "steady": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 2.0,
+                "median": 2.0,
+                "mean": 2.0,
+                "max": 2.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.0057546020000245335,
+                "median": 0.0057546020000245335,
+                "mean": 0.0057546020000245335,
+                "max": 0.0057546020000245335,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.002028397565922921,
+                "median": 0.002028397565922921,
+                "mean": 0.002028397565922921,
+                "max": 0.002028397565922921,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 3708833792,
+                "median": 3708833792,
+                "mean": 3708833792.0,
+                "max": 3708833792,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            },
+            "burst": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 10.0,
+                "median": 10.0,
+                "mean": 10.0,
+                "max": 10.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.08035336499995083,
+                "median": 0.08035336499995083,
+                "mean": 0.08035336499995083,
+                "max": 0.08035336499995083,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.01039647577092511,
+                "median": 0.01039647577092511,
+                "mean": 0.01039647577092511,
+                "max": 0.01039647577092511,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 3667042304,
+                "median": 3667042304,
+                "mean": 3667042304.0,
+                "max": 3667042304,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "dedicated2x4": {
+      "cpu_class": "dedicated",
+      "size": "c-2",
+      "price_monthly": 42.0,
+      "price_hourly": 0.0625,
+      "highest_healthy_density": 1,
+      "monthly_cost_per_healthy_app": 42.0,
+      "hourly_cost_per_healthy_app": 0.0625,
+      "densities": {
+        "1": {
+          "passed": true,
+          "trial_count": 2,
+          "expected_trial_count": 2,
+          "failure_reasons": [
+
+          ],
+          "phases": {
+            "steady": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 2.0,
+                "median": 2.0,
+                "mean": 2.0,
+                "max": 2.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.004559739000001173,
+                "median": 0.004559739000001173,
+                "mean": 0.004559739000001173,
+                "max": 0.004559739000001173,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.0,
+                "median": 0.0,
+                "mean": 0.0,
+                "max": 0.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 3688792064,
+                "median": 3688792064,
+                "mean": 3688792064.0,
+                "max": 3688792064,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            },
+            "burst": {
+              "requests_per_second": {
+                "count": 1,
+                "min": 10.0,
+                "median": 10.0,
+                "mean": 10.0,
+                "max": 10.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 1,
+                "min": 0.06802155899993068,
+                "median": 0.06802155899993068,
+                "mean": 0.06802155899993068,
+                "max": 0.06802155899993068,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "attainment": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 1,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 1,
+                "min": 0.0001818512456810329,
+                "median": 0.0001818512456810329,
+                "mean": 0.0001818512456810329,
+                "max": 0.0001818512456810329,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "memory_available_bytes": {
+                "count": 1,
+                "min": 3660734464,
+                "median": 3660734464,
+                "mean": 3660734464.0,
+                "max": 3660734464,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

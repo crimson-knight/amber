@@ -1,0 +1,1181 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-18T23:23:21Z",
+    "experiment": "Amber V2 shared-versus-dedicated demo density Round 24",
+    "route_count_per_app": 1000,
+    "users_per_app": 10000,
+    "resources_per_app": 1000000,
+    "database_bytes_per_app": 483098624,
+    "database": "private SQLite WAL with synchronous=FULL",
+    "steady_rps_per_app": 2.0,
+    "burst_rps_per_app": 10.0,
+    "capacity_gate": "zero errors, at least 95% attainment, fair service, steady p99 <=250 ms, burst p99 <=1,000 ms, no OOM/swap, and at least 5% memory available",
+    "capacity_trial_count": 216,
+    "smoke_trial_count": 6,
+    "integrity_databases_checked": 90,
+    "integrity_failures": 0,
+    "request_errors": 0,
+    "oom_kills": 0,
+    "gate_failure_trials": 3,
+    "evidence_files": {
+      "primary": "round24_digitalocean_demo_density.json",
+      "shared_boundary_confirmation": "round24_shared_boundary_confirmation.json",
+      "shared_extended_capacity": "round24_shared_extended_capacity.json",
+      "shared_frontier_capacity": "round24_shared_frontier_capacity.json",
+      "shared_frontier_refinement": "round24_shared_frontier_refinement.json",
+      "dedicated_boundary_confirmation": "round24_dedicated_boundary_confirmation.json",
+      "micro_boundary_confirmation": "round24_micro_boundary_confirmation.json"
+    }
+  },
+  "plans": {
+    "micro": {
+      "size": "s-1vcpu-512mb-10gb",
+      "cpu_class": "shared",
+      "vcpus": 1,
+      "memory_mb": 512,
+      "disk_gb": 10,
+      "price_monthly": 4.0,
+      "price_hourly": 0.00595,
+      "healthy_apps": 10,
+      "monthly_cost_per_healthy_app": 0.4,
+      "recommended_apps": 8,
+      "monthly_cost_per_recommended_app": 0.5,
+      "operating_headroom_fraction": 0.19999999999999996,
+      "first_failed_density": 12,
+      "limiter": "storage reserve",
+      "limit_evidence": "density 12 stopped before traffic when another 483,098,624-byte database would violate the 1 GiB disk reserve",
+      "boundary_metrics": {
+        "steady": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 20.0,
+            "median": 20.0,
+            "mean": 20.0,
+            "max": 20.0
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 83.29023999976926,
+            "median": 83.78927400008251,
+            "mean": 83.99286420008139,
+            "max": 85.0374700003158
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.0,
+            "median": 0.05305039787798408,
+            "mean": 0.042298666660241326,
+            "max": 0.07851347814708191
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 8.056745182012847,
+            "median": 8.823529411764707,
+            "mean": 8.834433119377602,
+            "max": 9.8403559277676
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 0.4014989293361884,
+            "median": 0.6951871657754011,
+            "mean": 0.6367769889843407,
+            "max": 0.7589636220884586
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 144.41015625,
+            "median": 158.33984375,
+            "mean": 166.1640625,
+            "max": 194.796875
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 132.859375,
+            "median": 187.9609375,
+            "mean": 176.93828125,
+            "max": 212.48828125
+          }
+        },
+        "burst": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 100.0,
+            "median": 100.0,
+            "mean": 100.2,
+            "max": 100.5
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 82.82458699977724,
+            "median": 83.7829220004096,
+            "mean": 84.03067140015992,
+            "max": 86.0599750012625
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.002,
+            "max": 1.005
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.03557452863749555,
+            "median": 0.10474860335195531,
+            "mean": 0.1327389148065897,
+            "max": 0.3472222222222222
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 24.7954464603344,
+            "median": 26.33788037775446,
+            "mean": 26.324715828223237,
+            "max": 28.333333333333332
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 2.134471718249733,
+            "median": 2.588317593564183,
+            "mean": 2.8518585413232485,
+            "max": 4.479166666666667
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 145.00390625,
+            "median": 148.08984375,
+            "mean": 151.7421875,
+            "max": 160.234375
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 186.703125,
+            "median": 197.16796875,
+            "mean": 197.8421875,
+            "max": 209.34765625
+          }
+        }
+      }
+    },
+    "shared2x4": {
+      "size": "s-2vcpu-4gb",
+      "cpu_class": "shared",
+      "vcpus": 2,
+      "memory_mb": 4096,
+      "disk_gb": 80,
+      "price_monthly": 24.0,
+      "price_hourly": 0.03571,
+      "healthy_apps": 80,
+      "monthly_cost_per_healthy_app": 0.3,
+      "recommended_apps": 64,
+      "monthly_cost_per_recommended_app": 0.375,
+      "operating_headroom_fraction": 0.19999999999999996,
+      "first_failed_density": 84,
+      "limiter": "burst p99 latency",
+      "limit_evidence": "one of three density-84 bursts reached 1,058 ms p99; the other two reached 584 ms and 204 ms, with zero request errors",
+      "boundary_metrics": {
+        "steady": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 160.0,
+            "median": 160.0,
+            "mean": 160.0,
+            "max": 160.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 100.26843699961319,
+            "median": 101.51280199897883,
+            "mean": 104.5559106660221,
+            "max": 111.88649299947429
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.14563106796116504,
+            "median": 0.14623446258835,
+            "mean": 0.14999263732174298,
+            "max": 0.15811238141571393
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 25.097087378640776,
+            "median": 25.420424079941505,
+            "mean": 26.167800989721215,
+            "max": 27.985891510581368
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 0.36558615647087495,
+            "median": 0.40048543689320387,
+            "mean": 0.510769506228795,
+            "max": 0.766236925322306
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2296.34765625,
+            "median": 2297.30859375,
+            "mean": 2396.3489583333335,
+            "max": 2595.390625
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 1037.7421875,
+            "median": 1729.5703125,
+            "mean": 1502.7786458333333,
+            "max": 1741.0234375
+          }
+        },
+        "burst": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 800.0,
+            "median": 800.0,
+            "mean": 800.0,
+            "max": 800.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 194.0413209995313,
+            "median": 229.6210290005547,
+            "mean": 244.64907900013108,
+            "max": 310.2848870003072
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.12560841576385617,
+            "median": 0.4611959287531806,
+            "mean": 1.1616406872919551,
+            "max": 2.898117717358829
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 83.56737376755304,
+            "median": 85.71882951653944,
+            "mean": 85.03605111824906,
+            "max": 85.82195007065472
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 0.6437431307897629,
+            "median": 1.34448760083657,
+            "mean": 1.1822516348847742,
+            "max": 1.55852417302799
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2293.6796875,
+            "median": 2296.828125,
+            "mean": 2296.87890625,
+            "max": 2300.12890625
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 1565.3359375,
+            "median": 1717.2265625,
+            "mean": 1725.2083333333333,
+            "max": 1893.0625
+          }
+        }
+      }
+    },
+    "dedicated2x4": {
+      "size": "c-2",
+      "cpu_class": "dedicated",
+      "vcpus": 2,
+      "memory_mb": 4096,
+      "disk_gb": 25,
+      "price_monthly": 42.0,
+      "price_hourly": 0.0625,
+      "healthy_apps": 40,
+      "monthly_cost_per_healthy_app": 1.05,
+      "recommended_apps": 32,
+      "monthly_cost_per_recommended_app": 1.3125,
+      "operating_headroom_fraction": 0.19999999999999996,
+      "first_failed_density": 44,
+      "limiter": "storage reserve",
+      "limit_evidence": "density 44 stopped before traffic when another 483,098,624-byte database would violate the 1 GiB disk reserve",
+      "boundary_metrics": {
+        "steady": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 80.0,
+            "median": 80.0,
+            "mean": 80.0,
+            "max": 80.0
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 74.9696530001529,
+            "median": 75.33685599992168,
+            "mean": 76.28124179991573,
+            "max": 78.54647400017711
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.0,
+            "median": 0.013051422605063952,
+            "mean": 0.007834263382216782,
+            "max": 0.013065064018813691
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 11.602714695901852,
+            "median": 12.013996889580094,
+            "mean": 12.284639572204899,
+            "max": 12.94747844264437
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 0.3758424053913945,
+            "median": 0.6006389776357828,
+            "mean": 0.5609291104416109,
+            "max": 0.7708387771100078
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 2856.28125,
+            "median": 2933.01953125,
+            "mean": 2962.2703125,
+            "max": 3093.8984375
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 496.1171875,
+            "median": 831.2109375,
+            "mean": 735.4609375,
+            "max": 911.23828125
+          }
+        },
+        "burst": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 400.0,
+            "median": 400.0,
+            "mean": 400.0,
+            "max": 400.0
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 75.62069200139376,
+            "median": 76.05748800051515,
+            "mean": 76.23376100018504,
+            "max": 76.93195799947716
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.0,
+            "max": 0.0
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 38.65094503207907,
+            "median": 39.277573207084,
+            "mean": 39.55534597587748,
+            "max": 40.694614979828096
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 1.9941043870296513,
+            "median": 2.2310619162919405,
+            "mean": 2.267948271136743,
+            "max": 2.596035783195931
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 2853.796875,
+            "median": 2922.0625,
+            "mean": 2906.15859375,
+            "max": 2939.7265625
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 754.0546875,
+            "median": 825.703125,
+            "mean": 858.5984375,
+            "max": 992.98828125
+          }
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "cost_winner": "shared2x4",
+    "shared_cost_savings_vs_micro": 0.2500000000000001,
+    "dedicated_cost_premium_vs_shared": 2.5000000000000004,
+    "equal_resource_density_40": {
+      "shared2x4": {
+        "steady": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 80.0,
+            "median": 80.0,
+            "mean": 80.0,
+            "max": 80.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 91.24443300061102,
+            "median": 92.35054599957948,
+            "mean": 95.92969633376924,
+            "max": 104.19411000111722
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.051672910476682606,
+            "median": 0.06294058408862034,
+            "mean": 0.08944056838185048,
+            "max": 0.1537082105802485
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 13.795311899577303,
+            "median": 13.912931145846791,
+            "mean": 14.531482156463957,
+            "max": 15.886203423967773
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 0.8056394763343404,
+            "median": 2.066916419067304,
+            "mean": 1.9694310181205175,
+            "max": 3.035737158959908
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2896.4921875,
+            "median": 2897.48828125,
+            "mean": 2933.97265625,
+            "max": 3007.9375
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 525.2421875,
+            "median": 879.84765625,
+            "mean": 763.5546875,
+            "max": 885.57421875
+          }
+        },
+        "burst": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 400.0,
+            "median": 400.0,
+            "mean": 400.0,
+            "max": 400.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 94.5869089991902,
+            "median": 130.84800000069663,
+            "mean": 124.97552833337977,
+            "max": 149.49167600025248
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.205620287868403,
+            "median": 0.8567511994516792,
+            "mean": 1.9642122150775323,
+            "max": 4.830265157912515
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 44.41398217957505,
+            "median": 46.88142563399589,
+            "mean": 47.09002475168347,
+            "max": 49.974666441479485
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 7.128169979437972,
+            "median": 7.549400439115014,
+            "mean": 7.82832424963875,
+            "max": 8.807402330363262
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2892.3046875,
+            "median": 2892.61328125,
+            "mean": 2894.0963541666665,
+            "max": 2897.37109375
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 800.41796875,
+            "median": 874.09375,
+            "mean": 878.609375,
+            "max": 961.31640625
+          }
+        }
+      },
+      "dedicated2x4": {
+        "steady": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 80.0,
+            "median": 80.0,
+            "mean": 80.0,
+            "max": 80.0
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 74.9696530001529,
+            "median": 75.33685599992168,
+            "mean": 76.28124179991573,
+            "max": 78.54647400017711
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.0,
+            "median": 0.013051422605063952,
+            "mean": 0.007834263382216782,
+            "max": 0.013065064018813691
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 11.602714695901852,
+            "median": 12.013996889580094,
+            "mean": 12.284639572204899,
+            "max": 12.94747844264437
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 0.3758424053913945,
+            "median": 0.6006389776357828,
+            "mean": 0.5609291104416109,
+            "max": 0.7708387771100078
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 2856.28125,
+            "median": 2933.01953125,
+            "mean": 2962.2703125,
+            "max": 3093.8984375
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 496.1171875,
+            "median": 831.2109375,
+            "mean": 735.4609375,
+            "max": 911.23828125
+          }
+        },
+        "burst": {
+          "trial_count": 5,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 5,
+            "min": 400.0,
+            "median": 400.0,
+            "mean": 400.0,
+            "max": 400.0
+          },
+          "p99_milliseconds": {
+            "count": 5,
+            "min": 75.62069200139376,
+            "median": 76.05748800051515,
+            "mean": 76.23376100018504,
+            "max": 76.93195799947716
+          },
+          "attainment": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 5,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 5,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.0,
+            "max": 0.0
+          },
+          "target_cpu_percent": {
+            "count": 5,
+            "min": 38.65094503207907,
+            "median": 39.277573207084,
+            "mean": 39.55534597587748,
+            "max": 40.694614979828096
+          },
+          "iowait_percent": {
+            "count": 5,
+            "min": 1.9941043870296513,
+            "median": 2.2310619162919405,
+            "mean": 2.267948271136743,
+            "max": 2.596035783195931
+          },
+          "memory_available_mebibytes": {
+            "count": 5,
+            "min": 2853.796875,
+            "median": 2922.0625,
+            "mean": 2906.15859375,
+            "max": 2939.7265625
+          },
+          "application_memory_mebibytes": {
+            "count": 5,
+            "min": 754.0546875,
+            "median": 825.703125,
+            "mean": 858.5984375,
+            "max": 992.98828125
+          }
+        }
+      }
+    },
+    "shared_density_36_variance": {
+      "original": {
+        "steady": {
+          "trial_count": 2,
+          "gate_failures": 1,
+          "success_rps": {
+            "count": 2,
+            "min": 72.0,
+            "median": 72.0,
+            "mean": 72.0,
+            "max": 72.0
+          },
+          "p99_milliseconds": {
+            "count": 2,
+            "min": 97.85085400017124,
+            "median": 227.76440300003742,
+            "mean": 227.76440300003742,
+            "max": 357.6779519999036
+          },
+          "attainment": {
+            "count": 2,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 2,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 2,
+            "min": 0.296544610624033,
+            "median": 0.3730635705657095,
+            "mean": 0.3730635705657095,
+            "max": 0.44958253050738595
+          },
+          "target_cpu_percent": {
+            "count": 2,
+            "min": 12.626846499678871,
+            "median": 13.353134441175175,
+            "mean": 13.353134441175175,
+            "max": 14.079422382671481
+          },
+          "iowait_percent": {
+            "count": 2,
+            "min": 1.4182568334192882,
+            "median": 4.408550382027563,
+            "mean": 4.408550382027563,
+            "max": 7.398843930635839
+          },
+          "memory_available_mebibytes": {
+            "count": 2,
+            "min": 2944.88671875,
+            "median": 3013.236328125,
+            "mean": 3013.236328125,
+            "max": 3081.5859375
+          },
+          "application_memory_mebibytes": {
+            "count": 2,
+            "min": 447.96875,
+            "median": 599.251953125,
+            "mean": 599.251953125,
+            "max": 750.53515625
+          }
+        },
+        "burst": {
+          "trial_count": 2,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 2,
+            "min": 360.0,
+            "median": 360.0,
+            "mean": 360.0,
+            "max": 360.0
+          },
+          "p99_milliseconds": {
+            "count": 2,
+            "min": 173.89471999922534,
+            "median": 236.15984349953578,
+            "mean": 236.15984349953578,
+            "max": 298.4249669998462
+          },
+          "attainment": {
+            "count": 2,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 2,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 2,
+            "min": 0.187809458767287,
+            "median": 0.8941714849688386,
+            "mean": 0.8941714849688386,
+            "max": 1.6005335111703902
+          },
+          "target_cpu_percent": {
+            "count": 2,
+            "min": 41.676626259177056,
+            "median": 43.3208072943101,
+            "mean": 43.3208072943101,
+            "max": 44.964988329443145
+          },
+          "iowait_percent": {
+            "count": 2,
+            "min": 12.604201400466822,
+            "median": 14.138877206977478,
+            "mean": 14.138877206977478,
+            "max": 15.673553013488133
+          },
+          "memory_available_mebibytes": {
+            "count": 2,
+            "min": 2914.953125,
+            "median": 2929.6015625,
+            "mean": 2929.6015625,
+            "max": 2944.25
+          },
+          "application_memory_mebibytes": {
+            "count": 2,
+            "min": 683.09765625,
+            "median": 714.416015625,
+            "mean": 714.416015625,
+            "max": 745.734375
+          }
+        }
+      },
+      "confirmation": {
+        "steady": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 72.0,
+            "median": 72.0,
+            "mean": 72.0,
+            "max": 72.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 86.32181900065916,
+            "median": 86.9684210010746,
+            "mean": 89.2539136675623,
+            "max": 94.47150100095314
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.08997429305912596,
+            "median": 0.14254243877154335,
+            "mean": 0.2154603970734064,
+            "max": 0.4138644593895499
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 12.416452442159382,
+            "median": 12.478942594272386,
+            "mean": 12.928573651564513,
+            "max": 13.89032591826177
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 0.41466891278994433,
+            "median": 0.4498714652956298,
+            "mean": 0.7279111141299216,
+            "max": 1.3191929643041904
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2992.375,
+            "median": 2995.71484375,
+            "mean": 3040.09765625,
+            "max": 3132.203125
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 449.27734375,
+            "median": 770.546875,
+            "mean": 665.0703125,
+            "max": 775.38671875
+          }
+        },
+        "burst": {
+          "trial_count": 3,
+          "gate_failures": 0,
+          "success_rps": {
+            "count": 3,
+            "min": 360.0,
+            "median": 360.0,
+            "mean": 360.0,
+            "max": 360.0
+          },
+          "p99_milliseconds": {
+            "count": 3,
+            "min": 88.67952899890952,
+            "median": 102.19417999906,
+            "mean": 99.41005466619875,
+            "max": 107.35645500062674
+          },
+          "attainment": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "fairness": {
+            "count": 3,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.0,
+            "max": 1.0
+          },
+          "cpu_steal_percent": {
+            "count": 3,
+            "min": 0.29069767441860467,
+            "median": 0.4791238877481177,
+            "mean": 0.8582919045970904,
+            "max": 1.8050541516245486
+          },
+          "target_cpu_percent": {
+            "count": 3,
+            "min": 41.51266255989049,
+            "median": 43.07455540355677,
+            "mean": 42.67628484862602,
+            "max": 43.4416365824308
+          },
+          "iowait_percent": {
+            "count": 3,
+            "min": 2.2073921971252566,
+            "median": 4.641567818463126,
+            "mean": 3.856174086363478,
+            "max": 4.719562243502052
+          },
+          "memory_available_mebibytes": {
+            "count": 3,
+            "min": 2991.4140625,
+            "median": 2993.73828125,
+            "mean": 2993.94140625,
+            "max": 2996.671875
+          },
+          "application_memory_mebibytes": {
+            "count": 3,
+            "min": 697.0859375,
+            "median": 765.5234375,
+            "mean": 768.4127604166666,
+            "max": 842.62890625
+          }
+        }
+      },
+      "interpretation": "one original steady trial exceeded 250 ms p99; all six confirmation trials passed, so exploration continued"
+    },
+    "shared_density_84_failure": {
+      "steady": {
+        "trial_count": 3,
+        "gate_failures": 0,
+        "success_rps": {
+          "count": 3,
+          "min": 168.0,
+          "median": 168.0,
+          "mean": 168.0,
+          "max": 168.0
+        },
+        "p99_milliseconds": {
+          "count": 3,
+          "min": 101.4002639985847,
+          "median": 104.8399020000943,
+          "mean": 106.29728133305132,
+          "max": 112.65167800047493
+        },
+        "attainment": {
+          "count": 3,
+          "min": 1.0,
+          "median": 1.0,
+          "mean": 1.0,
+          "max": 1.0
+        },
+        "fairness": {
+          "count": 3,
+          "min": 1.0,
+          "median": 1.0,
+          "mean": 1.0,
+          "max": 1.0
+        },
+        "cpu_steal_percent": {
+          "count": 3,
+          "min": 0.09707559762164786,
+          "median": 0.18148820326678766,
+          "mean": 0.3403003218797978,
+          "max": 0.7423371647509579
+        },
+        "target_cpu_percent": {
+          "count": 3,
+          "min": 26.32788868723533,
+          "median": 26.424808429118773,
+          "mean": 27.218985436066585,
+          "max": 28.90425919184565
+        },
+        "iowait_percent": {
+          "count": 3,
+          "min": 0.411373260738052,
+          "median": 0.4853779881082393,
+          "mean": 0.4745237240726463,
+          "max": 0.5268199233716475
+        },
+        "memory_available_mebibytes": {
+          "count": 3,
+          "min": 2251.66796875,
+          "median": 2252.265625,
+          "mean": 2356.84765625,
+          "max": 2566.609375
+        },
+        "application_memory_mebibytes": {
+          "count": 3,
+          "min": 1112.74609375,
+          "median": 1893.1796875,
+          "mean": 1636.8776041666667,
+          "max": 1904.70703125
+        }
+      },
+      "burst": {
+        "trial_count": 3,
+        "gate_failures": 1,
+        "success_rps": {
+          "count": 3,
+          "min": 840.0,
+          "median": 840.0,
+          "mean": 840.1666666666666,
+          "max": 840.5
+        },
+        "p99_milliseconds": {
+          "count": 3,
+          "min": 203.6596029993234,
+          "median": 584.3791079987568,
+          "mean": 615.4585806658966,
+          "max": 1058.3370309996099
+        },
+        "attainment": {
+          "count": 3,
+          "min": 1.0,
+          "median": 1.0,
+          "mean": 1.0001984126984127,
+          "max": 1.000595238095238
+        },
+        "fairness": {
+          "count": 3,
+          "min": 0.999994408617128,
+          "median": 1.0,
+          "mean": 0.9999981362057092,
+          "max": 1.0
+        },
+        "cpu_steal_percent": {
+          "count": 3,
+          "min": 0.2866626433313217,
+          "median": 0.308546744831842,
+          "mean": 0.7062516981781183,
+          "max": 1.5235457063711912
+        },
+        "target_cpu_percent": {
+          "count": 3,
+          "min": 86.54736192533169,
+          "median": 89.82763927362265,
+          "mean": 88.85604043183814,
+          "max": 90.19312009656005
+        },
+        "iowait_percent": {
+          "count": 3,
+          "min": 0.3922751961375981,
+          "median": 0.5091021289725394,
+          "mean": 0.5825972021424887,
+          "max": 0.8464142813173284
+        },
+        "memory_available_mebibytes": {
+          "count": 3,
+          "min": 2244.6953125,
+          "median": 2249.3671875,
+          "mean": 2250.8125,
+          "max": 2258.375
+        },
+        "application_memory_mebibytes": {
+          "count": 3,
+          "min": 1714.796875,
+          "median": 1881.171875,
+          "mean": 1888.3216145833333,
+          "max": 2068.99609375
+        }
+      }
+    }
+  }
+}

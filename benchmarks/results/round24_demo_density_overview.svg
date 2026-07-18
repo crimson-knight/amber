@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<rect width="1200" height="760" fill="#F5F0E6"/>
+<path d="M0 0H1200V18H0Z" fill="#173F3A"/>
+<text x="60" y="76" font-family="Georgia,serif" font-size="36" font-weight="700" fill="#173F3A">Amber demo hosting economics</text>
+<text x="60" y="114" font-family="Avenir Next,Helvetica,sans-serif" font-size="18" fill="#51625F">Shared CPU wins cost; dedicated CPU wins tail-latency predictability</text>
+<text x="80" y="148" font-family="Avenir Next,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#173F3A">Apps per host</text>
+<text x="650" y="148" font-family="Avenir Next,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#173F3A">Recommended monthly cost per app</text>
+<text x="80" y="178" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">$4 micro shared</text>
+<rect x="80" y="190" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="80" y="190" width="62.5" height="62" rx="8" fill="#D89720" opacity="0.35"/>
+<rect x="80" y="190" width="50.0" height="62" rx="8" fill="#D89720"/>
+<text x="94" y="229" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#173F3A">8 safe / 10 edge</text>
+<text x="650" y="178" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">$4 micro shared</text>
+<rect x="650" y="190" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="650" y="190" width="190.5" height="62" rx="8" fill="#D89720"/>
+<text x="664" y="229" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">$0.500</text>
+<text x="80" y="294" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">2 vCPU / 4 GB shared</text>
+<rect x="80" y="306" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="80" y="306" width="500.0" height="62" rx="8" fill="#1D7874" opacity="0.35"/>
+<rect x="80" y="306" width="400.0" height="62" rx="8" fill="#1D7874"/>
+<text x="94" y="345" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">64 safe / 80 edge</text>
+<text x="650" y="294" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">2 vCPU / 4 GB shared</text>
+<rect x="650" y="306" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="650" y="306" width="142.9" height="62" rx="8" fill="#1D7874"/>
+<text x="664" y="345" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">$0.375</text>
+<text x="80" y="410" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">2 vCPU / 4 GB dedicated</text>
+<rect x="80" y="422" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="80" y="422" width="250.0" height="62" rx="8" fill="#C55336" opacity="0.35"/>
+<rect x="80" y="422" width="200.0" height="62" rx="8" fill="#C55336"/>
+<text x="94" y="461" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">32 safe / 40 edge</text>
+<text x="650" y="410" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#354744">2 vCPU / 4 GB dedicated</text>
+<rect x="650" y="422" width="500" height="62" rx="8" fill="#E3DDD1"/>
+<rect x="650" y="422" width="500.0" height="62" rx="8" fill="#C55336"/>
+<text x="664" y="461" font-family="Avenir Next,Helvetica,sans-serif" font-size="21" font-weight="700" fill="#FFFFFF">$1.312</text>
+<line x1="60" y1="560" x2="1140" y2="560" stroke="#C9C0B1" stroke-width="1"/>
+<rect x="72" y="594" width="34" height="14" rx="3" fill="#1D7874"/>
+<text x="116" y="607" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#51625F">Recommended operating cap</text>
+<rect x="342" y="594" width="34" height="14" rx="3" fill="#1D7874" opacity="0.35"/>
+<text x="386" y="607" font-family="Avenir Next,Helvetica,sans-serif" font-size="15" fill="#51625F">Additional measured edge</text>
+<text x="60" y="655" font-family="Avenir Next,Helvetica,sans-serif" font-size="16" fill="#51625F">216 capacity trials, 6 smoke trials, 90 integrity checks, zero request errors, zero OOM kills.</text>
+<text x="60" y="689" font-family="Avenir Next,Helvetica,sans-serif" font-size="16" fill="#51625F">Workload per app: 1,000 routes, 1M rows, SQLite FULL, 2 RPS steady, 10 RPS burst.</text>
+<text x="60" y="730" font-family="Georgia,serif" font-size="16" font-style="italic" fill="#173F3A">Amber V2 performance research, Round 24</text>
+</svg>

@@ -1,0 +1,98 @@
+{
+  "created_at_utc": "2026-07-18T19:59:52Z",
+  "prefix": "amber-density-r24",
+  "region": "nyc3",
+  "vpc": {
+    "id": "bb53c51a-353a-4743-b308-7bb022b9a899",
+    "name": "amber-density-r24-vpc",
+    "ip_range": "10.142.0.0/20"
+  },
+  "ssh_fingerprint": "SHA256:hbncX5FggvjHLnf9oRKbo7xGNaQlUufcnNNKooz1HyE",
+  "resources": {
+    "targets": [
+      {
+        "id": 585711383,
+        "name": "amber-density-r24-micro",
+        "public_ip": "157.245.5.227",
+        "private_ip": "10.142.0.2",
+        "size": "s-1vcpu-512mb-10gb",
+        "region": "nyc3",
+        "label": "micro",
+        "cpu_class": "shared",
+        "vcpus": 1,
+        "memory_mb": 512,
+        "disk_gb": 10,
+        "price_monthly": 4,
+        "price_hourly": 0.00595
+      },
+      {
+        "id": 585711429,
+        "name": "amber-density-r24-shared2x4",
+        "public_ip": "134.122.13.252",
+        "private_ip": "10.142.0.3",
+        "size": "s-2vcpu-4gb",
+        "region": "nyc3",
+        "label": "shared2x4",
+        "cpu_class": "shared",
+        "vcpus": 2,
+        "memory_mb": 4096,
+        "disk_gb": 80,
+        "price_monthly": 24,
+        "price_hourly": 0.03571
+      },
+      {
+        "id": 585711505,
+        "name": "amber-density-r24-dedicated2x4",
+        "public_ip": "167.71.248.101",
+        "private_ip": "10.142.0.4",
+        "size": "c-2",
+        "region": "nyc3",
+        "label": "dedicated2x4",
+        "cpu_class": "dedicated",
+        "vcpus": 2,
+        "memory_mb": 4096,
+        "disk_gb": 25,
+        "price_monthly": 42,
+        "price_hourly": 0.0625
+      }
+    ],
+    "loadgen": {
+      "id": 585711562,
+      "name": "amber-density-r24-loadgen",
+      "public_ip": "167.172.228.35",
+      "private_ip": "10.142.0.5",
+      "size": "c-4",
+      "region": "nyc3",
+      "plan": {
+        "slug": "c-4",
+        "memory": 8192,
+        "vcpus": 4,
+        "disk": 50,
+        "price_monthly": 84,
+        "price_hourly": 0.125,
+        "regions": [
+          "ams3",
+          "blr1",
+          "lon1",
+          "nyc1",
+          "nyc3",
+          "sfo2",
+          "sgp1"
+        ],
+        "available": true,
+        "transfer": 5,
+        "description": "CPU-Optimized",
+        "disk_info": [
+          {
+            "type": "local",
+            "size": {
+              "amount": 50,
+              "unit": "gib"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "destroyed_at_utc": "2026-07-18T23:14:18Z"
+}

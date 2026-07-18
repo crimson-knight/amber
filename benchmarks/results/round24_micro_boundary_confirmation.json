@@ -1,0 +1,3974 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-18T23:09:20Z",
+    "source_commit": "ae3a400f6f3721116a060c29bbfb04431c95ea74",
+    "inventory": "amber-density-r24-inventory.json",
+    "region": "nyc3",
+    "route_count_per_app": 1000,
+    "users_per_app": 10000,
+    "resources_per_app": 1000000,
+    "database": "one private SQLite WAL database per app with synchronous=FULL",
+    "database_pool": "Grant pool capped at 8 connections and opened on demand",
+    "systemd_isolation": {
+      "CPUWeight": 100,
+      "CPUQuota": "100%",
+      "IOWeight": 100,
+      "MemoryHigh": "192M",
+      "MemoryMax": "256M",
+      "TasksMax": 128
+    },
+    "densities": [
+      10
+    ],
+    "repetitions": 3,
+    "phases": [
+      {
+        "name": "steady",
+        "rate_per_app": 2.0,
+        "warmup_seconds": 5.0,
+        "duration_seconds": 30.0,
+        "request_timeout_seconds": 5.0,
+        "minimum_attainment": 0.95,
+        "maximum_p99_seconds": 0.25,
+        "minimum_fairness": 0.95,
+        "minimum_memory_available_fraction": 0.05
+      },
+      {
+        "name": "burst",
+        "rate_per_app": 10.0,
+        "warmup_seconds": 5.0,
+        "duration_seconds": 20.0,
+        "request_timeout_seconds": 5.0,
+        "minimum_attainment": 0.95,
+        "maximum_p99_seconds": 1.0,
+        "minimum_fairness": 0.9,
+        "minimum_memory_available_fraction": 0.05
+      }
+    ],
+    "capacity_definition": "all phase repetitions pass request, latency, fairness, process, OOM, swap, and memory-reserve gates",
+    "load_generator": {
+      "size": "c-4",
+      "region": "nyc3",
+      "cpu": {
+        "lscpu": [
+          {
+            "field": "Architecture:",
+            "data": "x86_64"
+          },
+          {
+            "field": "CPU op-mode(s):",
+            "data": "32-bit, 64-bit"
+          },
+          {
+            "field": "Address sizes:",
+            "data": "40 bits physical, 48 bits virtual"
+          },
+          {
+            "field": "Byte Order:",
+            "data": "Little Endian"
+          },
+          {
+            "field": "CPU(s):",
+            "data": "4"
+          },
+          {
+            "field": "On-line CPU(s) list:",
+            "data": "0-3"
+          },
+          {
+            "field": "Vendor ID:",
+            "data": "GenuineIntel"
+          },
+          {
+            "field": "BIOS Vendor ID:",
+            "data": "QEMU"
+          },
+          {
+            "field": "Model name:",
+            "data": "Intel(R) Xeon(R) Platinum 8168 CPU @ 2.70GHz"
+          },
+          {
+            "field": "BIOS Model name:",
+            "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+          },
+          {
+            "field": "BIOS CPU family:",
+            "data": "1"
+          },
+          {
+            "field": "CPU family:",
+            "data": "6"
+          },
+          {
+            "field": "Model:",
+            "data": "85"
+          },
+          {
+            "field": "Thread(s) per core:",
+            "data": "1"
+          },
+          {
+            "field": "Core(s) per socket:",
+            "data": "4"
+          },
+          {
+            "field": "Socket(s):",
+            "data": "1"
+          },
+          {
+            "field": "Stepping:",
+            "data": "4"
+          },
+          {
+            "field": "BogoMIPS:",
+            "data": "5387.33"
+          },
+          {
+            "field": "Flags:",
+            "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 arat vnmi pku ospke md_clear"
+          },
+          {
+            "field": "Virtualization:",
+            "data": "VT-x"
+          },
+          {
+            "field": "Hypervisor vendor:",
+            "data": "KVM"
+          },
+          {
+            "field": "Virtualization type:",
+            "data": "full"
+          },
+          {
+            "field": "L1d cache:",
+            "data": "128 KiB (4 instances)"
+          },
+          {
+            "field": "L1i cache:",
+            "data": "128 KiB (4 instances)"
+          },
+          {
+            "field": "L2 cache:",
+            "data": "16 MiB (4 instances)"
+          },
+          {
+            "field": "NUMA node(s):",
+            "data": "1"
+          },
+          {
+            "field": "NUMA node0 CPU(s):",
+            "data": "0-3"
+          },
+          {
+            "field": "Vulnerability Gather data sampling:",
+            "data": "Unknown: Dependent on hypervisor status"
+          },
+          {
+            "field": "Vulnerability Indirect target selection:",
+            "data": "Mitigation; Aligned branch/return thunks"
+          },
+          {
+            "field": "Vulnerability Itlb multihit:",
+            "data": "KVM: Mitigation: VMX disabled"
+          },
+          {
+            "field": "Vulnerability L1tf:",
+            "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+          },
+          {
+            "field": "Vulnerability Mds:",
+            "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+          },
+          {
+            "field": "Vulnerability Meltdown:",
+            "data": "Mitigation; PTI"
+          },
+          {
+            "field": "Vulnerability Mmio stale data:",
+            "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+          },
+          {
+            "field": "Vulnerability Reg file data sampling:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Retbleed:",
+            "data": "Mitigation; IBRS"
+          },
+          {
+            "field": "Vulnerability Spec rstack overflow:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Spec store bypass:",
+            "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+          },
+          {
+            "field": "Vulnerability Spectre v1:",
+            "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+          },
+          {
+            "field": "Vulnerability Spectre v2:",
+            "data": "Mitigation; IBRS; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI SW loop, KVM SW loop"
+          },
+          {
+            "field": "Vulnerability Srbds:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Tsa:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Tsx async abort:",
+            "data": "Not affected"
+          },
+          {
+            "field": "Vulnerability Vmscape:",
+            "data": "Not affected"
+          }
+        ]
+      },
+      "kernel": "Linux amber-density-r24-loadgen 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux"
+    },
+    "targets": [
+      {
+        "label": "micro",
+        "cpu_class": "shared",
+        "size": "s-1vcpu-512mb-10gb",
+        "vcpus": 1,
+        "memory_mb": 512,
+        "disk_gb": 10,
+        "price_monthly": 4,
+        "price_hourly": 0.00595,
+        "hardware": {
+          "cpu": {
+            "lscpu": [
+              {
+                "field": "Architecture:",
+                "data": "x86_64"
+              },
+              {
+                "field": "CPU op-mode(s):",
+                "data": "32-bit, 64-bit"
+              },
+              {
+                "field": "Address sizes:",
+                "data": "40 bits physical, 48 bits virtual"
+              },
+              {
+                "field": "Byte Order:",
+                "data": "Little Endian"
+              },
+              {
+                "field": "CPU(s):",
+                "data": "1"
+              },
+              {
+                "field": "On-line CPU(s) list:",
+                "data": "0"
+              },
+              {
+                "field": "Vendor ID:",
+                "data": "GenuineIntel"
+              },
+              {
+                "field": "BIOS Vendor ID:",
+                "data": "QEMU"
+              },
+              {
+                "field": "Model name:",
+                "data": "DO-Regular"
+              },
+              {
+                "field": "BIOS Model name:",
+                "data": "pc-i440fx-6.1  CPU @ 2.0GHz"
+              },
+              {
+                "field": "BIOS CPU family:",
+                "data": "1"
+              },
+              {
+                "field": "CPU family:",
+                "data": "6"
+              },
+              {
+                "field": "Model:",
+                "data": "79"
+              },
+              {
+                "field": "Thread(s) per core:",
+                "data": "1"
+              },
+              {
+                "field": "Core(s) per socket:",
+                "data": "1"
+              },
+              {
+                "field": "Socket(s):",
+                "data": "1"
+              },
+              {
+                "field": "Stepping:",
+                "data": "1"
+              },
+              {
+                "field": "BogoMIPS:",
+                "data": "4589.21"
+              },
+              {
+                "field": "Flags:",
+                "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap xsaveopt arat vnmi md_clear"
+              },
+              {
+                "field": "Virtualization:",
+                "data": "VT-x"
+              },
+              {
+                "field": "Hypervisor vendor:",
+                "data": "KVM"
+              },
+              {
+                "field": "Virtualization type:",
+                "data": "full"
+              },
+              {
+                "field": "L1d cache:",
+                "data": "32 KiB (1 instance)"
+              },
+              {
+                "field": "L1i cache:",
+                "data": "32 KiB (1 instance)"
+              },
+              {
+                "field": "L2 cache:",
+                "data": "4 MiB (1 instance)"
+              },
+              {
+                "field": "NUMA node(s):",
+                "data": "1"
+              },
+              {
+                "field": "NUMA node0 CPU(s):",
+                "data": "0"
+              },
+              {
+                "field": "Vulnerability Gather data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Indirect target selection:",
+                "data": "Mitigation; Aligned branch/return thunks"
+              },
+              {
+                "field": "Vulnerability Itlb multihit:",
+                "data": "KVM: Mitigation: VMX disabled"
+              },
+              {
+                "field": "Vulnerability L1tf:",
+                "data": "Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled"
+              },
+              {
+                "field": "Vulnerability Mds:",
+                "data": "Mitigation; Clear CPU buffers; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Meltdown:",
+                "data": "Mitigation; PTI"
+              },
+              {
+                "field": "Vulnerability Mmio stale data:",
+                "data": "Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown"
+              },
+              {
+                "field": "Vulnerability Reg file data sampling:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Retbleed:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec rstack overflow:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Spec store bypass:",
+                "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+              },
+              {
+                "field": "Vulnerability Spectre v1:",
+                "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+              },
+              {
+                "field": "Vulnerability Spectre v2:",
+                "data": "Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline"
+              },
+              {
+                "field": "Vulnerability Srbds:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsa:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Tsx async abort:",
+                "data": "Not affected"
+              },
+              {
+                "field": "Vulnerability Vmscape:",
+                "data": "Not affected"
+              }
+            ]
+          },
+          "memory_bytes": 480497664,
+          "swap_bytes": 0,
+          "kernel": "Linux amber-density-r24-micro 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+          "disk": {
+            "blockdevices": [
+              {
+                "name": "vda",
+                "size": 10737418240,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null,
+                "children": [
+                  {
+                    "name": "vda1",
+                    "size": 9662610944,
+                    "type": "part",
+                    "mountpoints": [
+                      "/"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda14",
+                    "size": 4194304,
+                    "type": "part",
+                    "mountpoints": [
+                      null
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda15",
+                    "size": 111149056,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot/efi"
+                    ],
+                    "rota": true,
+                    "model": null
+                  },
+                  {
+                    "name": "vda16",
+                    "size": 957350400,
+                    "type": "part",
+                    "mountpoints": [
+                      "/boot"
+                    ],
+                    "rota": true,
+                    "model": null
+                  }
+                ]
+              },
+              {
+                "name": "vdb",
+                "size": 499712,
+                "type": "disk",
+                "mountpoints": [
+                  null
+                ],
+                "rota": true,
+                "model": null
+              }
+            ]
+          },
+          "fio": {
+            "fio version": "fio-3.36",
+            "timestamp": 1784416157,
+            "timestamp_ms": 1784416157862,
+            "time": "Sat Jul 18 23:09:17 2026",
+            "jobs": [
+              {
+                "jobname": "amber-r24-disk",
+                "groupid": 0,
+                "job_start": 1784416147839,
+                "error": 0,
+                "eta": 0,
+                "elapsed": 11,
+                "job options": {
+                  "name": "amber-r24-disk",
+                  "filename": "/opt/amber-density/seed/fio-probe.bin",
+                  "size": "128m",
+                  "direct": "1",
+                  "ioengine": "libaio",
+                  "rw": "randrw",
+                  "rwmixread": "70",
+                  "bs": "4k",
+                  "iodepth": "16",
+                  "runtime": "10"
+                },
+                "read": {
+                  "io_bytes": 1470558208,
+                  "io_kbytes": 1436092,
+                  "bw_bytes": 147041116,
+                  "bw": 143594,
+                  "iops": 35898.710129,
+                  "runtime": 10001,
+                  "total_ios": 359023,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 2817,
+                    "max": 1534140,
+                    "mean": 5519.069416,
+                    "stddev": 5588.499168,
+                    "N": 359023
+                  },
+                  "clat_ns": {
+                    "min": 76602,
+                    "max": 9034353,
+                    "mean": 323545.131223,
+                    "stddev": 138475.96639,
+                    "N": 359023,
+                    "percentile": {
+                      "1.000000": 175104,
+                      "5.000000": 203776,
+                      "10.000000": 220160,
+                      "20.000000": 242688,
+                      "30.000000": 259072,
+                      "40.000000": 276480,
+                      "50.000000": 292864,
+                      "60.000000": 317440,
+                      "70.000000": 346112,
+                      "80.000000": 382976,
+                      "90.000000": 448512,
+                      "95.000000": 514048,
+                      "99.000000": 790528,
+                      "99.500000": 1028096,
+                      "99.900000": 1499136,
+                      "99.950000": 1875968,
+                      "99.990000": 2703360
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 96921,
+                    "max": 9039315,
+                    "mean": 329064.200639,
+                    "stddev": 138474.96724,
+                    "N": 359023
+                  },
+                  "bw_min": 130872,
+                  "bw_max": 161792,
+                  "bw_agg": 100.0,
+                  "bw_mean": 144154.105263,
+                  "bw_dev": 11250.881832,
+                  "bw_samples": 19,
+                  "iops_min": 32718,
+                  "iops_max": 40448,
+                  "iops_mean": 36038.526316,
+                  "iops_stddev": 2812.720458,
+                  "iops_samples": 19
+                },
+                "write": {
+                  "io_bytes": 632266752,
+                  "io_kbytes": 617448,
+                  "bw_bytes": 63220353,
+                  "bw": 61738,
+                  "iops": 15434.656534,
+                  "runtime": 10001,
+                  "total_ios": 154362,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 3105,
+                    "max": 321867,
+                    "mean": 6098.755814,
+                    "stddev": 4635.058988,
+                    "N": 154362
+                  },
+                  "clat_ns": {
+                    "min": 55196,
+                    "max": 8604302,
+                    "mean": 262580.916482,
+                    "stddev": 123971.218151,
+                    "N": 154362,
+                    "percentile": {
+                      "1.000000": 128512,
+                      "5.000000": 152576,
+                      "10.000000": 166912,
+                      "20.000000": 187392,
+                      "30.000000": 201728,
+                      "40.000000": 218112,
+                      "50.000000": 234496,
+                      "60.000000": 254976,
+                      "70.000000": 280576,
+                      "80.000000": 317440,
+                      "90.000000": 378880,
+                      "95.000000": 440320,
+                      "99.000000": 675840,
+                      "99.500000": 954368,
+                      "99.900000": 1466368,
+                      "99.950000": 1777664,
+                      "99.990000": 2637824
+                    }
+                  },
+                  "lat_ns": {
+                    "min": 77953,
+                    "max": 8609947,
+                    "mean": 268679.672296,
+                    "stddev": 124065.934239,
+                    "N": 154362
+                  },
+                  "bw_min": 56392,
+                  "bw_max": 70912,
+                  "bw_agg": 100.0,
+                  "bw_mean": 61969.263158,
+                  "bw_dev": 5092.240206,
+                  "bw_samples": 19,
+                  "iops_min": 14098,
+                  "iops_max": 17728,
+                  "iops_mean": 15492.315789,
+                  "iops_stddev": 1273.060052,
+                  "iops_samples": 19
+                },
+                "trim": {
+                  "io_bytes": 0,
+                  "io_kbytes": 0,
+                  "bw_bytes": 0,
+                  "bw": 0,
+                  "iops": 0.0,
+                  "runtime": 0,
+                  "total_ios": 0,
+                  "short_ios": 0,
+                  "drop_ios": 0,
+                  "slat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "clat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  },
+                  "bw_min": 0,
+                  "bw_max": 0,
+                  "bw_agg": 0.0,
+                  "bw_mean": 0.0,
+                  "bw_dev": 0.0,
+                  "bw_samples": 0,
+                  "iops_min": 0,
+                  "iops_max": 0,
+                  "iops_mean": 0.0,
+                  "iops_stddev": 0.0,
+                  "iops_samples": 0
+                },
+                "sync": {
+                  "total_ios": 0,
+                  "lat_ns": {
+                    "min": 0,
+                    "max": 0,
+                    "mean": 0.0,
+                    "stddev": 0.0,
+                    "N": 0
+                  }
+                },
+                "job_runtime": 10000,
+                "usr_cpu": 12.09,
+                "sys_cpu": 31.43,
+                "ctx": 119834,
+                "majf": 0,
+                "minf": 26,
+                "iodepth_level": {
+                  "1": 0.1,
+                  "2": 0.1,
+                  "4": 0.1,
+                  "8": 0.1,
+                  "16": 99.997078,
+                  "32": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_submit": {
+                  "0": 0.0,
+                  "4": 100.0,
+                  "8": 0.0,
+                  "16": 0.0,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "iodepth_complete": {
+                  "0": 0.0,
+                  "4": 99.999805,
+                  "8": 0.0,
+                  "16": 0.1,
+                  "32": 0.0,
+                  "64": 0.0,
+                  ">=64": 0.0
+                },
+                "latency_ns": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0
+                },
+                "latency_us": {
+                  "2": 0.0,
+                  "4": 0.0,
+                  "10": 0.0,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.035451,
+                  "250": 34.490684,
+                  "500": 60.656038,
+                  "750": 3.77962,
+                  "1000": 0.530596
+                },
+                "latency_ms": {
+                  "2": 0.469433,
+                  "4": 0.035061,
+                  "10": 0.01,
+                  "20": 0.0,
+                  "50": 0.0,
+                  "100": 0.0,
+                  "250": 0.0,
+                  "500": 0.0,
+                  "750": 0.0,
+                  "1000": 0.0,
+                  "2000": 0.0,
+                  ">=2000": 0.0
+                },
+                "latency_depth": 16,
+                "latency_target": 0,
+                "latency_percentile": 100.0,
+                "latency_window": 0
+              }
+            ],
+            "disk_util": [
+              {
+                "name": "vda",
+                "read_ios": 352297,
+                "write_ios": 151650,
+                "read_sectors": 2818376,
+                "write_sectors": 1213880,
+                "read_merges": 0,
+                "write_merges": 5,
+                "read_ticks": 105216,
+                "write_ticks": 33434,
+                "in_queue": 138651,
+                "util": 57.463139
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "integrity_checks": {
+      "micro": {
+        "skipped": true,
+        "reason": "confirmation-only run"
+      }
+    },
+    "completed_at_utc": "2026-07-18T23:12:48Z"
+  },
+  "capacity_events": [
+    {
+      "target": "micro",
+      "density": 10,
+      "status": "passed",
+      "failure_reasons": [
+
+      ]
+    }
+  ],
+  "trials": [
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "steady",
+      "repetition": 1,
+      "sequence": 1,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:10:00Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 20.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 600,
+          "successes": 600,
+          "errors": 0,
+          "success_rps": 20.0,
+          "target_rps": 20.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.005768365001131315,
+          "p95_seconds": 0.016090398999949684,
+          "p99_seconds": 0.08421883200026059,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0018633050003700191,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.006145180001112749,
+            "p95_seconds": 0.013800709999486571,
+            "p99_seconds": 0.01563945700036129,
+            "max_latency_seconds": 0.01755136700012372
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 10,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 10
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00190296899927489,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.006634039998971275,
+            "p95_seconds": 0.017435816998840892,
+            "p99_seconds": 0.08208718300011242,
+            "max_latency_seconds": 0.08285790399895632
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 3,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 27
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0026727989989012713,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.006011272000250756,
+            "p95_seconds": 0.024666054001500015,
+            "p99_seconds": 0.08277881800131581,
+            "max_latency_seconds": 0.08323297399874718
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 4,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 44
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00198779799939075,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.005411763999290997,
+            "p95_seconds": 0.02043618400057312,
+            "p99_seconds": 0.08421883200026059,
+            "max_latency_seconds": 0.08665636800105858
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 44,
+              "read_uuid": 15,
+              "read_ulid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.001900090999697568,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.005205879999266472,
+            "p95_seconds": 0.0071305689998553135,
+            "p99_seconds": 0.010626827999658417,
+            "max_latency_seconds": 0.012786896999386954
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 27,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 8
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0025003979990287917,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.005664537999109598,
+            "p95_seconds": 0.012776411000231747,
+            "p99_seconds": 0.014543021999998018,
+            "max_latency_seconds": 0.02001522200043837
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 10,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002311185000507976,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.00637475599978643,
+            "p95_seconds": 0.012531960999695002,
+            "p99_seconds": 0.015695149000748643,
+            "max_latency_seconds": 0.016090398999949684
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 8,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 12
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002041746000031708,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.006665849999990314,
+            "p95_seconds": 0.017096132000006037,
+            "p99_seconds": 0.08382859099947382,
+            "max_latency_seconds": 0.0850434910007607
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 1,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 29
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021697960000892635,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.005945175998931518,
+            "p95_seconds": 0.02372832900073263,
+            "p99_seconds": 0.08734195699980773,
+            "max_latency_seconds": 0.09516405000067607
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 2,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 45,
+              "read_uuid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0025937720001820708,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.005225172999416827,
+            "p95_seconds": 0.021205588998782332,
+            "p99_seconds": 0.08430986599887547,
+            "max_latency_seconds": 0.08541929300008633
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.09228723404255319,
+        "cpu_iowait_fraction": 0.007446808510638298,
+        "cpu_steal_fraction": 0.0005319148936170213,
+        "application_cpu_cores": 0.06672931337933855,
+        "disk_read_bytes": 19648512,
+        "disk_write_bytes": 8568832,
+        "disk_busy_seconds": 0.705,
+        "disk_utilization": 0.01939540905988572,
+        "page_faults": 41887,
+        "major_page_faults": 5,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 194940928,
+        "memory_available_fraction": 0.4057062970445575,
+        "application_memory_current_bytes": 146903040,
+        "application_memory_peak_bytes": 149504000,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20287488",
+            "MemoryPeak": "20553728",
+            "CPUUsageNSec": "178841000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7614464",
+            "IOWriteBytes": "155648",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "15065088",
+            "MemoryPeak": "15327232",
+            "CPUUsageNSec": "326774000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "2101248",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "14692352",
+            "MemoryPeak": "14954496",
+            "CPUUsageNSec": "319643000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "1986560",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "13426688",
+            "MemoryPeak": "13692928",
+            "CPUUsageNSec": "315820000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "1593344",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "11653120",
+            "MemoryPeak": "11915264",
+            "CPUUsageNSec": "307926000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "1007616",
+            "IOWriteBytes": "245760",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "13926400",
+            "MemoryPeak": "14151680",
+            "CPUUsageNSec": "164401000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "1875968",
+            "IOWriteBytes": "53248",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "14934016",
+            "MemoryPeak": "15196160",
+            "CPUUsageNSec": "168069000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "2187264",
+            "IOWriteBytes": "200704",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "15122432",
+            "MemoryPeak": "15384576",
+            "CPUUsageNSec": "315187000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "2142208",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "14770176",
+            "MemoryPeak": "15036416",
+            "CPUUsageNSec": "320572000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "2023424",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "13025280",
+            "MemoryPeak": "13291520",
+            "CPUUsageNSec": "309619000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "1445888",
+            "IOWriteBytes": "307200",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.14 0.05 0.02 1/132 20953"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "burst",
+      "repetition": 1,
+      "sequence": 2,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:10:30Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 100.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34024,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 2000,
+          "successes": 2000,
+          "errors": 0,
+          "success_rps": 100.0,
+          "target_rps": 100.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.005507404999661958,
+          "p95_seconds": 0.016146275000210153,
+          "p99_seconds": 0.0860599750012625,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002297344979524496,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.00554218399884121,
+            "p95_seconds": 0.016146275000210153,
+            "p99_seconds": 0.08380238500103587,
+            "max_latency_seconds": 0.09101819500028796
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.007915602942375699,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005615261999992072,
+            "p95_seconds": 0.014684571000543656,
+            "p99_seconds": 0.08170199899905128,
+            "max_latency_seconds": 0.10764163600106258
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0019429159474384505,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0053314090000640135,
+            "p95_seconds": 0.023381604998576222,
+            "p99_seconds": 0.08384903499973007,
+            "max_latency_seconds": 0.08419195900023624
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.004275549956219038,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005725269998947624,
+            "p95_seconds": 0.02183689699995739,
+            "p99_seconds": 0.08452083500014851,
+            "max_latency_seconds": 0.10402227399936237
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002023584916969412,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005322471999534173,
+            "p95_seconds": 0.015263478000633768,
+            "p99_seconds": 0.08247957600178779,
+            "max_latency_seconds": 0.09307826999975077
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002174472972910735,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005403732999184285,
+            "p95_seconds": 0.013590498001576634,
+            "p99_seconds": 0.0846707199998491,
+            "max_latency_seconds": 0.08827011099856463
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0022498519811051665,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005463405001137289,
+            "p95_seconds": 0.014159967999148648,
+            "p99_seconds": 0.08750507200056745,
+            "max_latency_seconds": 0.09605748300054984
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0017766369765013224,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0055215620013768785,
+            "p95_seconds": 0.014818420000665355,
+            "p99_seconds": 0.08522035200076061,
+            "max_latency_seconds": 0.0991805720004777
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002175541980250273,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005507404999661958,
+            "p95_seconds": 0.02427701899978274,
+            "p99_seconds": 0.08749961200010148,
+            "max_latency_seconds": 0.08975685199948202
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.020841498955633142,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.005609882000499056,
+            "p95_seconds": 0.024917647999245673,
+            "p99_seconds": 0.0866320450004423,
+            "max_latency_seconds": 0.11969756399957987
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.2833333333333333,
+        "cpu_iowait_fraction": 0.04479166666666667,
+        "cpu_steal_fraction": 0.003472222222222222,
+        "application_cpu_cores": 0.24343204142154468,
+        "disk_read_bytes": 54796288,
+        "disk_write_bytes": 22495232,
+        "disk_busy_seconds": 2.458,
+        "disk_utilization": 0.09172243120566649,
+        "page_faults": 45118,
+        "major_page_faults": 145,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 153989120,
+        "memory_available_fraction": 0.32047839466707584,
+        "application_memory_current_bytes": 196702208,
+        "application_memory_peak_bytes": 222887936,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "26095616",
+            "MemoryPeak": "26890240",
+            "CPUUsageNSec": "739640000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "10051584",
+            "IOWriteBytes": "700416",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19787776",
+            "MemoryPeak": "22138880",
+            "CPUUsageNSec": "895836000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "5165056",
+            "IOWriteBytes": "913408",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19103744",
+            "MemoryPeak": "22249472",
+            "CPUUsageNSec": "1057350000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "5140480",
+            "IOWriteBytes": "1130496",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18927616",
+            "MemoryPeak": "21811200",
+            "CPUUsageNSec": "1056796000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4718592",
+            "IOWriteBytes": "1118208",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18071552",
+            "MemoryPeak": "21217280",
+            "CPUUsageNSec": "1043352000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4239360",
+            "IOWriteBytes": "995328",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18317312",
+            "MemoryPeak": "20934656",
+            "CPUUsageNSec": "730664000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4251648",
+            "IOWriteBytes": "598016",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18759680",
+            "MemoryPeak": "21618688",
+            "CPUUsageNSec": "729526000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4796416",
+            "IOWriteBytes": "745472",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19263488",
+            "MemoryPeak": "22147072",
+            "CPUUsageNSec": "881455000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "5160960",
+            "IOWriteBytes": "954368",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19386368",
+            "MemoryPeak": "22269952",
+            "CPUUsageNSec": "1071037000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "5165056",
+            "IOWriteBytes": "1130496",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18989056",
+            "MemoryPeak": "21610496",
+            "CPUUsageNSec": "1046182000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "4538368",
+            "IOWriteBytes": "1118208",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.21 0.08 0.03 1/135 21193"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "burst",
+      "repetition": 2,
+      "sequence": 3,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:11:00Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 100.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34124,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 2000,
+          "successes": 2000,
+          "errors": 0,
+          "success_rps": 100.0,
+          "target_rps": 100.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.004701646999819786,
+          "p95_seconds": 0.012193161999675795,
+          "p99_seconds": 0.08338895499946375,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021357549467211356,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004565148999972735,
+            "p95_seconds": 0.011911843001144007,
+            "p99_seconds": 0.08245404999979655,
+            "max_latency_seconds": 0.0830314439990616
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0018229649467684794,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004688675999204861,
+            "p95_seconds": 0.013454460000502877,
+            "p99_seconds": 0.0813630459997512,
+            "max_latency_seconds": 0.09323858000061591
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0019603869259299245,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004809631000171066,
+            "p95_seconds": 0.012123749000238604,
+            "p99_seconds": 0.08107519800068985,
+            "max_latency_seconds": 0.08244585800093773
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0024346049467567354,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0048071809997054515,
+            "p95_seconds": 0.012346172001343803,
+            "p99_seconds": 0.08284939300028782,
+            "max_latency_seconds": 0.08792170900051133
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0023534019655926386,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004732539000542602,
+            "p95_seconds": 0.0106271780005045,
+            "p99_seconds": 0.08338895499946375,
+            "max_latency_seconds": 0.0851378229999682
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002327750946278684,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0046608199991169386,
+            "p95_seconds": 0.011164708999785944,
+            "p99_seconds": 0.08237741899938555,
+            "max_latency_seconds": 0.08304624899938062
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.011004144973412622,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004668176001359825,
+            "p95_seconds": 0.01204922899887606,
+            "p99_seconds": 0.08482652399834478,
+            "max_latency_seconds": 0.11066742799994245
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021460489770106506,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004771302001245203,
+            "p95_seconds": 0.012685937001151615,
+            "p99_seconds": 0.0840830349989119,
+            "max_latency_seconds": 0.08937591399990197
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0022196569661900867,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0046047490013734205,
+            "p95_seconds": 0.012750177998896106,
+            "p99_seconds": 0.085586785000487,
+            "max_latency_seconds": 0.08763402300064627
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021355939552449854,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004691624999395572,
+            "p95_seconds": 0.01167681500010076,
+            "p99_seconds": 0.0835922730002494,
+            "max_latency_seconds": 0.0849024589988403
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.247954464603344,
+        "cpu_iowait_fraction": 0.021344717182497332,
+        "cpu_steal_fraction": 0.0003557452863749555,
+        "application_cpu_cores": 0.22402617219244908,
+        "disk_read_bytes": 18436096,
+        "disk_write_bytes": 20312064,
+        "disk_busy_seconds": 1.368,
+        "disk_utilization": 0.050603734363292796,
+        "page_faults": 28709,
+        "major_page_faults": 10,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 155283456,
+        "memory_available_fraction": 0.3231721351302969,
+        "application_memory_current_bytes": 219516928,
+        "application_memory_peak_bytes": 224428032,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "28090368",
+            "MemoryPeak": "28352512",
+            "CPUUsageNSec": "1263086000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "11624448",
+            "IOWriteBytes": "1228800",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21950464",
+            "MemoryPeak": "22216704",
+            "CPUUsageNSec": "1419890000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6864896",
+            "IOWriteBytes": "1482752",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21741568",
+            "MemoryPeak": "22249472",
+            "CPUUsageNSec": "1750066000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7168000",
+            "IOWriteBytes": "1908736",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21442560",
+            "MemoryPeak": "21811200",
+            "CPUUsageNSec": "1736251000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6586368",
+            "IOWriteBytes": "1896448",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20582400",
+            "MemoryPeak": "21217280",
+            "CPUUsageNSec": "1728728000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6176768",
+            "IOWriteBytes": "1716224",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20557824",
+            "MemoryPeak": "20934656",
+            "CPUUsageNSec": "1253998000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6025216",
+            "IOWriteBytes": "1126400",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20787200",
+            "MemoryPeak": "21618688",
+            "CPUUsageNSec": "1256113000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6569984",
+            "IOWriteBytes": "1273856",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21225472",
+            "MemoryPeak": "22147072",
+            "CPUUsageNSec": "1409713000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6860800",
+            "IOWriteBytes": "1564672",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21803008",
+            "MemoryPeak": "22269952",
+            "CPUUsageNSec": "1765371000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6963200",
+            "IOWriteBytes": "1908736",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21336064",
+            "MemoryPeak": "21610496",
+            "CPUUsageNSec": "1725596000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6295552",
+            "IOWriteBytes": "1896448",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "2.65 0.68 0.23 1/136 21424"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "steady",
+      "repetition": 2,
+      "sequence": 4,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:11:38Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 20.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34124,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 600,
+          "successes": 600,
+          "errors": 0,
+          "success_rps": 20.0,
+          "target_rps": 20.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.003386676000445732,
+          "p95_seconds": 0.011773541000366095,
+          "p99_seconds": 0.08378927400008251,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0018437239996274002,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0033783590006351005,
+            "p95_seconds": 0.0072278530005860375,
+            "p99_seconds": 0.009778804000234231,
+            "max_latency_seconds": 0.010315718998754164
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 10,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 10
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0019024350003746804,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003935848999390146,
+            "p95_seconds": 0.015589520999128581,
+            "p99_seconds": 0.0807205969995266,
+            "max_latency_seconds": 0.0815863839998201
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 3,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 27
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0019880309992004186,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003855202998238383,
+            "p95_seconds": 0.011919669999770122,
+            "p99_seconds": 0.08234765499946661,
+            "max_latency_seconds": 0.08242111099934846
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 4,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 44
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.001796712000214029,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003284585000074003,
+            "p95_seconds": 0.014076842000577017,
+            "p99_seconds": 0.08105921099922853,
+            "max_latency_seconds": 0.08408019699891156
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 44,
+              "read_uuid": 15,
+              "read_ulid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002446463999149273,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.002784378999422188,
+            "p95_seconds": 0.005295154000123148,
+            "p99_seconds": 0.005450560000099358,
+            "max_latency_seconds": 0.005512479001481552
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 27,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 8
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002043301999947289,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.002988054999150336,
+            "p95_seconds": 0.005810308999571134,
+            "p99_seconds": 0.006593603000510484,
+            "max_latency_seconds": 0.010087405000376748
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 10,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0023767769998812582,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003499823000311153,
+            "p95_seconds": 0.008452052999928128,
+            "p99_seconds": 0.009081766998860985,
+            "max_latency_seconds": 0.01220389499940211
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 8,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 12
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021370209997257916,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.004295039998396533,
+            "p95_seconds": 0.012350013999821385,
+            "p99_seconds": 0.0899014239985263,
+            "max_latency_seconds": 0.09488458999840077
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 1,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 29
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0015115500009414973,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003536848998919595,
+            "p95_seconds": 0.011892552000063006,
+            "p99_seconds": 0.08378927400008251,
+            "max_latency_seconds": 0.08437257100013085
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 2,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 45,
+              "read_uuid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0022597330007556593,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0030895910003891913,
+            "p95_seconds": 0.012327640999501455,
+            "p99_seconds": 0.08396038099999714,
+            "max_latency_seconds": 0.08450764200097183
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.08056745182012848,
+        "cpu_iowait_fraction": 0.004014989293361884,
+        "cpu_steal_fraction": 0.0,
+        "application_cpu_cores": 0.061265226489344383,
+        "disk_read_bytes": 401408,
+        "disk_write_bytes": 8036352,
+        "disk_busy_seconds": 0.277,
+        "disk_utilization": 0.0076340523048842165,
+        "page_faults": 27983,
+        "major_page_faults": 1,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 151425024,
+        "memory_available_fraction": 0.31514206071145434,
+        "application_memory_current_bytes": 221548544,
+        "application_memory_peak_bytes": 225124352,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "28205056",
+            "MemoryPeak": "28471296",
+            "CPUUsageNSec": "1378345000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "11624448",
+            "IOWriteBytes": "1368064",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22179840",
+            "MemoryPeak": "22441984",
+            "CPUUsageNSec": "1689129000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6868992",
+            "IOWriteBytes": "1773568",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21975040",
+            "MemoryPeak": "22249472",
+            "CPUUsageNSec": "2014653000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7184384",
+            "IOWriteBytes": "2199552",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21676032",
+            "MemoryPeak": "21938176",
+            "CPUUsageNSec": "2004221000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6606848",
+            "IOWriteBytes": "2207744",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20729856",
+            "MemoryPeak": "21217280",
+            "CPUUsageNSec": "1989519000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6189056",
+            "IOWriteBytes": "1957888",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20623360",
+            "MemoryPeak": "20934656",
+            "CPUUsageNSec": "1367758000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6057984",
+            "IOWriteBytes": "1163264",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20922368",
+            "MemoryPeak": "21618688",
+            "CPUUsageNSec": "1370118000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6578176",
+            "IOWriteBytes": "1458176",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21655552",
+            "MemoryPeak": "22147072",
+            "CPUUsageNSec": "1689396000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7098368",
+            "IOWriteBytes": "1855488",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22016000",
+            "MemoryPeak": "22278144",
+            "CPUUsageNSec": "2035315000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6983680",
+            "IOWriteBytes": "2199552",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21565440",
+            "MemoryPeak": "21827584",
+            "CPUUsageNSec": "1993354000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6311936",
+            "IOWriteBytes": "2187264",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "1.81 0.74 0.27 1/136 21659"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "steady",
+      "repetition": 3,
+      "sequence": 5,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:12:17Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 2.0,
+          "target_total_rps": 20.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 30.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34224,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 600,
+          "successes": 600,
+          "errors": 0,
+          "success_rps": 20.0,
+          "target_rps": 20.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.0035739970007853117,
+          "p95_seconds": 0.012580538001202513,
+          "p99_seconds": 0.08329023999976926,
+          "fairness": 1.0,
+          "minimum_app_rps": 2.0,
+          "maximum_app_rps": 2.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 12,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 5
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021455460009747185,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0037961639991408447,
+            "p95_seconds": 0.007347855000261916,
+            "p99_seconds": 0.0076857359999848995,
+            "max_latency_seconds": 0.06255524599873752
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 10,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 10
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0019300570002087625,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.004037939999761875,
+            "p95_seconds": 0.017848002000391716,
+            "p99_seconds": 0.0821825759994681,
+            "max_latency_seconds": 0.08335270099996706
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 3,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 27
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0020482750005612615,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.004052673000842333,
+            "p95_seconds": 0.01601953899989894,
+            "p99_seconds": 0.08053243399990606,
+            "max_latency_seconds": 0.08192055200015602
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 4,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 44
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002223172001322382,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003411786001379369,
+            "p95_seconds": 0.015519331000177772,
+            "p99_seconds": 0.08136381499934942,
+            "max_latency_seconds": 0.0823772329986241
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 44,
+              "read_uuid": 15,
+              "read_ulid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.00211781100006192,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003185458999723778,
+            "p95_seconds": 0.005900518000999,
+            "p99_seconds": 0.006267623999519856,
+            "max_latency_seconds": 0.007960543000081088
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 27,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 8
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002050376000624965,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.003326358999402146,
+            "p95_seconds": 0.005678163999618846,
+            "p99_seconds": 0.005890647000342142,
+            "max_latency_seconds": 0.006011811999997008
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_id": 10,
+              "read_uuid": 15,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021787090008729137,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0037127629984752275,
+            "p95_seconds": 0.007178441001087776,
+            "p99_seconds": 0.011642684999969788,
+            "max_latency_seconds": 0.06599899700086098
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_uuid": 8,
+              "read_ulid": 10,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 12
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002404199000011431,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0037941829996270826,
+            "p95_seconds": 0.01722557799985225,
+            "p99_seconds": 0.08329023999976926,
+            "max_latency_seconds": 0.08405532200049493
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "read_ulid": 1,
+              "list": 10,
+              "calculate": 8,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 29
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0025212100008502603,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0035722249995160382,
+            "p95_seconds": 0.01663742099844967,
+            "p99_seconds": 0.08464804800132697,
+            "max_latency_seconds": 0.08501023700046062
+          },
+          {
+            "attempted": 60,
+            "successes": 60,
+            "errors": 0,
+            "status_counts": {
+              "200": 60
+            },
+            "kind_counts": {
+              "calculate": 2,
+              "update": 6,
+              "crud": 4,
+              "login": 2,
+              "read_id": 45,
+              "read_uuid": 1
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002414995000435738,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 2.0,
+            "attempted_rps": 2.0,
+            "p50_seconds": 0.0036315310007921653,
+            "p95_seconds": 0.011701367000569007,
+            "p99_seconds": 0.08487260400033847,
+            "max_latency_seconds": 0.08489222999924095
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.08222811671087533,
+        "cpu_iowait_fraction": 0.005835543766578249,
+        "cpu_steal_fraction": 0.0005305039787798408,
+        "application_cpu_cores": 0.05993086990309495,
+        "disk_read_bytes": 20480,
+        "disk_write_bytes": 8298496,
+        "disk_busy_seconds": 0.322,
+        "disk_utilization": 0.008799975972247452,
+        "page_faults": 31229,
+        "major_page_faults": 2,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 154521600,
+        "memory_available_fraction": 0.32158657903485666,
+        "application_memory_current_bytes": 222810112,
+        "application_memory_peak_bytes": 226209792,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "28295168",
+            "MemoryPeak": "28590080",
+            "CPUUsageNSec": "1491159000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "11624448",
+            "IOWriteBytes": "1503232",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22364160",
+            "MemoryPeak": "22634496",
+            "CPUUsageNSec": "1959146000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6868992",
+            "IOWriteBytes": "2064384",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22167552",
+            "MemoryPeak": "22429696",
+            "CPUUsageNSec": "2284818000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7184384",
+            "IOWriteBytes": "2490368",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21876736",
+            "MemoryPeak": "22142976",
+            "CPUUsageNSec": "2265311000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6619136",
+            "IOWriteBytes": "2498560",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20873216",
+            "MemoryPeak": "21217280",
+            "CPUUsageNSec": "2251104000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6193152",
+            "IOWriteBytes": "2187264",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "20635648",
+            "MemoryPeak": "20934656",
+            "CPUUsageNSec": "1474659000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6057984",
+            "IOWriteBytes": "1191936",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21049344",
+            "MemoryPeak": "21618688",
+            "CPUUsageNSec": "1480484000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6578176",
+            "IOWriteBytes": "1642496",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21585920",
+            "MemoryPeak": "22147072",
+            "CPUUsageNSec": "1959399000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7098368",
+            "IOWriteBytes": "2150400",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22208512",
+            "MemoryPeak": "22474752",
+            "CPUUsageNSec": "2303339000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6987776",
+            "IOWriteBytes": "2490368",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "21753856",
+            "MemoryPeak": "22020096",
+            "CPUUsageNSec": "2255320000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "6311936",
+            "IOWriteBytes": "2498560",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "1.07 0.67 0.26 1/136 21921"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    },
+    {
+      "target": "micro",
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "density": 10,
+      "phase": "burst",
+      "repetition": 3,
+      "sequence": 6,
+      "load": {
+        "metadata": {
+          "generated_at_utc": "2026-07-18T23:12:46Z",
+          "hosts": [
+            "http://10.142.0.2:42000",
+            "http://10.142.0.2:42001",
+            "http://10.142.0.2:42002",
+            "http://10.142.0.2:42003",
+            "http://10.142.0.2:42004",
+            "http://10.142.0.2:42005",
+            "http://10.142.0.2:42006",
+            "http://10.142.0.2:42007",
+            "http://10.142.0.2:42008",
+            "http://10.142.0.2:42009"
+          ],
+          "rate_per_app": 10.0,
+          "target_total_rps": 100.0,
+          "warmup_seconds": 5.0,
+          "duration_seconds": 20.0,
+          "request_timeout_seconds": 5.0,
+          "seed": 34224,
+          "arrival_model": "one fixed-interval persistent client per demo application",
+          "workload": "2% bcrypt login, 80% indexed reads/lists, 8% SHA-256 calculation, 6% update, 4% CRUD cycle"
+        },
+        "overall": {
+          "attempted": 2000,
+          "successes": 2000,
+          "errors": 0,
+          "success_rps": 100.0,
+          "target_rps": 100.0,
+          "attainment": 1.0,
+          "p50_seconds": 0.004444671001692768,
+          "p95_seconds": 0.011997995999990962,
+          "p99_seconds": 0.08282458699977724,
+          "fairness": 1.0,
+          "minimum_app_rps": 10.0,
+          "maximum_app_rps": 10.0,
+          "deadline_misses": 0,
+          "setup_failures": [
+
+          ]
+        },
+        "per_app": [
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0022576679111807607,
+            "exceptions": [
+
+            ],
+            "app_index": 1,
+            "base_url": "http://10.142.0.2:42000",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004368694000731921,
+            "p95_seconds": 0.012437178998879972,
+            "p99_seconds": 0.08267663700098637,
+            "max_latency_seconds": 0.08588221900026838
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002056112964055501,
+            "exceptions": [
+
+            ],
+            "app_index": 2,
+            "base_url": "http://10.142.0.2:42001",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004665121998186805,
+            "p95_seconds": 0.0119462789989484,
+            "p99_seconds": 0.08167090599999938,
+            "max_latency_seconds": 0.08300397800121573
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021834029648744036,
+            "exceptions": [
+
+            ],
+            "app_index": 3,
+            "base_url": "http://10.142.0.2:42002",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0043593840000539785,
+            "p95_seconds": 0.012261820000276202,
+            "p99_seconds": 0.08226003299932927,
+            "max_latency_seconds": 0.08384390799983521
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002316299964149948,
+            "exceptions": [
+
+            ],
+            "app_index": 4,
+            "base_url": "http://10.142.0.2:42003",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004286224000679795,
+            "p95_seconds": 0.012800505999621237,
+            "p99_seconds": 0.08194400200045493,
+            "max_latency_seconds": 0.08273523099887825
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0022734839094482595,
+            "exceptions": [
+
+            ],
+            "app_index": 5,
+            "base_url": "http://10.142.0.2:42004",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004746114000226953,
+            "p95_seconds": 0.010079143001348712,
+            "p99_seconds": 0.08219800700135238,
+            "max_latency_seconds": 0.08289064800010237
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.001980895915039582,
+            "exceptions": [
+
+            ],
+            "app_index": 6,
+            "base_url": "http://10.142.0.2:42005",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004529248999460833,
+            "p95_seconds": 0.011510666001413483,
+            "p99_seconds": 0.0821714650010108,
+            "max_latency_seconds": 0.08396637300029397
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0018394989292573882,
+            "exceptions": [
+
+            ],
+            "app_index": 7,
+            "base_url": "http://10.142.0.2:42006",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0042346249992988305,
+            "p95_seconds": 0.012821428999814088,
+            "p99_seconds": 0.08492547800051398,
+            "max_latency_seconds": 0.09260470700064616
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "update": 12,
+              "crud": 8,
+              "login": 4,
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.002192424908571411,
+            "exceptions": [
+
+            ],
+            "app_index": 8,
+            "base_url": "http://10.142.0.2:42007",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.00443691799955559,
+            "p95_seconds": 0.010630619999574265,
+            "p99_seconds": 0.08282458699977724,
+            "max_latency_seconds": 0.08733340200160455
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0021784879118058598,
+            "exceptions": [
+
+            ],
+            "app_index": 9,
+            "base_url": "http://10.142.0.2:42008",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.004476905000046827,
+            "p95_seconds": 0.01114810299986857,
+            "p99_seconds": 0.08287104200098838,
+            "max_latency_seconds": 0.08507299799930479
+          },
+          {
+            "attempted": 200,
+            "successes": 200,
+            "errors": 0,
+            "status_counts": {
+              "200": 200
+            },
+            "kind_counts": {
+              "read_id": 90,
+              "read_uuid": 30,
+              "read_ulid": 20,
+              "list": 20,
+              "calculate": 16,
+              "update": 12,
+              "crud": 8,
+              "login": 4
+            },
+            "deadline_misses": 0,
+            "max_schedule_lag_seconds": 0.0020764949076692574,
+            "exceptions": [
+
+            ],
+            "app_index": 10,
+            "base_url": "http://10.142.0.2:42009",
+            "success_rps": 10.0,
+            "attempted_rps": 10.0,
+            "p50_seconds": 0.0043651409996527946,
+            "p95_seconds": 0.01181054500011669,
+            "p99_seconds": 0.08412063499963551,
+            "max_latency_seconds": 0.0851604680010496
+          }
+        ]
+      },
+      "telemetry": {
+        "target_cpu_utilization": 0.2633788037775446,
+        "cpu_iowait_fraction": 0.025883175935641833,
+        "cpu_steal_fraction": 0.0006995452955578874,
+        "application_cpu_cores": 0.22389773810377248,
+        "disk_read_bytes": 42975232,
+        "disk_write_bytes": 20770816,
+        "disk_busy_seconds": 1.399,
+        "disk_utilization": 0.05242896774286692,
+        "page_faults": 40203,
+        "major_page_faults": 207,
+        "swap_in_pages": 0,
+        "swap_out_pages": 0,
+        "swap_total_bytes": 0,
+        "memory_available_bytes": 152047616,
+        "memory_available_fraction": 0.31643778397224426,
+        "application_memory_current_bytes": 206745600,
+        "application_memory_peak_bytes": 247582720,
+        "all_units_active": true,
+        "oom_kills": 0,
+        "unit_states": {
+          "amber-demo-micro-1": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "25468928",
+            "MemoryPeak": "30158848",
+            "CPUUsageNSec": "2015274000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "13139968",
+            "IOWriteBytes": "2048000",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-2": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19869696",
+            "MemoryPeak": "24588288",
+            "CPUUsageNSec": "2475259000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8409088",
+            "IOWriteBytes": "2650112",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-3": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "22712320",
+            "MemoryPeak": "23965696",
+            "CPUUsageNSec": "2959613000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8708096",
+            "IOWriteBytes": "3293184",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-4": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19222528",
+            "MemoryPeak": "23957504",
+            "CPUUsageNSec": "2939937000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8118272",
+            "IOWriteBytes": "3280896",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-5": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18104320",
+            "MemoryPeak": "23191552",
+            "CPUUsageNSec": "2925236000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7868416",
+            "IOWriteBytes": "2908160",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-6": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "24727552",
+            "MemoryPeak": "26251264",
+            "CPUUsageNSec": "1995811000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7610368",
+            "IOWriteBytes": "1716224",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-7": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18968576",
+            "MemoryPeak": "23355392",
+            "CPUUsageNSec": "2001446000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8306688",
+            "IOWriteBytes": "2187264",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-8": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "18546688",
+            "MemoryPeak": "23257088",
+            "CPUUsageNSec": "2475921000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8671232",
+            "IOWriteBytes": "2777088",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-9": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19857408",
+            "MemoryPeak": "24588288",
+            "CPUUsageNSec": "2976290000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "8495104",
+            "IOWriteBytes": "3293184",
+            "ActiveState": "active",
+            "SubState": "running"
+          },
+          "amber-demo-micro-10": {
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "MemoryCurrent": "19267584",
+            "MemoryPeak": "24268800",
+            "CPUUsageNSec": "2934747000",
+            "TasksCurrent": "1",
+            "IOReadBytes": "7966720",
+            "IOWriteBytes": "3280896",
+            "ActiveState": "active",
+            "SubState": "running"
+          }
+        },
+        "loadavg_after": "0.70 0.62 0.26 1/137 22186"
+      },
+      "gate": {
+        "passed": true,
+        "failure_reasons": [
+
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "micro": {
+      "cpu_class": "shared",
+      "size": "s-1vcpu-512mb-10gb",
+      "price_monthly": 4.0,
+      "price_hourly": 0.00595,
+      "highest_healthy_density": 10,
+      "monthly_cost_per_healthy_app": 0.4,
+      "hourly_cost_per_healthy_app": 0.000595,
+      "densities": {
+        "10": {
+          "passed": true,
+          "trial_count": 6,
+          "expected_trial_count": 6,
+          "failure_reasons": [
+
+          ],
+          "phases": {
+            "steady": {
+              "requests_per_second": {
+                "count": 3,
+                "min": 20.0,
+                "median": 20.0,
+                "mean": 20.0,
+                "max": 20.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 3,
+                "min": 0.08329023999976926,
+                "median": 0.08378927400008251,
+                "mean": 0.08376611533337079,
+                "max": 0.08421883200026059,
+                "stddev": 0.0003794496178475904,
+                "coefficient_of_variation": 0.004529870059480066
+              },
+              "attainment": {
+                "count": 3,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 3,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 3,
+                "min": 0.0,
+                "median": 0.0005305039787798408,
+                "mean": 0.00035413962413228736,
+                "max": 0.0005319148936170213,
+                "stddev": 0.0002504151921717048,
+                "coefficient_of_variation": 0.707108651807241
+              },
+              "memory_available_bytes": {
+                "count": 3,
+                "min": 151425024,
+                "median": 154521600,
+                "mean": 166962517.33333334,
+                "max": 194940928,
+                "stddev": 19824072.795558926,
+                "coefficient_of_variation": 0.11873367215697302
+              }
+            },
+            "burst": {
+              "requests_per_second": {
+                "count": 3,
+                "min": 100.0,
+                "median": 100.0,
+                "mean": 100.0,
+                "max": 100.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "p99_seconds": {
+                "count": 3,
+                "min": 0.08282458699977724,
+                "median": 0.08338895499946375,
+                "mean": 0.08409117233350116,
+                "max": 0.0860599750012625,
+                "stddev": 0.0014110907762450197,
+                "coefficient_of_variation": 0.01678048643023679
+              },
+              "attainment": {
+                "count": 3,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "fairness": {
+                "count": 3,
+                "min": 1.0,
+                "median": 1.0,
+                "mean": 1.0,
+                "max": 1.0,
+                "stddev": 0.0,
+                "coefficient_of_variation": 0.0
+              },
+              "cpu_steal_fraction": {
+                "count": 3,
+                "min": 0.0003557452863749555,
+                "median": 0.0006995452955578874,
+                "mean": 0.0015091709347183548,
+                "max": 0.003472222222222222,
+                "stddev": 0.0013951648360454256,
+                "coefficient_of_variation": 0.9244577959658324
+              },
+              "memory_available_bytes": {
+                "count": 3,
+                "min": 152047616,
+                "median": 153989120,
+                "mean": 153773397.33333334,
+                "max": 155283456,
+                "stddev": 1329803.827157809,
+                "coefficient_of_variation": 0.008647814577935115
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
