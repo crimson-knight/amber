@@ -25,6 +25,7 @@ options = {
   routes: 1_000,
   scenario_names: %w[login read_hot read_broad mixed_journey crud_cycle],
   ssh_key: File.expand_path("~/.ssh/agentc_droplets_id_ed25519"),
+  timeout: "10s",
   variant_names: %w[postgres sqlite_full sqlite_normal],
   warmup: "6s",
 }
@@ -42,6 +43,7 @@ OptionParser.new do |parser|
   parser.on("--variants=LIST", "postgres,sqlite_full,sqlite_normal") { |value| options[:variant_names] = value.split(",") }
   parser.on("--scenarios=LIST", "login,read_hot,read_broad,mixed_journey,crud_cycle") { |value| options[:scenario_names] = value.split(",") }
   parser.on("--ssh-key=PATH", "Private key for both hosts") { |value| options[:ssh_key] = File.expand_path(value) }
+  parser.on("--timeout=TIME", "Per-request wrk socket timeout") { |value| options[:timeout] = value }
   parser.on("--output=PATH", "Combined result JSON") { |value| options[:output] = File.expand_path(value) }
 end.parse!
 
@@ -285,13 +287,13 @@ def stop_server(target, ssh_options, unit)
   ssh_capture(target.fetch("public_ip"), ssh_options, "systemctl stop #{Shellwords.escape(unit)}.service >/dev/null 2>&1 || true")
 end
 
-def run_wrk(loadgen, target, ssh_options, scenario, connections, duration, port, measured: true)
+def run_wrk(loadgen, target, ssh_options, scenario, connections, duration, port, request_timeout, measured: true)
   threads = scenario.dynamic_session ? connections : [connections, 4].min
   url = "http://#{target.fetch("private_ip")}:#{port}"
   remote_script = "/opt/amber-database/workloads/#{File.basename(scenario.script)}"
   command = [
     "wrk", "--threads", threads.to_s, "--connections", connections.to_s,
-    "--duration", duration, "--latency", "--script", remote_script, url,
+    "--duration", duration, "--timeout", request_timeout, "--latency", "--script", remote_script, url,
   ].map { |value| Shellwords.escape(value) }.join(" ")
   output = ssh_capture(loadgen.fetch("public_ip"), ssh_options, command)
   measured ? [parse_wrk(output), output, threads] : nil
@@ -387,6 +389,7 @@ payload = {
     "session_behavior" => "bearer token SHA-256 plus indexed database session lookup on every authenticated request",
     "warmup" => options[:warmup],
     "duration" => options[:duration],
+    "request_timeout" => options[:timeout],
     "repetitions" => options[:repetitions],
     "connections" => options[:connections],
     "variant_order" => variants.map(&:name),
@@ -415,13 +418,13 @@ options[:repetitions].times do |repetition_index|
           prepare_variant(target, ssh_options, variant, postgres_unit)
           reset_mutable_data(target, ssh_options, variant)
           start_server(target, loadgen, ssh_options, variant, unit, options)
-          run_wrk(loadgen, target, ssh_options, scenario, connections, options[:warmup], options[:port], measured: false)
+          run_wrk(loadgen, target, ssh_options, scenario, connections, options[:warmup], options[:port], options[:timeout], measured: false)
           reset_mutable_data(target, ssh_options, variant)
 
           app_before = unit_stats(target.fetch("public_ip"), ssh_options, unit)
           pg_before = variant.database == "postgresql" ? unit_stats(target.fetch("public_ip"), ssh_options, postgres_unit) : {}
           proc_before = proc_snapshot(target.fetch("public_ip"), ssh_options)
-          result, raw_output, threads = run_wrk(loadgen, target, ssh_options, scenario, connections, options[:duration], options[:port])
+          result, raw_output, threads = run_wrk(loadgen, target, ssh_options, scenario, connections, options[:duration], options[:port], options[:timeout])
           proc_after = proc_snapshot(target.fetch("public_ip"), ssh_options)
           app_after = unit_stats(target.fetch("public_ip"), ssh_options, unit)
           pg_after = variant.database == "postgresql" ? unit_stats(target.fetch("public_ip"), ssh_options, postgres_unit) : {}
