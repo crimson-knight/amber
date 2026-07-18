@@ -104,7 +104,7 @@ def capture!(*command)
 end
 
 def ssh_capture(host, ssh_options, command)
-  capture!("ssh", *ssh_options, "root@#{host}", "bash", "-lc", Shellwords.escape(command))
+  capture!("ssh", *ssh_options, "root@#{host}", command)
 end
 
 def scp_capture(source, destination, ssh_options)
