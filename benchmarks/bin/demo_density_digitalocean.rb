@@ -82,10 +82,7 @@ def ssh_capture(host, ssh_options, command)
 end
 
 def parse_properties(output)
-  output.lines.each_with_object({}) do |line, result|
-    key, value = line.strip.split("=", 2)
-    result[key] = value if key && value
-  end
+  DemoDensityRound24.parse_properties(output)
 end
 
 def numeric(value)

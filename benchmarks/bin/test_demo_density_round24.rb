@@ -95,6 +95,14 @@ class DemoDensityRound24Test < Minitest::Test
     assert DemoDensityRound24.evaluate_trial(healthy_load, healthy_telemetry, PHASE).fetch("passed")
   end
 
+  def test_proc_meminfo_keys_drop_the_kernel_colon
+    parsed = DemoDensityRound24.parse_properties("MemTotal:=1000\nMemAvailable:=250\nstatus=ok\n")
+
+    assert_equal "1000", parsed.fetch("MemTotal")
+    assert_equal "250", parsed.fetch("MemAvailable")
+    assert_equal "ok", parsed.fetch("status")
+  end
+
   def test_each_capacity_gate_is_enforced
     load = Marshal.load(Marshal.dump(healthy_load))
     load["overall"]["p99_seconds"] = 0.5

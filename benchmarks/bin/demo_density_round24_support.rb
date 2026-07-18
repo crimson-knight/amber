@@ -10,6 +10,13 @@ module DemoDensityRound24
     sorted[((sorted.length - 1) * fraction).round]
   end
 
+  def parse_properties(output)
+    output.lines.each_with_object({}) do |line, result|
+      key, value = line.strip.split("=", 2)
+      result[key.sub(/:\z/, "")] = value if key && value
+    end
+  end
+
   def summarize(values)
     return {"count" => 0} if values.empty?
 
