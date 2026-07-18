@@ -158,6 +158,9 @@ EOF
 
   cat <<EOF
 runcmd:
+  # Re-declaring root can inherit DigitalOcean's first-login password expiry.
+  # Keep password auth locked, but clear the expiry so SSH-key automation works.
+  - chage -d -1 -E -1 root
   - mkdir -p /opt/amber-database/bin /opt/amber-database/data /opt/amber-database/objects /opt/amber-database/results /opt/amber-database/sql /opt/amber-database/workloads
   - ufw default deny incoming
   - ufw default allow outgoing
