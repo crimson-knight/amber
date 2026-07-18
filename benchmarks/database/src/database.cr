@@ -18,10 +18,10 @@ module Amber::Benchmarks::DatabaseWorkload
 
     {% if flag?(:db_postgres) %}
       ADAPTER     = "postgresql"
-      DEFAULT_URL = "postgres://amber_bench@127.0.0.1:5432/amber_bench?initial_pool_size=4&max_pool_size=8&max_idle_pool_size=8&checkout_timeout=5.0&retry_attempts=0"
+      DEFAULT_URL = "postgres://amber_bench@127.0.0.1:5432/amber_bench?initial_pool_size=4&max_pool_size=8&max_idle_pool_size=8&checkout_timeout=5.0&retry_attempts=1"
     {% else %}
       ADAPTER     = "sqlite"
-      DEFAULT_URL = "sqlite3:/tmp/amber-round23.sqlite3?initial_pool_size=4&max_pool_size=8&max_idle_pool_size=8&checkout_timeout=5.0&retry_attempts=0"
+      DEFAULT_URL = "sqlite3:/tmp/amber-round23.sqlite3?initial_pool_size=4&max_pool_size=8&max_idle_pool_size=8&checkout_timeout=5.0&retry_attempts=1"
     {% end %}
 
     URL = ENV["DATABASE_URL"]? || DEFAULT_URL
@@ -38,7 +38,7 @@ module Amber::Benchmarks::DatabaseWorkload
           pool_size: 8,
           initial_pool_size: 4,
           checkout_timeout: 5.seconds,
-          retry_attempts: 0
+          retry_attempts: 1
         )
       {% else %}
         Grant::ConnectionRegistry.establish_connection(
@@ -49,7 +49,7 @@ module Amber::Benchmarks::DatabaseWorkload
           pool_size: 8,
           initial_pool_size: 0,
           checkout_timeout: 5.seconds,
-          retry_attempts: 0
+          retry_attempts: 1
         )
         configure_sqlite
       {% end %}
