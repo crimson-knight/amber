@@ -9,6 +9,7 @@ DATABASE_DIR="${ROOT_DIR}/benchmarks/database"
 INVENTORY_PATH="${INVENTORY_PATH:-${SCRIPT_DIR}/${PREFIX}-inventory.json}"
 OBJECT_DIR="${OBJECT_DIR:-/tmp/amber-database-r23-objects}"
 SSH_KEY_PATH="${SSH_KEY_PATH:-${HOME}/.ssh/agentc_droplets_id_ed25519}"
+BOOTSTRAP_USER="${BOOTSTRAP_USER:-amberbench}"
 KNOWN_HOSTS_PATH="${KNOWN_HOSTS_PATH:-/tmp/${PREFIX}-known-hosts}"
 RESULT_MANIFEST="${RESULT_MANIFEST:-${ROOT_DIR}/benchmarks/results/round23_do_binaries_manifest.json}"
 SEED_MANIFEST="${SEED_MANIFEST:-${ROOT_DIR}/benchmarks/results/round23_do_database_seed_manifest.json}"
@@ -38,6 +39,13 @@ wait_for_host() {
   echo "Waiting for ${label} SSH (${host})"
   for _ in $(seq 1 120); do
     if ssh "${SSH_OPTIONS[@]}" "root@${host}" true >/dev/null 2>&1; then
+      return 0
+    fi
+    # DigitalOcean can inherit a first-login expiry when cloud-init updates
+    # root. The locked bootstrap account can clear it without a password.
+    if ssh "${SSH_OPTIONS[@]}" "${BOOTSTRAP_USER}@${host}" \
+      'sudo -n chage -d -1 -E -1 root' >/dev/null 2>&1 && \
+      ssh "${SSH_OPTIONS[@]}" "root@${host}" true >/dev/null 2>&1; then
       return 0
     fi
     sleep 2

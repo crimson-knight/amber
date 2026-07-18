@@ -106,6 +106,13 @@ render_user_data() {
 #cloud-config
 users:
   - default
+  - name: amberbench
+    groups: [sudo]
+    shell: /bin/bash
+    lock_passwd: true
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${SSH_PUBLIC_KEY}
   - name: root
     lock_passwd: true
     ssh_authorized_keys:
@@ -156,6 +163,18 @@ EOF
 EOF
   fi
 
+  if [[ "${role}" == "target" ]]; then
+    cat <<'EOF'
+bootcmd:
+  # Package installation on the 512 MB target needs setup-only swap. The
+  # preparation script disables and removes it before any measurement.
+  - test -f /swapfile || fallocate -l 1G /swapfile
+  - chmod 0600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+EOF
+  fi
+
   cat <<EOF
 runcmd:
   # Re-declaring root can inherit DigitalOcean's first-login password expiry.
@@ -171,10 +190,7 @@ EOF
 
   if [[ "${role}" == "target" ]]; then
     cat <<'EOF'
-  - fallocate -l 1G /swapfile
-  - chmod 0600 /swapfile
-  - mkswap /swapfile
-  - swapon /swapfile
+  - swapon --show
 EOF
   fi
 }
