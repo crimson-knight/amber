@@ -94,7 +94,7 @@ top = 170
 bar_height = 54
 bar_gap = 42
 max_density = [labels.map { |label| summary.fetch(label).fetch("highest_healthy_density") }.max, 1].max
-cost_values = labels.filter_map { |label| summary.fetch(label).fetch("monthly_cost_per_healthy_app") }
+cost_values = labels.map { |label| summary.fetch(label).fetch("monthly_cost_per_healthy_app") }.compact
 max_cost = [cost_values.max || 1.0, 1.0].max
 
 svg = []

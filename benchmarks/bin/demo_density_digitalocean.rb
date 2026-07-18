@@ -20,6 +20,7 @@ options = {
   port_base: 42_000,
   repetitions: 2,
   routes: 1_000,
+  skip_integrity: false,
   ssh_key: File.expand_path("~/.ssh/agentc_droplets_id_ed25519"),
   target_labels: nil,
 }
@@ -31,6 +32,7 @@ OptionParser.new do |parser|
   parser.on("--targets=LIST", "Comma-separated target labels") { |value| options[:target_labels] = value.split(",") }
   parser.on("--repetitions=COUNT", Integer, "Trials per phase and density") { |value| options[:repetitions] = value }
   parser.on("--routes=COUNT", Integer, "Installed Amber routes per app") { |value| options[:routes] = value }
+  parser.on("--skip-integrity", "Skip cloned-database checks for a confirmation-only run") { options[:skip_integrity] = true }
   parser.on("--port-base=PORT", Integer, "First private application port") { |value| options[:port_base] = value }
   parser.on("--memory-high=SIZE", "Per-app systemd MemoryHigh") { |value| options[:memory_high] = value }
   parser.on("--memory-max=SIZE", "Per-app systemd MemoryMax") { |value| options[:memory_max] = value }
@@ -453,21 +455,27 @@ options.fetch(:densities).each_with_index do |density, density_index|
   end
 end
 
-integrity = targets.to_h do |target|
-  output = ssh_capture(target.fetch("public_ip"), ssh_options, <<~'SHELL')
-    set -euo pipefail
-    failures=0
-    checked=0
-    for database in /opt/amber-density/apps/*/benchmark.sqlite3; do
-      [[ -f "$database" ]] || continue
-      checked=$((checked + 1))
-      result=$(sqlite3 "$database" 'PRAGMA quick_check;')
-      [[ "$result" == "ok" ]] || failures=$((failures + 1))
-    done
-    printf 'checked=%s\nfailures=%s\n' "$checked" "$failures"
-  SHELL
-  [target.fetch("label"), parse_properties(output).transform_values(&:to_i)]
-end
+integrity = if options.fetch(:skip_integrity)
+              targets.to_h { |target| [target.fetch("label"), {"skipped" => true, "reason" => "confirmation-only run"}] }
+            else
+              targets.map do |target|
+                Thread.new do
+                  output = ssh_capture(target.fetch("public_ip"), ssh_options, <<~'SHELL')
+                    set -euo pipefail
+                    failures=0
+                    checked=0
+                    for database in /opt/amber-density/apps/*/benchmark.sqlite3; do
+                      [[ -f "$database" ]] || continue
+                      checked=$((checked + 1))
+                      result=$(sqlite3 "$database" 'PRAGMA quick_check;')
+                      [[ "$result" == "ok" ]] || failures=$((failures + 1))
+                    done
+                    printf 'checked=%s\nfailures=%s\n' "$checked" "$failures"
+                  SHELL
+                  [target.fetch("label"), parse_properties(output).transform_values(&:to_i)]
+                end
+              end.map(&:value).to_h
+            end
 
 payload["summary"] = DemoDensityRound24.build_summary(payload)
 payload["metadata"]["integrity_checks"] = integrity
