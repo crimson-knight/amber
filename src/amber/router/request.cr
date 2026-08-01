@@ -8,7 +8,7 @@ class HTTP::Request
 
   # Required for the `matched_route` method
   @matched_route : Amber::Router::RoutedResult(Amber::Route)?
-  
+
   # Required for the `params` method
   @params : Amber::Router::Params?
 
@@ -16,6 +16,16 @@ class HTTP::Request
   # TODO: Refactor this into a different approach that doesn't require monkey patching the std lib
   def params
     @params ||= Amber::Router::Params.new(self)
+  end
+
+  # Release any tempfiles spooled while parsing this request — uploaded files
+  # and the raw multipart body spool. Called at teardown from
+  # Amber::Pipe::Pipeline#call.
+  #
+  # Reads the @params ivar directly instead of calling #params: teardown must
+  # not CREATE a parser for a request that never had one.
+  def cleanup_uploads : Nil
+    @params.try(&.cleanup_uploads)
   end
 
   # This is a necessary method that the rest of the Amber server requires to be present
