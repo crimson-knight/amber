@@ -20,6 +20,10 @@ module Amber::Router
     @json : Types::Params?
     @form : HTTP::Params?
 
+    # Tempfile holding the raw multipart body so it can be replayed to the
+    # controller. Deleted by #cleanup_uploads at request teardown.
+    @body_spool : ::File?
+
     def initialize(@request : HTTP::Request)
     end
 
@@ -35,6 +39,33 @@ module Amber::Router
     def files
       multipart unless @multipart
       @files
+    end
+
+    # Delete every tempfile this request spooled: the uploaded files themselves,
+    # and the spool holding the raw multipart body when one was made.
+    #
+    # Deliberately reads only ALREADY-parsed state. It must never call #files or
+    # #multipart, which would trigger a parse during teardown — on a request
+    # whose body has since been consumed that would raise.
+    #
+    # Best effort throughout: teardown must never raise into the request cycle.
+    def cleanup_uploads : Nil
+      @files.each_value(&.cleanup)
+      @files.clear
+
+      if spool = @body_spool
+        begin
+          spool.close
+        rescue
+          # Already closed.
+        end
+        begin
+          ::File.delete?(spool.path)
+        rescue
+          # Already gone.
+        end
+        @body_spool = nil
+      end
     end
 
     def []=(key : Types::Key, value)
@@ -92,7 +123,7 @@ module Amber::Router
     private def multipart
       return @multipart.not_nil! if @multipart
       return Types::Params.new unless content_type?(MULTIPART_FORM)
-      @multipart, @files = Parsers::Multipart.parse(@request)
+      @multipart, @files, @body_spool = Parsers::Multipart.parse(@request)
       @multipart.not_nil!
     end
 
