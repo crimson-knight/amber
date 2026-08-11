@@ -1,0 +1,70 @@
+=== trial 1 ===
+Running 15s test @ http://10.142.0.2:41019/
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.34ms    2.00ms  33.12ms   73.53%
+    Req/Sec     1.24k   233.10     1.89k    68.33%
+  Latency Distribution
+     50%    3.22ms
+     75%    4.39ms
+     90%    5.47ms
+     99%    9.53ms
+  74025 requests in 15.01s, 1.82GB read
+Requests/sec:   4932.80
+Transfer/sec:    124.27MB
+=== trial 2 ===
+Running 15s test @ http://10.142.0.2:41019/
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.11ms    1.77ms  45.99ms   69.86%
+    Req/Sec     1.31k   201.63     1.88k    67.33%
+  Latency Distribution
+     50%    3.08ms
+     75%    4.15ms
+     90%    5.17ms
+     99%    7.07ms
+  78411 requests in 15.01s, 1.93GB read
+Requests/sec:   5225.17
+Transfer/sec:    131.64MB
+=== trial 3 ===
+Running 15s test @ http://10.142.0.2:41019/
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.66ms    1.54ms  40.02ms   70.54%
+    Req/Sec     1.54k   214.27     2.32k    70.83%
+  Latency Distribution
+     50%    2.64ms
+     75%    3.66ms
+     90%    4.35ms
+     99%    5.73ms
+  91751 requests in 15.01s, 2.26GB read
+Requests/sec:   6113.54
+Transfer/sec:    154.02MB
+=== trial 4 ===
+Running 15s test @ http://10.142.0.2:41019/
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.62ms    1.66ms  39.55ms   74.92%
+    Req/Sec     1.58k   279.17     2.47k    72.33%
+  Latency Distribution
+     50%    2.50ms
+     75%    3.50ms
+     90%    4.38ms
+     99%    7.05ms
+  94323 requests in 15.01s, 2.32GB read
+Requests/sec:   6285.26
+Transfer/sec:    158.35MB
+=== trial 5 ===
+Running 15s test @ http://10.142.0.2:41019/
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.80ms    1.80ms  49.21ms   75.09%
+    Req/Sec     1.48k   265.46     2.31k    67.67%
+  Latency Distribution
+     50%    2.67ms
+     75%    3.75ms
+     90%    4.71ms
+     99%    7.96ms
+  88652 requests in 15.01s, 2.18GB read
+Requests/sec:   5906.72
+Transfer/sec:    148.81MB

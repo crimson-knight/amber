@@ -1,0 +1,2 @@
+{"event":"connections_ready","url":"ws://10.142.0.2:41019/ws","requested":100,"connected":100,"connection_errors":{},"connect_seconds":0.032,"hold_seconds":75}
+{"event":"connections_closed","connected":100}

@@ -1,0 +1,42 @@
+=== trial 1 ===
+Running 10s test @ http://10.142.0.2:41019/index.json
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.26ms    3.52ms  69.04ms   90.26%
+    Req/Sec     1.55k   357.89     2.44k    67.75%
+  Latency Distribution
+     50%    2.27ms
+     75%    3.48ms
+     90%    6.70ms
+     99%   17.71ms
+  61868 requests in 10.01s, 62.60MB read
+Requests/sec:   6181.86
+Transfer/sec:      6.26MB
+=== trial 2 ===
+Running 10s test @ http://10.142.0.2:41019/index.json
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.08ms    3.20ms  54.20ms   89.73%
+    Req/Sec     1.64k   400.54     2.89k    70.25%
+  Latency Distribution
+     50%    2.16ms
+     75%    3.29ms
+     90%    6.41ms
+     99%   16.66ms
+  65452 requests in 10.01s, 66.23MB read
+Requests/sec:   6540.69
+Transfer/sec:      6.62MB
+=== trial 3 ===
+Running 10s test @ http://10.142.0.2:41019/index.json
+  4 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.39ms    4.21ms  44.91ms   91.27%
+    Req/Sec     1.61k   587.81     3.41k    62.00%
+  Latency Distribution
+     50%    2.16ms
+     75%    3.57ms
+     90%    6.86ms
+     99%   23.19ms
+  63970 requests in 10.01s, 64.73MB read
+Requests/sec:   6393.69
+Transfer/sec:      6.47MB
