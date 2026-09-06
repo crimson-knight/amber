@@ -1,3 +1,4 @@
+require "./support/server_only"
 require "./mailer/email"
 require "./mailer/delivery_adapter"
 require "./mailer/mime"

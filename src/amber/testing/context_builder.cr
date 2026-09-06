@@ -36,9 +36,15 @@ module Amber::Testing
       self
     end
 
-    # Add a single header to the request.
+    # Set a single header, replacing previous values of the same name.
     def header(key : String, value : String) : self
       @headers[key] = value
+      self
+    end
+
+    # Preserve repeated header fields for transport/ambiguity tests.
+    def add_header(key : String, value : String) : self
+      @headers.add(key, value)
       self
     end
 

@@ -1,3 +1,4 @@
+require "../support/server_only"
 module Amber
   module WebSockets
     module Server
