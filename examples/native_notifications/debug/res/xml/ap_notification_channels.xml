@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notification-channels smallIcon="@drawable/ap_notification_small">
+  <channel id="ap_contract_updates" name="Contract updates" description="Local emulator proof notifications" importance="2" />
+  <channel id="ap_contract_blocked" name="Contract blocked" description="Pre-existing user policy is preserved" importance="2" />
+</notification-channels>
