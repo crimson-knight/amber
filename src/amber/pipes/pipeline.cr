@@ -6,6 +6,18 @@ module Amber
       getter pipeline
       getter valve : Symbol
 
+      @before_routing = [] of HTTP::Handler
+      @before_routing_head : HTTP::Handler? = nil
+      @prepared = false
+
+      # Ingress checks must run before route selection, which can inspect form
+      # method overrides. Register only during application configuration.
+      def before_routing(handler : HTTP::Handler) : Nil
+        raise ArgumentError.new("Register ingress handlers before preparing pipelines") if @prepared
+        raise ArgumentError.new("Ingress handler is already registered") if @before_routing.any? { |existing| existing.same?(handler) }
+        @before_routing << handler
+      end
+
       def initialize(@valve = :web)
         @pipeline = {} of Symbol => Array(HTTP::Handler)
         @pipeline[@valve] = [] of HTTP::Handler
@@ -13,6 +25,17 @@ module Amber
       end
 
       def call(context : HTTP::Server::Context)
+        if !@prepared && !@before_routing.empty?
+          raise ArgumentError.new("Prepare pipelines before calling registered ingress handlers")
+        end
+        if head = @before_routing_head
+          head.call(context)
+        else
+          call_routed(context)
+        end
+      end
+
+      private def call_routed(context : HTTP::Server::Context) : Nil
         raise Amber::Exceptions::RouteNotFound.new(context.request) unless context.valid_route?
 
         # Check request-level constraint if the matched route has one
@@ -48,6 +71,13 @@ module Amber
       def prepare_pipelines
         pipeline.keys.each do |valve|
           @drain[valve] ||= build_pipeline(pipeline[valve], Amber::Pipe::Controller.new)
+        end
+        unless @prepared
+          unless @before_routing.empty?
+            terminal = ->(context : HTTP::Server::Context) { call_routed(context) }
+            @before_routing_head = build_pipeline(@before_routing, terminal).as(HTTP::Handler)
+          end
+          @prepared = true
         end
       end
 

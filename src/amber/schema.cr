@@ -2,17 +2,11 @@
 # Provides request/response validation and parsing capabilities
 
 # Include all schema components
-require "./schema/definition"
-require "./schema/result"
-require "./schema/errors"
-require "./schema/annotations"
-require "./schema/validator"
+require "./schema/value"
 require "./schema/parser"
 require "./schema/response_builder"
-require "./schema/type_coercion"
 
 # Include subdirectories
-require "./schema/validators/*"
 require "./schema/parsers/*"
 require "./schema/response/*"
 

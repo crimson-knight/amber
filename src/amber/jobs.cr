@@ -1,3 +1,4 @@
+require "./support/server_only"
 require "./jobs/job_envelope"
 require "./jobs/queue_adapter"
 require "./jobs/memory_queue_adapter"

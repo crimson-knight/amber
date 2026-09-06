@@ -1,4 +1,5 @@
 # Base parser module for transforming and coercing data
+require "../support/server_only"
 
 module Amber::Schema
   module Parser

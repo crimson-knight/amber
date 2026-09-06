@@ -10,6 +10,12 @@ class HTTP::Request
   @requested_method : String?
   @params : Amber::Router::Params?
 
+  # Literal HTTP method, without consulting form/query/header method overrides.
+  # Useful for an ingress policy that must validate a body before parsing it.
+  def transport_method : String
+    @method
+  end
+
   def method
     case @method
     when "POST" then requested_method.to_s.upcase

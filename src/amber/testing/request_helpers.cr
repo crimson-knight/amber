@@ -77,7 +77,7 @@ module Amber::Testing
       builder = ContextBuilder.new.method(method).path(path)
       builder = builder.body(body) if body
       if headers
-        headers.each { |key, values| values.each { |value| builder = builder.header(key, value) } }
+        headers.each { |key, values| values.each { |value| builder = builder.add_header(key, value) } }
       end
 
       context, io = builder.build_with_io

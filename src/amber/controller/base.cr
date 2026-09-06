@@ -1,3 +1,4 @@
+require "../support/server_only"
 require "http"
 
 require "./filters"
