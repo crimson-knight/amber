@@ -757,7 +757,7 @@ module Amber::Schema
       if field_def.type == "Hash(String, JSON::Any)" &&
          (options.has_key?("max_size") || options.has_key?("allowed_types") ||
          options.has_key?("allowed_extensions") || options.has_key?("filename_pattern"))
-        file_errors = Parser::FileUploadValidator.validate_file(field_name, value, options)
+        file_errors = FileMetadataValidator.validate_file(field_name, value, options)
         file_errors.each { |error| @errors << error }
       end
     end

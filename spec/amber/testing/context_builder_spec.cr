@@ -46,6 +46,15 @@ describe Amber::Testing::ContextBuilder do
       context.request.headers["Authorization"].should eq("Bearer token123")
     end
 
+    it "preserves explicitly repeated headers while keeping set semantics" do
+      context = Amber::Testing::ContextBuilder.new
+        .header("Authorization", "old")
+        .header("Authorization", "first")
+        .add_header("authorization", "second")
+        .build
+      context.request.headers.get?("Authorization").should eq ["first", "second"]
+    end
+
     it "sets the request body" do
       context = Amber::Testing::ContextBuilder.new
         .method("POST")

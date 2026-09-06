@@ -1,3 +1,4 @@
+require "./amber/support/server_only"
 require "http"
 require "log"
 require "json"
