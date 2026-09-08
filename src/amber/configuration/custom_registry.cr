@@ -3,6 +3,10 @@ module Amber::Configuration
   # The key is the YAML section name (e.g., "stripe") and the value
   # is the default instance of the custom config struct.
   @@custom_config_defaults = {} of String => YAML::Serializable
+  # Typed loaders captured where the concrete type is known. Loading through
+  # `default.class.from_yaml` would dispatch over every class that includes
+  # YAML::Serializable, a union Crystal 1.21 cannot type against the module.
+  @@custom_config_loaders = {} of String => Proc(String, YAML::Serializable)
 
   # Register a custom configuration type with the Amber settings system.
   #
@@ -23,12 +27,15 @@ module Amber::Configuration
   # Amber::Configuration.register(:my_app, MyAppConfig)
   # ```
   macro register(key, config_type)
-    Amber::Configuration.register_custom({{ key.id.stringify }}, {{ config_type }}.new)
+    Amber::Configuration.register_custom({{ key.id.stringify }}, {{ config_type }}.new,
+      ->(yaml : String) { {{ config_type }}.from_yaml(yaml).as(YAML::Serializable) })
   end
 
   # Runtime registration method called by the `register` macro.
-  def self.register_custom(key : String, default_instance : YAML::Serializable) : Nil
+  def self.register_custom(key : String, default_instance : YAML::Serializable,
+                           loader : Proc(String, YAML::Serializable)) : Nil
     @@custom_config_defaults[key] = default_instance
+    @@custom_config_loaders[key] = loader
   end
 
   # Returns all registered custom config keys and their default instances.
@@ -39,13 +46,8 @@ module Amber::Configuration
   # Load a custom config from a YAML node, or return the default instance
   # if no YAML node is provided.
   def self.load_custom_from_yaml(key : String, yaml_content : String) : YAML::Serializable?
-    if default = @@custom_config_defaults[key]?
-      # `default.class` dispatches over every class that includes the module, and
-      # Crystal 1.21 does not accept that inferred union against the declared
-      # module return type; the type guard narrows it. A registered default
-      # always satisfies it.
-      loaded = default.class.from_yaml(yaml_content)
-      loaded.is_a?(YAML::Serializable) ? loaded : nil
+    if loader = @@custom_config_loaders[key]?
+      loader.call(yaml_content)
     end
   end
 end
