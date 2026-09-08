@@ -40,7 +40,12 @@ module Amber::Configuration
   # if no YAML node is provided.
   def self.load_custom_from_yaml(key : String, yaml_content : String) : YAML::Serializable?
     if default = @@custom_config_defaults[key]?
-      default.class.from_yaml(yaml_content)
+      # `default.class` dispatches over every class that includes the module, and
+      # Crystal 1.21 does not accept that inferred union against the declared
+      # module return type; the type guard narrows it. A registered default
+      # always satisfies it.
+      loaded = default.class.from_yaml(yaml_content)
+      loaded.is_a?(YAML::Serializable) ? loaded : nil
     end
   end
 end
