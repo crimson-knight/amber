@@ -1,17 +1,23 @@
 require "../../../spec_helper"
 
 # Mock encrypted store for security testing
-class SecurityMockEncryptedStore
+# A cookie jar double that keeps values in memory and ignores cookie attributes.
+class SecurityMockEncryptedStore < Amber::Router::Cookies::AbstractStore
   def initialize
+    super(Amber::Router::Cookies::Store.new)
     @data = Hash(String, String).new
   end
 
-  def [](key)
-    @data[key]?
+  def get(name)
+    @data[name]?
   end
 
-  def set(key : String, value : String, **options)
-    @data[key] = value
+  def set(name : String, value : String, path : String = "/",
+          expires : Time? = nil, domain : String? = nil,
+          secure : Bool = false, http_only : Bool = false,
+          extension : String? = nil,
+          samesite : HTTP::Cookie::SameSite? = nil)
+    @data[name] = value
   end
 end
 

@@ -15,6 +15,7 @@ module Amber::Configuration
     def store_type : Symbol
       case @store
       when "signed_cookie"    then :signed_cookie
+      when "adapter"          then :adapter
       when "redis"            then :redis
       when "encrypted_cookie" then :encrypted_cookie
       else                         :encrypted_cookie
@@ -22,7 +23,7 @@ module Amber::Configuration
     end
 
     def validate! : Nil
-      valid_stores = ["signed_cookie", "encrypted_cookie", "redis"]
+      valid_stores = ["signed_cookie", "encrypted_cookie", "adapter", "redis"]
       unless valid_stores.includes?(@store)
         raise Amber::Exceptions::ConfigurationError.new(
           "session.store must be one of #{valid_stores.join(", ")}, got '#{@store}'"

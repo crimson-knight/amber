@@ -3,21 +3,52 @@ include SessionHelper
 
 module Amber::Router
   describe Session::Store do
-    it "creates an adapter session store by default" do
-      session = create_session_config("memory")
-      cookies = new_cookie_store
-      store = Session::Store.new(cookies, session)
+    it "keeps sessions in a signed cookie for store signed_cookie" do
+      store = Session::Store.new(new_cookie_store, create_session_config("signed_cookie"))
 
-      store.build.should be_a Session::AdapterSessionStore
+      cookie_session = store.build.as(Session::CookieStore)
+
+      cookie_session.store.should be_a Cookies::SignedStore
     end
 
-    it "creates an adapter session store with memory adapter" do
-      session = create_session_config("memory")
-      cookies = new_cookie_store
-      store = Session::Store.new(cookies, session)
-      adapter_store = store.build.as(Session::AdapterSessionStore)
+    it "keeps sessions in an encrypted cookie for store encrypted_cookie" do
+      store = Session::Store.new(new_cookie_store, create_session_config("encrypted_cookie"))
 
-      adapter_store.adapter.should be_a Amber::Adapters::MemorySessionAdapter
+      cookie_session = store.build.as(Session::CookieStore)
+
+      cookie_session.store.should be_a Cookies::EncryptedStore
+    end
+
+    it "keeps sessions on the server through the configured adapter for store adapter" do
+      store = Session::Store.new(new_cookie_store, create_session_config("adapter"))
+
+      adapter_session = store.build.as(Session::AdapterSessionStore)
+
+      adapter_session.adapter.should be_a Amber::Adapters::MemorySessionAdapter
+    end
+
+    it "defaults to a signed cookie" do
+      Amber::Configuration::SessionConfig.new.store_type.should eq :signed_cookie
+    end
+  end
+
+  describe Session::SessionHash do
+    it "stays unchanged when deleting a key it does not hold" do
+      session_values = Session::SessionHash.new
+
+      session_values.delete("_flash")
+
+      session_values.changed.should be_false
+    end
+
+    it "is changed when deleting a key it holds" do
+      session_values = Session::SessionHash.new
+      session_values["_flash"] = "{\"notice\":\"Saved.\"}"
+      session_values.changed = false
+
+      session_values.delete("_flash")
+
+      session_values.changed.should be_true
     end
   end
 end

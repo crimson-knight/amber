@@ -116,6 +116,7 @@ module Amber::Environment
     def session_store
       case @session_config["store"].to_s
       when "signed_cookie" then :signed_cookie
+      when "adapter"       then :adapter
       when "redis"         then :redis
       else
         :encrypted_cookie
