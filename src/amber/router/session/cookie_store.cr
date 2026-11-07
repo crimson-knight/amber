@@ -31,9 +31,12 @@ module Amber::Router::Session
       @store.fetch(key.to_s, nil)
     end
 
+    # Marks the session changed only when a value was actually removed, so
+    # clearing an absent key does not rewrite the cookie.
     def delete(key)
-      @changed = true
-      @store.delete(key.to_s)
+      removed_value = @store.delete(key.to_s)
+      @changed = true unless removed_value.nil?
+      removed_value
     end
   end
 
@@ -41,7 +44,7 @@ module Amber::Router::Session
   class CookieStore < AbstractStore
     property key : String
     property expires : Int32
-    property store : Amber::Router::Cookies::SignedStore | Amber::Router::Cookies::EncryptedStore
+    property store : Amber::Router::Cookies::AbstractStore
     property session : SessionHash
 
     forward_missing_to session

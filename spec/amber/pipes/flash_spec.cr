@@ -4,6 +4,50 @@ require "json"
 module Amber
   module Pipe
     describe Flash do
+      it "leaves the session untouched when a request carries and sets no message" do
+        context = create_context(HTTP::Request.new("GET", "/pets/1"))
+        flash_pipe = Flash.new
+        flash_pipe.next = ->(ctx : HTTP::Server::Context) { }
+
+        flash_pipe.call(context)
+
+        context.session.changed?.should be_falsey
+        context.session.has_key?(Flash::PARAM_KEY).should be_false
+      end
+
+      it "stores a message set during the request" do
+        context = create_context(HTTP::Request.new("POST", "/pets"))
+        flash_pipe = Flash.new
+        flash_pipe.next = ->(ctx : HTTP::Server::Context) { ctx.flash[:notice] = "Pet saved."; nil }
+
+        flash_pipe.call(context)
+
+        context.session.changed?.should be_true
+        Router::Flash::FlashStore.from_session(context.session[Flash::PARAM_KEY].to_s)[:notice].should eq "Pet saved."
+      end
+
+      it "clears a message once it has been read" do
+        context = create_context(HTTP::Request.new("GET", "/pets"))
+        context.session[Flash::PARAM_KEY] = {"notice" => "Pet saved."}.to_json
+        flash_pipe = Flash.new
+        flash_pipe.next = ->(ctx : HTTP::Server::Context) { ctx.flash.fetch(:notice); nil }
+
+        flash_pipe.call(context)
+
+        context.session.has_key?(Flash::PARAM_KEY).should be_false
+      end
+
+      it "sends no session cookie for a request without messages" do
+        context = create_context(HTTP::Request.new("GET", "/pets/1"))
+        flash_pipe = Flash.new
+        flash_pipe.next = ->(ctx : HTTP::Server::Context) { }
+        session_pipe = Session.new
+        session_pipe.next = flash_pipe
+
+        session_pipe.call(context)
+
+        context.response.headers.has_key?("Set-Cookie").should be_false
+      end
     end
   end
 
