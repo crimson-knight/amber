@@ -1,6 +1,47 @@
 require "../../spec_helper"
 
 describe Amber::Adapters::MemorySessionAdapter do
+  describe "maximum_session_count" do
+    it "holds at most the configured number of sessions" do
+      adapter = Amber::Adapters::MemorySessionAdapter.new(maximum_session_count: 3)
+
+      5.times { |visitor_number| adapter.set("visitor-#{visitor_number}", "csrf.token", "token-#{visitor_number}") }
+
+      adapter.session_count.should eq 3
+    end
+
+    it "evicts the oldest-created sessions first" do
+      adapter = Amber::Adapters::MemorySessionAdapter.new(maximum_session_count: 2)
+
+      adapter.set("first", "user_id", "1")
+      adapter.set("second", "user_id", "2")
+      adapter.batch_set("third", {"user_id" => "3"})
+
+      adapter.get("first", "user_id").should be_nil
+      adapter.get("second", "user_id").should eq "2"
+      adapter.get("third", "user_id").should eq "3"
+    end
+
+    it "updates an existing session without evicting anything" do
+      adapter = Amber::Adapters::MemorySessionAdapter.new(maximum_session_count: 2)
+      adapter.set("first", "user_id", "1")
+      adapter.set("second", "user_id", "2")
+
+      adapter.set("first", "theme", "dark")
+
+      adapter.session_count.should eq 2
+      adapter.get("second", "user_id").should eq "2"
+    end
+
+    it "defaults to ten thousand sessions" do
+      Amber::Adapters::MemorySessionAdapter.new.maximum_session_count.should eq 10_000
+    end
+
+    it "rejects a limit below one" do
+      expect_raises(ArgumentError) { Amber::Adapters::MemorySessionAdapter.new(maximum_session_count: 0) }
+    end
+  end
+
   describe "#get and #set" do
     it "stores and retrieves values" do
       adapter = Amber::Adapters::MemorySessionAdapter.new

@@ -19,19 +19,35 @@ module Amber::Adapters
   # # Configure in your application settings
   # config.session_adapter = Amber::Adapters::MemorySessionAdapter.new
   # ```
+  #
+  # The store holds at most `maximum_session_count` sessions, so memory stays
+  # bounded however many visitors arrive. When a new session would exceed the
+  # limit, the oldest-created sessions are evicted; a background task removes
+  # expired sessions every minute.
   class MemorySessionAdapter < SessionAdapter
+    # About 35 MB at the measured cost of ~3.5 KB per stored session.
+    DEFAULT_MAXIMUM_SESSION_COUNT = 10_000
+
     # Internal structure to store session data with expiration times
     private record SessionEntry, data : Hash(String, String), expires_at : Time?
+
+    getter maximum_session_count : Int32
 
     # Thread-safe session storage
     @sessions : Hash(String, SessionEntry)
     @mutex : Mutex
     @cleanup_running : Bool = false
 
-    def initialize
+    def initialize(@maximum_session_count : Int32 = DEFAULT_MAXIMUM_SESSION_COUNT)
+      raise ArgumentError.new("maximum_session_count must be positive, got #{@maximum_session_count}") unless @maximum_session_count > 0
       @sessions = Hash(String, SessionEntry).new
       @mutex = Mutex.new
       start_cleanup_task
+    end
+
+    # Number of sessions currently held, expired ones included until cleanup.
+    def session_count : Int32
+      @mutex.synchronize { @sessions.size }
     end
 
     # Retrieves a value for the given session and key
@@ -59,11 +75,7 @@ module Amber::Adapters
           # Update existing session
           entry.data[key] = value
         else
-          # Create new session entry
-          @sessions[session_id] = SessionEntry.new(
-            data: Hash{key => value},
-            expires_at: nil
-          )
+          store_new_session(session_id, Hash{key => value})
         end
       end
     end
@@ -157,11 +169,7 @@ module Amber::Adapters
           # Update existing session with new values
           hash.each { |key, value| entry.data[key] = value }
         else
-          # Create new session entry with the provided hash
-          @sessions[session_id] = SessionEntry.new(
-            data: hash.dup,
-            expires_at: nil
-          )
+          store_new_session(session_id, hash.dup)
         end
       end
     end
@@ -211,12 +219,20 @@ module Amber::Adapters
         # Update existing session
         entry.data[key] = value
       else
-        # Create new session entry
-        @sessions[session_id] = SessionEntry.new(
-          data: Hash{key => value},
-          expires_at: nil
-        )
+        store_new_session(session_id, Hash{key => value})
       end
+    end
+
+    # Adds a session, first evicting the oldest-created sessions to stay under
+    # `maximum_session_count`. Eviction is constant time; expired sessions are
+    # removed by the cleanup task. Callers hold the mutex.
+    private def store_new_session(session_id : String, session_values : Hash(String, String)) : Nil
+      @sessions.delete(session_id)
+      while @sessions.size >= @maximum_session_count
+        oldest_session_id = @sessions.first_key
+        @sessions.delete(oldest_session_id)
+      end
+      @sessions[session_id] = SessionEntry.new(data: session_values, expires_at: nil)
     end
 
     # Deletes a key without mutex (for internal use in batch operations)
