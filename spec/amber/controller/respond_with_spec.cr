@@ -3,7 +3,7 @@ require "../../spec_helper"
 module Amber::Controller
   describe Base do
     describe "#respond_with" do
-      request = HTTP::Request.new("GET", "")
+      request = HTTP::Request.new("GET", "/")
       request.headers["Accept"] = ""
       context = create_context(request)
 
