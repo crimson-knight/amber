@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Install Crystal
-        uses: oprypin/install-crystal@v1
+        uses: oprypin/install-crystal@36a22e9145188eec527c96e5a789ce4b832af587 # v1.9.5
         with:
           crystal: ${{ matrix.crystal }}
 
